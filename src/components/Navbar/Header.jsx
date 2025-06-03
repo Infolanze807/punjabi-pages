@@ -94,30 +94,30 @@ export function Header() {
             >
               Home
             </Link>
-            <a
-              href="#"
+            <Link
+              to={"/categories"}
               className="text-gray-700 hover:text-[--main-color] font-normal py-2 transition-colors"
             >
               Categories
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to={"/"}
               className="text-gray-700 hover:text-[--main-color] font-normal py-2 transition-colors"
             >
               Businesses
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to={"/about"}
               className="text-gray-700 hover:text-[--main-color] font-normal py-2 transition-colors"
             >
               About
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to={"/contact"}
               className="text-gray-700 hover:text-[--main-color] font-normal py-2 transition-colors"
             >
               Contact
-            </a>
+            </Link>
 
             {/* Mobile Weather and Login */}
             <div className="flex items-center gap-2 text-gray-600 py-2">
