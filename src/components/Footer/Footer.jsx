@@ -219,7 +219,7 @@ export function Footer() {
               <p className="text-sm text-gray-400">
                 Copyright © 2025, Punjabipages.in | Designed & Developed by{" "}
                 <a href="#" className="text-orange-400 hover:text-orange-300 transition-colors">
-                  infolanzetech.in
+                  www.punjabipages.in
                 </a>
               </p>
             </div>
