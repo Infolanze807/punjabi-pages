@@ -5,11 +5,13 @@ import { PopularBusinesses } from '../components/HomePages/PopularBusinesses'
 import { CallToAction } from '../components/HomePages/CallToAction'
 import { MobileAppSection } from '../components/HomePages/MobileAppSection'
 import { FuturisticStats } from '../components/HomePages/FuturisticStats'
+import FeaturedBusiness from '../components/HomePages/FeaturedBusiness'
 
 const Home = () => {
   return (
     <div>
       <HeroSection />
+      <FeaturedBusiness />
       <CategoriesSection />
       <FuturisticStats />
       <PopularBusinesses />

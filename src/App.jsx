@@ -8,6 +8,8 @@ import {SignUp} from './components/Auth/SignUp';
 import Contact from './pages/Contact';
 import About from './pages/About';
 import Categories from './pages/Categories';
+import SearchDetails from './components/BusinessDetails/SearchDetails';
+import BusinessDetailData from './components/BusinessDetails/BusinessDetailData';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
             <Route path='/contact' element={<Contact />} />
             <Route path='/about' element={<About />} />
             <Route path='/categories' element={<Categories />} />
+            <Route path='/business-details' element={<SearchDetails />} />
+            <Route path='/business-details-data' element={<BusinessDetailData />} />
          </Routes>
          <Footer />
       </BrowserRouter>
