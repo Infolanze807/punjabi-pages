@@ -20,14 +20,12 @@ export function SignUp() {
   const [passwordShown, setPasswordShown] = useState(false)
   const [confirmPasswordShown, setConfirmPasswordShown] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     phone: "",
-    userType: "",
+    bussinessName: "",
     password: "",
-    confirmPassword: "",
-    agreeToTerms: false,
+    category: null,
   })
 
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur)
@@ -61,140 +59,121 @@ export function SignUp() {
 
         {/* Signup Card */}
         <Card className="shadow-2xl border-0">
-        <div className="text-center pt-6">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <img src={logo} alt="Punjabi Pages" className="w-12 h-12" />
-            <Typography variant="h4" className="font-poppins font-bold text-[--second-color]">
-              Punjabi Pages
+          <div className="text-center pt-6">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img src={logo} alt="Punjabi Pages" className="w-12 h-12" />
+              <Typography variant="h4" className="font-poppins font-bold text-[--second-color]">
+                Punjabi Pages
+              </Typography>
+            </div>
+            <Typography variant="paragraph" className="text-gray-600 font-inter">
+              Join our community and grow your business
             </Typography>
           </div>
-          <Typography variant="paragraph" className="text-gray-600 font-inter">
-            Join our community and grow your business
-          </Typography>
-        </div>
 
           <CardBody className="flex flex-col gap-4 p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Name Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
-                    First Name
-                  </Typography>
-                  <Input
-                    size="lg"
-                    placeholder="John"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="!border-t-blue-gray-200 focus:!border-t-orange-500"
-                    labelProps={{
-                      className: "before:content-none after:content-none",
-                    }}
-                    crossOrigin={undefined}
-                  />
-                </div>
-
-                <div>
-                  <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
-                    Last Name
-                  </Typography>
-                  <Input
-                    size="lg"
-                    placeholder="Doe"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="!border-t-blue-gray-200 focus:!border-t-orange-500"
-                    labelProps={{
-                      className: "before:content-none after:content-none",
-                    }}
-                    crossOrigin={undefined}
-                  />
-                </div>
+              <div>
+                <Typography variant="h6" color="gray" className="font-inter">
+                  Name
+                </Typography>
+                <Input
+                  size="md"
+                  placeholder="John Deo"
+                  name="name"
+                  variant="static"
+                  // value={formData.name}
+                  // onChange={handleInputChange}
+                  className=""
+                  crossOrigin={undefined}
+                />
               </div>
 
-              {/* Email Input */}
               <div>
-                <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
+                <Typography variant="h6" color="gray" className="font-inter">
                   Email Address
                 </Typography>
                 <Input
-                  size="lg"
+                  size="md"
                   placeholder="name@mail.com"
                   name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="!border-t-blue-gray-200 focus:!border-t-orange-500"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
+                  variant="static"
+                  // value={formData.email}
+                  // onChange={handleInputChange}
+                  className=""
                   crossOrigin={undefined}
                 />
               </div>
 
-              {/* Phone Input */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Typography variant="h6" color="gray" className="font-inter">
+                    Bussiness Name
+                  </Typography>
+                  <Input
+                    size="md"
+                    placeholder="Bussiness Name"
+                    name="bussinessName"
+                    variant="static"
+                    // value={formData.bussinessName}
+                    // onChange={handleInputChange}
+                    className=""
+                    crossOrigin={undefined}
+                  />
+                </div>
+                <div>
+                  <Typography variant="h6" color="gray" className="font-inter">
+                    Bussiness Category
+                  </Typography>
+                  <Select
+                    size="md"
+                    variant="static"
+                    placeholder="Select Option"
+                    // value={formData.category}
+                    // onChange={handleSelectChange}
+                  >
+                    <Option value="customer">Customer</Option>
+                    <Option value="business_owner">Business Owner</Option>
+                    <Option value="service_provider">Service Provider</Option>
+                  </Select>
+                </div>
+              </div>
+
               <div>
-                <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
+                <Typography variant="h6" color="gray" className="font-inter">
                   Phone Number
                 </Typography>
                 <Input
-                  size="lg"
+                  size="md"
                   placeholder="+61 400 000 000"
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="!border-t-blue-gray-200 focus:!border-t-orange-500"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
+                  variant="static"
+                  type="number"
+                  // value={formData.phone}
+                  // onChange={handleInputChange}
                   crossOrigin={undefined}
                 />
               </div>
 
-              {/* User Type Select */}
-              <div>
-                <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
-                  I am a
-                </Typography>
-                <Select
-                  size="lg"
-                  value={formData.userType}
-                  onChange={handleSelectChange}
-                  className="!border-t-blue-gray-200 focus:!border-t-orange-500"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
-                >
-                  <Option value="customer">Customer</Option>
-                  <Option value="business_owner">Business Owner</Option>
-                  <Option value="service_provider">Service Provider</Option>
-                </Select>
-              </div>
-
-              {/* Password Fields */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
+                  {/* <Typography variant="h6" color="gray" className="font-inter">
                     Password
-                  </Typography>
+                  </Typography> */}
                   <Input
-                    size="lg"
+                    size="md"
+                    label="Password"
                     placeholder="********"
                     name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="!border-t-blue-gray-200 focus:!border-t-orange-500"
-                    labelProps={{
-                      className: "before:content-none after:content-none",
-                    }}
+                    variant="outlined"
+                    // value={formData.password}
+                    // onChange={handleInputChange}
                     type={passwordShown ? "text" : "password"}
                     icon={
                       <IconButton
                         variant="text"
                         size="sm"
                         onClick={togglePasswordVisiblity}
-                        className="!absolute right-1 top-1 rounded"
+                        className="!absolute right-1 -top-2 rounded"
                       >
                         {passwordShown ? <EyeIcon className="h-4 w-4" /> : <EyeSlashIcon className="h-4 w-4" />}
                       </IconButton>
@@ -202,52 +181,6 @@ export function SignUp() {
                     crossOrigin={undefined}
                   />
                 </div>
-
-                <div>
-                  <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
-                    Confirm Password
-                  </Typography>
-                  <Input
-                    size="lg"
-                    placeholder="********"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className="!border-t-blue-gray-200 focus:!border-t-orange-500"
-                    labelProps={{
-                      className: "before:content-none after:content-none",
-                    }}
-                    type={confirmPasswordShown ? "text" : "password"}
-                    icon={
-                      <IconButton
-                        variant="text"
-                        size="sm"
-                        onClick={toggleConfirmPasswordVisiblity}
-                        className="!absolute right-1 top-1 rounded"
-                      >
-                        {confirmPasswordShown ? <EyeIcon className="h-4 w-4" /> : <EyeSlashIcon className="h-4 w-4" />}
-                      </IconButton>
-                    }
-                    crossOrigin={undefined}
-                  />
-                </div>
-              </div>
-
-              {/* Terms Agreement */}
-              <Checkbox
-                name="agreeToTerms"
-                checked={formData.agreeToTerms}
-                onChange={handleInputChange}
-                label={
-                  <Typography color="blue-gray" className="flex items-center font-medium font-inter text-sm">
-                    I agree to the{" "}
-                    <Typography as="a" href="#" color="blue" className="font-medium hover:text-blue-700 ml-1">
-                      Terms and Conditions
-                    </Typography>
-                  </Typography>
-                }
-                crossOrigin={undefined}
-              />
 
               {/* Submit Button */}
               <Button

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosConfig = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  baseURL: 'http://localhost:3000/api/',
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,9 +30,8 @@ axiosConfig.interceptors.response.use(
       error.response &&
       (error.response.status === 401 || error.response.status === 403)
     ) {
-      localStorage.removeItem("token");
       console.error("Session expired, logging out...");
-      window.location.href = "/";
+      // window.location.href = "/";
     }
     return Promise.reject(error);
   }

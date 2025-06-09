@@ -2,34 +2,49 @@
 
 import React from "react"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Card, CardBody, CardHeader, Typography, Input, Checkbox, Button, IconButton } from "@material-tailwind/react"
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid"
 import logo from "../../assets/logo.jpeg"
+import { useDispatch, useSelector } from "react-redux"
+import { login } from "../../redux/features/authSlice"
 
 export function Login() {
   const [passwordShown, setPasswordShown] = useState(false)
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    rememberMe: false,
   })
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading } = useSelector((state) => state.auth)
 
   const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur)
 
-  const handleInputChange = () => {
-    const { name, value, type, checked } = e.target
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }))
   }
 
-  const handleSubmit = () => {
-    e.preventDefault()
-    console.log("Login form submitted:", formData)
-    // Add your login logic here
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      console.log("form:", formData);
+      const result = await dispatch(login(formData)).unwrap();
+      console.log("Login successful:", result);
+    } catch (error) {
+      console.error("Login failed:", error);
+      // You can show this in the UI if needed
+    }
+  };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
@@ -38,82 +53,69 @@ export function Login() {
 
         {/* Login Card */}
         <Card className="shadow-2xl border-0">
-        <div className="text-center pt-6">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <img src={logo} alt="Punjabi Pages" className="w-12 h-12" />
-            <Typography variant="h4" className="font-poppins font-bold text-[--main-color]">
-              Punjabi Pages
+          <div className="text-center pt-6">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img src={logo} alt="Punjabi Pages" className="w-12 h-12" />
+              <Typography variant="h4" className="font-poppins font-bold text-[--main-color]">
+                Punjabi Pages
+              </Typography>
+            </div>
+            <Typography variant="paragraph" className="text-gray-600 font-inter">
+              Welcome back! Please sign in to your account
             </Typography>
+            <button onClick={() => navigate("/")}>click</button>
           </div>
-          <Typography variant="paragraph" className="text-gray-600 font-inter">
-            Welcome back! Please sign in to your account
-          </Typography>
-        </div>
 
           <CardBody className="flex flex-col gap-4 p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Input */}
               <div>
-                <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
+                <Typography variant="h6" color="gray" className="font-inter">
                   Email Address
                 </Typography>
                 <Input
-                  size="lg"
+                  size="md"
                   placeholder="name@mail.com"
                   name="email"
+                  variant="static"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="!border-t-blue-gray-200 focus:!border-t-blue-500"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
                   crossOrigin={undefined}
                 />
               </div>
 
               {/* Password Input */}
               <div>
-                <Typography variant="h6" color="blue-gray" className="mb-2 font-inter">
+                <Typography variant="h6" color="gray" className="font-inter">
                   Password
                 </Typography>
                 <Input
-                  size="lg"
+                  size="md"
                   placeholder="********"
                   name="password"
+                  variant="static"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="!border-t-blue-gray-200 focus:!border-t-blue-500"
-                  labelProps={{
-                    className: "before:content-none after:content-none",
-                  }}
                   type={passwordShown ? "text" : "password"}
                   icon={
                     <IconButton
                       variant="text"
                       size="sm"
                       onClick={togglePasswordVisiblity}
-                      className="!absolute right-1 top-1 rounded"
+                      className="!absolute right-1 -top-2 rounded"
                     >
-                      {passwordShown ? <EyeIcon className="h-4 w-4" /> : <EyeSlashIcon className="h-4 w-4" />}
+                      {passwordShown ? (
+                        <EyeIcon className="h-4 w-4 text-gray-700" />
+                      ) : (
+                        <EyeSlashIcon className="h-4 w-4 text-gray-700" />
+                      )}
                     </IconButton>
                   }
                   crossOrigin={undefined}
                 />
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
-                <Checkbox
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  label={
-                    <Typography color="blue-gray" className="flex font-medium font-inter">
-                      Remember me
-                    </Typography>
-                  }
-                  crossOrigin={undefined}
-                />
+              <div className="flex items-center justify-end">
                 <Typography
                   as="a"
                   href="#"
@@ -126,8 +128,13 @@ export function Login() {
               </div>
 
               {/* Submit Button */}
-              <Button type="submit" className="mt-6 bg-[--main-color] hover:bg-blue-700 font-inter" fullWidth>
-                Sign In
+              <Button
+                type="submit" // ✅ important fix
+                className="mt-6 bg-[--main-color] hover:bg-blue-700 font-inter"
+                fullWidth
+                disabled={loading}
+              >
+                {loading ? "Signing in..." : "Sign In"}
               </Button>
 
               {/* Divider */}
@@ -147,6 +154,7 @@ export function Login() {
                 </Link>
               </Typography>
             </form>
+
           </CardBody>
         </Card>
       </div>
