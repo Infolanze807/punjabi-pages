@@ -19,6 +19,7 @@ import PublicLayout from "./layouts/PublicLayout";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Registration from "./components/Registration/registration";
+import {Business} from "./pages/Business";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/business-details" element={<SearchDetails />} />
+              <Route path="/business" element={<Business />} />
               <Route
                 path="/business-details-data"
                 element={<BusinessDetailData />}
