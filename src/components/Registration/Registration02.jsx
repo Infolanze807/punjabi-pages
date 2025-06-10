@@ -97,7 +97,7 @@ const Registration02 = () => {
                     <img
                         src={BussinessMen}
                         alt="Step Visual"
-                        className="max-h-80 object-contain rounded-lg shadow-xl transition-transform duration-300 hover:scale-105"
+                        className="max-h-80 object-contain rounded-lg shadow-xl"
                     />
                 </div>
             </div>

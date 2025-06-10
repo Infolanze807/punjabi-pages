@@ -13,6 +13,28 @@ export const login = createAsyncThunk("auth/login", async (loginData) => {
   }
 });
 
+export const register = createAsyncThunk("auth/register", async (registerData) => {
+  try {
+    const response = await axiosConfig.post("auth/register", registerData);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data?.error || error.message || "Something went wrong"
+    );
+  }
+});
+
+export const verifyEmail = createAsyncThunk("auth/verifyEmail", async (verifyData) => {
+  try {
+    const response = await axiosConfig.post("auth/verify-email", verifyData);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data?.error || error.message || "Something went wrong"
+    );
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -48,7 +70,37 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.error = action.error.message;
         toast.error(state.error);
-      });
+      })
+       .addCase(register.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        toast.success(state.message)
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
+       .addCase(verifyEmail.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyEmail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        state.message = action.payload.message;
+        toast.success(state.message)
+      })
+      .addCase(verifyEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
   },
 });
 
