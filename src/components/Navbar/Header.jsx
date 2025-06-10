@@ -33,7 +33,7 @@ export function Header() {
             Categories
           </Link>
           <Link
-            to={"/"}
+            to={"/business"}
             className="text-gray-700 hover:text-[--main-color] text-sm font-normal transition-colors"
           >
             Businesses
@@ -101,7 +101,7 @@ export function Header() {
               Categories
             </Link>
             <Link
-              to={"/"}
+              to={"/business"}
               className="text-gray-700 hover:text-[--main-color] font-normal py-2 transition-colors"
             >
               Businesses
