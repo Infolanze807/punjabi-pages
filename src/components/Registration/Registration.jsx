@@ -4,6 +4,7 @@ import { Button, CardBody, IconButton, Input, Option, Select, Typography } from 
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid"
 import { Link, useNavigate } from 'react-router-dom';
 import BussinessMen from '../../assets/BussinessMen.jpg'
+import logo from "../../assets/logo.jpeg"
 import Registration02 from './Registration02';
 import Registration03 from './Registration03';
 import Registration04 from './Registration04';
@@ -136,9 +137,17 @@ const Registration = () => {
                     </div>
                     {step === "register" ? (
                         <div className="bg-white rounded-lg py-5">
-                            <Typography variant="h4" className="font-poppins font-bold text-[--second-color] text-center">
-                                Sign Up
-                            </Typography>
+                            <div className="text-center pt-6">
+                                <div className="flex items-center justify-center gap-3 mb-2">
+                                    <img src={logo} alt="Punjabi Pages" className="w-12 h-12" />
+                                    <Typography variant="h4" className="font-poppins font-bold text-[--second-color]">
+                                        Punjabi Pages
+                                    </Typography>
+                                </div>
+                                <Typography variant="paragraph" className="text-gray-600 font-inter">
+                                    Welcome back! Please sign in to your account
+                                </Typography>
+                            </div>
                             <CardBody className="flex flex-col gap-4 p-6">
                                 <form className="space-y-5" onSubmit={handleSubmit}>
                                     <div className='relative'>

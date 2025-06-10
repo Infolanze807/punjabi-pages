@@ -12,13 +12,12 @@ import Categories from "./pages/Categories";
 import SearchDetails from "./components/BusinessDetails/SearchDetails";
 import BusinessDetailData from "./components/BusinessDetails/BusinessDetailData";
 import Dashboard from "./pages/Dashboard";
-import { Login } from "./components/Auth/Login";
-import { SignUp } from "./components/Auth/SignUp";
 import PrivateLayout from "./layouts/PrivateLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Registration from "./components/Registration/registration";
+import Login from "./components/Auth/Login";
 
 function App() {
   return (
