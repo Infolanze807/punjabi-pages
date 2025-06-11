@@ -1,5 +1,6 @@
 import React from 'react'
 import { Star } from "lucide-react"
+import { Link } from 'react-router-dom'
 
 const featuredBusinesses = [
   {
@@ -67,30 +68,32 @@ const FeaturedBusiness = () => {
           {featuredBusinesses.map((business) => (
             <div
               key={business.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:border border-blue-600 transition-all duration-300 cursor-pointer group"
             >
               {/* Image Container */}
-              <div className="relative h-48 overflow-hidden">
-                <img
-                  src={business.image || "/placeholder.svg"}
-                  alt={business.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+              <Link to={"/business-details-data"} >
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={business.image || "/placeholder.svg"}
+                    alt={business.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
 
-                {/* Badges */}
-                <div className="absolute top-3 left-3 flex gap-2">
-                  {business.isPremium && (
-                    <span className="bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                      Premium
-                    </span>
-                  )}
-                  {business.isVerified && (
-                    <span className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
-                      ✓ Verified
-                    </span>
-                  )}
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    {business.isPremium && (
+                      <span className="bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                        Premium
+                      </span>
+                    )}
+                    {business.isVerified && (
+                      <span className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                        ✓ Verified
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Content */}
               <div className="p-4">

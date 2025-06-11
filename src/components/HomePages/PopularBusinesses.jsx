@@ -1,4 +1,5 @@
 import { CheckCircle, Star } from "lucide-react"
+import { Link } from "react-router-dom"
 
 const businesses = [
   {
@@ -63,48 +64,51 @@ export function PopularBusinesses() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {businesses.map((business) => (
-            <div
-              key={business.id}
-              className="rounded-lg border bg-white text-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden"
-            >
-              <div className="relative">
-                <img
-                  src={business.image || "/placeholder.svg"}
-                  alt={business.name}
-                  className="w-full h-36 sm:h-40 md:h-48 object-cover"
-                />
-                <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex gap-1 sm:gap-2">
-                  {business.isPremium && (
-                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-[--second-color] text-white">
-                      Premium
-                    </span>
-                  )}
-                  {business.isVerified && (
-                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-[--main-color] text-white">
-                      <CheckCircle className="h-2 w-2 sm:h-3 sm:w-3 mr-1" /> Verified
-                    </span>
-                  )}
-                </div>
-              </div>
+            <Link to={"/business-details-data"} >
+              <div
+                key={business.id}
+                className="rounded-lg border bg-white text-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden"
+              >
 
-              <div className="p-3 sm:p-4">
-                <h3 className="mb-1 sm:mb-2 font-medium text-sm sm:text-base text-gray-800 truncate">
-                  {business.name}
-                </h3>
-
-                <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2 truncate">
-                  {business.category} • {business.location}
-                </p>
-
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="flex items-center">
-                    <Star className="h-3 w-3 sm:h-4 sm:w-4 text-[--main-color] mr-1 fill-[--main-color]" />
-                    <span className="text-xs sm:text-sm font-medium">{business.rating}</span>
+                <div className="relative">
+                  <img
+                    src={business.image || "/placeholder.svg"}
+                    alt={business.name}
+                    className="w-full h-36 sm:h-40 md:h-48 object-cover"
+                  />
+                  <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex gap-1 sm:gap-2">
+                    {business.isPremium && (
+                      <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-[--second-color] text-white">
+                        Premium
+                      </span>
+                    )}
+                    {business.isVerified && (
+                      <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-[--main-color] text-white">
+                        <CheckCircle className="h-2 w-2 sm:h-3 sm:w-3 mr-1" /> Verified
+                      </span>
+                    )}
                   </div>
-                  <span className="text-xs sm:text-sm text-gray-500">({business.reviews} reviews)</span>
+                </div>
+
+                <div className="p-3 sm:p-4">
+                  <h3 className="mb-1 sm:mb-2 font-medium text-sm sm:text-base text-gray-800 truncate">
+                    {business.name}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2 truncate">
+                    {business.category} • {business.location}
+                  </p>
+
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="flex items-center">
+                      <Star className="h-3 w-3 sm:h-4 sm:w-4 text-[--main-color] mr-1 fill-[--main-color]" />
+                      <span className="text-xs sm:text-sm font-medium">{business.rating}</span>
+                    </div>
+                    <span className="text-xs sm:text-sm text-gray-500">({business.reviews} reviews)</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

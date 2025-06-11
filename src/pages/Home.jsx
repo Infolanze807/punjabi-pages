@@ -1,11 +1,12 @@
 import React from 'react'
 import { HeroSection } from '../components/HomePages/HeroSection'
-import { CategoriesSection } from '../components/HomePages/CategoriesSection'
 import { PopularBusinesses } from '../components/HomePages/PopularBusinesses'
 import { CallToAction } from '../components/HomePages/CallToAction'
 import { MobileAppSection } from '../components/HomePages/MobileAppSection'
 import { FuturisticStats } from '../components/HomePages/FuturisticStats'
 import FeaturedBusiness from '../components/HomePages/FeaturedBusiness'
+import TestimonialsSection from '../components/HomePages/TestimonialsSection'
+import CategoriesSection from '../components/HomePages/CategoriesSection'
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
       <CategoriesSection />
       <FuturisticStats />
       <PopularBusinesses />
+      <TestimonialsSection />
       <CallToAction />
       <MobileAppSection />
     </div>

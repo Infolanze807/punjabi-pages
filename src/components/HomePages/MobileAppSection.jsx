@@ -2,7 +2,7 @@ import { Smartphone } from "lucide-react"
 
 export function MobileAppSection() {
   return (
-    <section className="bg-gradient-to-r from-blue-600 to-blue-700 py-12 sm:py-16 md:py-20">
+    <section className="bg-gradient-to-r from-blue-gray-300 to-blue-gray-800 py-12 sm:py-16 md:py-14">
       <div className="container mx-auto px-4 md:px-10 lg:px-24 max-w-7xl">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           {/* Mobile Phones Mockup */}

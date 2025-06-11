@@ -145,7 +145,7 @@ const Registration = () => {
                                     </Typography>
                                 </div>
                                 <Typography variant="paragraph" className="text-gray-600 font-inter">
-                                    Welcome back! Please sign in to your account
+                                    Welcome back! Please sign Up to your account
                                 </Typography>
                             </div>
                             <CardBody className="flex flex-col gap-4 p-6">
@@ -266,9 +266,12 @@ const Registration = () => {
                     ) : (
                         <div className="flex justify-center items-center min-h-[80vh] px-4">
                             <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-                                <Typography variant="h4" className="font-poppins font-bold text-[--second-color] text-center mb-2">
-                                    Verify OTP
-                                </Typography>
+                                <div className="flex items-center justify-center gap-3 mb-2">
+                                    <img src={logo} alt="Punjabi Pages" className="w-12 h-12" />
+                                    <Typography variant="h4" className="font-poppins font-bold text-[--second-color]">
+                                        Punjabi Pages
+                                    </Typography>
+                                </div>
                                 <Typography
                                     variant="paragraph"
                                     className="text-center text-sm text-gray-600 mb-6"
