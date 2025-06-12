@@ -17,6 +17,7 @@ import { Business } from "./pages/Business";
 import Login from "./components/Auth/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AddProfile from "./components/Dashboard/AddProfile";
 
 // ✅ Wrapper for handling scroll-to-top on route change
 function ScrollToTopWrapper() {
@@ -47,6 +48,7 @@ function ScrollToTopWrapper() {
       {/* Private Routes */}
       <Route element={<PrivateLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/addProfile" element={<AddProfile />} />
       </Route>
     </Routes>
   );
