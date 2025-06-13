@@ -40,7 +40,7 @@ const SideBar = () => {
         md:translate-x-0 md:static md:shadow-none
         z-20 flex flex-col `}
             >
-                <div className="p-6 border-b border-gray-200 flex items-center gap-3">
+                {/* <div className="p-6 border-b border-gray-200 flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
                         P
                     </div>
@@ -48,7 +48,7 @@ const SideBar = () => {
                         <h2 className="text-lg font-bold text-blue-700">Punjabi Pages</h2>
                         <p className="text-sm text-gray-500">Dashboard</p>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="flex-1 flex flex-col justify-center px-4 py-6">
                     <nav className="space-y-3">

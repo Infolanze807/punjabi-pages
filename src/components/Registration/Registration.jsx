@@ -28,9 +28,7 @@ const Registration = () => {
         name: "",
         email: "",
         phone: "",
-        businessName: "",
         password: "",
-        category: null,
     })
 
 
@@ -41,11 +39,6 @@ const Registration = () => {
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setFormErrors({ ...formErrors, [e.target.name]: "" }); // Clear error on input
-    };
-
-    const handleSelectChange = (val) => {
-        setFormData({ ...formData, category: val });
-        setFormErrors({ ...formErrors, category: "" });
     };
 
     const validate = () => {
@@ -59,12 +52,6 @@ const Registration = () => {
             !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
         ) {
             errors.email = "Enter a valid email address";
-        }
-        if (!formData.businessName?.trim()) {
-            errors.businessName = "Business name is required";
-        }
-        if (!formData.category) {
-            errors.category = "Category is required";
         }
         if (!formData.phone.trim()) {
             errors.phone = "Phone number is required";
@@ -173,36 +160,6 @@ const Registration = () => {
                                         />
                                         {formErrors.email && <Typography variant="small" color="red" className='text-[9px] absolute -bottom-3.5 right-0.5'>{formErrors.email}</Typography>}
                                     </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className='relative'>
-                                            <Input
-                                                size="md"
-                                                label="Business Name"
-                                                name="businessName"
-                                                value={formData.bussinessName}
-                                                onChange={handleInputChange}
-                                                error={!!formErrors.bussinessName}
-                                            />
-                                            {formErrors.businessName && <Typography variant="small" color="red" className='text-[9px] absolute -bottom-0.3 right-0.5'>{formErrors.bussinessName}</Typography>}
-                                        </div>
-
-                                        <div className='relative'>
-                                            <Select
-                                                size="md"
-                                                label="Business Category"
-                                                value={formData.category}
-                                                onChange={handleSelectChange}
-                                                error={!!formErrors.category}
-                                            >
-                                                <Option value="customer">Customer</Option>
-                                                <Option value="business_owner">Business Owner</Option>
-                                                <Option value="service_provider">Service Provider</Option>
-                                            </Select>
-                                            {formErrors.category && <Typography variant="small" color="red" className='text-[9px] absolute -bottom-0.3 right-0.5'>{formErrors.category}</Typography>}
-                                        </div>
-                                    </div>
-
                                     <div className='relative'>
                                         <Input
                                             size="md"

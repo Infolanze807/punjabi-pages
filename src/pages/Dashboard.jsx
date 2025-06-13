@@ -37,10 +37,15 @@ const Dashboard = () => {
   };
 
   const handleUpdateClick = () => {
-  if (myBussiness && myBussiness.length > 0) {
-    navigate("/addProfile", { state: { existingBusiness: selectedBusiness, isEdit: true } });
-  }
-};
+    if (myBussiness && myBussiness.length > 0) {
+      navigate("/addProfile", { state: { existingBusiness: selectedBusiness, isEdit: true } });
+    }
+  };
+
+  const handleCreateBusiness = () => {
+    navigate("/addProfile");
+  };
+
 
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -50,27 +55,55 @@ const Dashboard = () => {
           {selectedBusiness ? "Business Details" : "My Businesses"}
         </h1>
         {!selectedBusiness ? (
-          <div className="grid gap-6">
-            {myBussiness?.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading ? (
+              // Loading Placeholder (you can enhance this with a skeleton loader)
+              <div className="col-span-full text-center py-16">
+                <p className="text-gray-500 text-lg animate-pulse">Loading businesses...</p>
+              </div>
+            ) : myBussiness?.length > 0 ? (
               myBussiness.map((biz, i) => (
                 <div
                   key={i}
                   onClick={() => handleCardClick(biz)}
-                  className="bg-white p-4 rounded-xl shadow cursor-pointer hover:ring-2 hover:ring-indigo-500 transition"
+                  className="bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:ring-2 hover:ring-blue-500 hover:scale-[1.02] transition-transform duration-300"
                 >
-                  <img
-                    src={biz.logoUrl}
-                    alt={biz.businessName}
-                    className="w-40 h-40 object-cover rounded-lg mb-3"
-                  />
-                  <h2 className="text-xl font-bold">{biz.businessName}</h2>
-                  <p className="text-sm text-gray-600">
-                    {biz.categoryGroup} / {biz.category}
-                  </p>
+                  <div className="h-48 flex items-center justify-center bg-gray-50">
+                    <img
+                      src={biz.logoUrl}
+                      alt={biz.businessName}
+                      className="object-contain h-36 w-36"
+                    />
+                  </div>
+                  <div className="p-4 border-t border-blue-600">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-1 truncate">
+                      {biz.businessName}
+                    </h2>
+                    <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+                      <span className="text-blue-700 px-2 py-1 rounded-full">
+                        {biz.category}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
-              <p></p>
+              <div className="col-span-full text-center bg-white py-12 rounded-2xl shadow-md">
+                <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+                  No Business Created Yet
+                </h2>
+                <p className="text-gray-500 mb-6">
+                  Looks like you haven’t added any businesses yet.
+                  <br />
+                  Click “Create Business” to get started and manage your business listings here.
+                </p>
+                <button
+                  onClick={handleCreateBusiness}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-xl transition"
+                >
+                  Create Business
+                </button>
+              </div>
             )}
           </div>
         ) : (
@@ -109,7 +142,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <button
-                 onClick={handleUpdateClick}
+                  onClick={handleUpdateClick}
                   className="inline-flex items-center gap-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-sm transition duration-200"
                 >
                   Update Business Profile
