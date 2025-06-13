@@ -29,7 +29,7 @@ const businesses = [
     id: 3,
     name: "Punjab Grocery Store",
     image:
-      "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
     category: "Grocery",
     rating: 4.7,
     reviews: 156,
@@ -53,10 +53,10 @@ const businesses = [
 
 export function PopularBusinesses() {
   return (
-    <section className="py-8 sm:py-12 md:py-16 bg-white">
+    <section className="py-8 sm:py-12 md:py-16 bg-[#e6f0f9]">
       <div className="container mx-auto px-4 md:px-10 lg:px-24 max-w-7xl">
         <div className="text-center mb-6 sm:mb-8 md:mb-12">
-          <h2 className="mb-2 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">Popular Businesses</h2>
+          <h2 className="mb-2 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-[--main-color]">Popular Businesses</h2>
           <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
             Discover the most trusted and highly-rated businesses in our community
           </p>
@@ -64,12 +64,10 @@ export function PopularBusinesses() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {businesses.map((business) => (
-            <Link to={"/business-details-data"} >
+            <Link to={"/business-details-data"} key={business.id}>
               <div
-                key={business.id}
                 className="rounded-lg border bg-white text-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden"
               >
-
                 <div className="relative">
                   <img
                     src={business.image || "/placeholder.svg"}
@@ -91,7 +89,7 @@ export function PopularBusinesses() {
                 </div>
 
                 <div className="p-3 sm:p-4">
-                  <h3 className="mb-1 sm:mb-2 font-medium text-sm sm:text-base text-gray-800 truncate">
+                  <h3 className="mb-1 sm:mb-2 font-medium text-sm sm:text-base text-[--main-color] truncate">
                     {business.name}
                   </h3>
 

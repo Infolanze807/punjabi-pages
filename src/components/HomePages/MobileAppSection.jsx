@@ -2,7 +2,7 @@ import { Smartphone } from "lucide-react"
 
 export function MobileAppSection() {
   return (
-    <section className="bg-gradient-to-r from-blue-gray-300 to-blue-gray-800 py-12 sm:py-16 md:py-14">
+    <section className="bg-gradient-to-r from-[--main-color] to-[#0d4b8c] py-12 sm:py-16 md:py-14">
       <div className="container mx-auto px-4 md:px-10 lg:px-24 max-w-7xl">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           {/* Mobile Phones Mockup */}
@@ -16,35 +16,35 @@ export function MobileAppSection() {
                     {/* Status Bar */}
                     <div className="flex justify-center mb-4">
                       <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
                         <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
                       </div>
                     </div>
 
                     {/* App Content */}
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold mb-4">Awesome!</h3>
+                      <h3 className="text-lg font-bold mb-4 text-[--main-color]">Awesome!</h3>
                       <p className="text-sm text-gray-600 mb-6">
                         Now that you've built an awesome page, let's get you connected with the best local businesses.
                       </p>
 
                       {/* Categories */}
                       <div className="space-y-3">
-                        <div className="bg-yellow-400 text-black px-4 py-3 rounded-lg font-medium">Salons</div>
-                        <div className="bg-yellow-400 text-black px-4 py-3 rounded-lg font-medium">Restaurants</div>
-                        <div className="bg-yellow-400 text-black px-4 py-3 rounded-lg font-medium">Education</div>
-                        <div className="bg-yellow-400 text-black px-4 py-3 rounded-lg font-medium">Car Services</div>
+                        <div className="bg-[--main-color] text-white px-4 py-3 rounded-lg font-medium">Salons</div>
+                        <div className="bg-[--main-color] text-white px-4 py-3 rounded-lg font-medium">Restaurants</div>
+                        <div className="bg-[--main-color] text-white px-4 py-3 rounded-lg font-medium">Education</div>
+                        <div className="bg-[--main-color] text-white px-4 py-3 rounded-lg font-medium">Car Services</div>
                       </div>
                     </div>
 
                     {/* Bottom Navigation */}
                     <div className="flex justify-around py-4 border-t">
-                      <div className="w-6 h-6 bg-gray-300 rounded"></div>
-                      <div className="w-6 h-6 bg-gray-300 rounded"></div>
-                      <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                      <div className="w-6 h-6 bg-[--main-color] rounded"></div>
+                      <div className="w-6 h-6 bg-[--main-color] rounded"></div>
+                      <div className="w-6 h-6 bg-[--main-color] rounded"></div>
                     </div>
                   </div>
                 </div>
@@ -57,36 +57,36 @@ export function MobileAppSection() {
                     {/* Status Bar */}
                     <div className="flex justify-center mb-4">
                       <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                        <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
+                        <div className="w-2 h-2 bg-[--second-color] rounded-full"></div>
                         <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
                       </div>
                     </div>
 
-                    <h3 className="text-lg font-bold mb-4">All done!</h3>
+                    <h3 className="text-lg font-bold mb-4 text-[--main-color]">All done!</h3>
                     <p className="text-sm text-gray-600 mb-6">
                       Now that you've built an awesome page, let's get you connected with the best local businesses.
                     </p>
 
                     {/* Illustration */}
                     <div className="flex-1 flex items-center justify-center">
-                      <div className="w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Smartphone className="w-16 h-16 text-blue-600" />
+                      <div className="w-32 h-32 bg-[#e6f0f9] rounded-lg flex items-center justify-center">
+                        <Smartphone className="w-16 h-16 text-[--main-color]" />
                       </div>
                     </div>
 
                     {/* CTA Button */}
-                    <button className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-medium mb-4">
+                    <button className="bg-[--main-color] text-white px-6 py-3 rounded-lg font-medium mb-4">
                       Let's do it!
                     </button>
 
                     {/* Bottom Navigation */}
                     <div className="flex justify-around py-4 border-t">
-                      <div className="w-6 h-6 bg-gray-300 rounded"></div>
-                      <div className="w-6 h-6 bg-gray-300 rounded"></div>
-                      <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                      <div className="w-6 h-6 bg-[--main-color] rounded"></div>
+                      <div className="w-6 h-6 bg-[--main-color] rounded"></div>
+                      <div className="w-6 h-6 bg-[--main-color] rounded"></div>
                     </div>
                   </div>
                 </div>
@@ -97,14 +97,14 @@ export function MobileAppSection() {
           {/* Content */}
           <div className="flex-1 text-white text-center lg:text-left">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold mb-6 leading-tight">
-              Discover <span className="text-yellow-400">Punjabi</span>
+              Discover <span className="text-[--second-color]">Punjabi</span>
               <br />
               Businesses And
               <br />
               Pages!
             </h2>
 
-            <p className="text-lg sm:text-xl mb-8 text-blue-100 max-w-2xl">
+            <p className="text-lg sm:text-xl mb-8 text-[#e6f0f9] max-w-2xl">
               Download the Punjabi Pages app to explore and connect with trusted businesses, services, and community
               resources in your area.
             </p>

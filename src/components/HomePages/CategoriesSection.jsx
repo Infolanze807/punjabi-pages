@@ -19,25 +19,24 @@ export default function CategoriesSection() {
 
   return (
     <>
-      <section className="relative py-24 overflow-hidden bg-gradient-to-br from-white via-indigo-50 to-blue-100">
+      <section className="relative py-14 overflow-hidden">
         {/* Abstract Background Blobs */}
-        <div className="absolute -top-32 -left-32 w-[400px] h-[400px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse z-0"></div>
-        <div className="absolute -bottom-20 -right-20 w-[300px] h-[300px] bg-purple-300 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-spin-slow z-0"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-blue-400 rounded-full mix-blend-multiply filter blur-2xl opacity-20 z-0"></div>
+        <div className="absolute -top-32 -left-32 w-[400px] h-[400px] bg-[--main-color] rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse z-0"></div>
+        <div className="absolute -bottom-20 -right-20 w-[300px] h-[300px] bg-[--main-color] rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-spin-slow z-0"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-[--main-color] rounded-full mix-blend-multiply filter blur-2xl opacity-10 z-0"></div>
 
         {/* Content Container */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
-          <div className="text-center mb-20">
+          <div className="text-center mb-16">
             <div className="inline-block relative">
-              <h2 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6 tracking-tight">
+              <h2 className="text-2xl md:text-4xl font-semibold text-[--main-color] mb-6 tracking-tight">
                 Browse by Category
               </h2>
             </div>
-            <p className="text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed font-medium">
+            <p className="text-sm sm:text-base text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Discover premium community services with trusted professionals worldwide
             </p>
           </div>
-
 
           {/* Category Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4 md:px-8 lg:px-16">
@@ -49,10 +48,10 @@ export default function CategoriesSection() {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Background hover layer */}
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg group-hover:shadow-2xl transition-all duration-700 transform group-hover:scale-[1.02] border border-slate-200/50 group-hover:border-blue-200/50">
-                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-50/50 via-indigo-50/30 to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg group-hover:shadow-2xl transition-all duration-700 transform group-hover:scale-[1.02] border border-[--main-color]/20 group-hover:border-[--main-color]/50">
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#e6f0f9]/50 via-white/30 to-[#e6f0f9]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 </div>
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 p-px">
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-[--main-color]/20 via-[--main-color]/20 to-[--main-color]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 p-px">
                   <div className="w-full h-full bg-white/90 rounded-3xl"></div>
                 </div>
 
@@ -61,27 +60,27 @@ export default function CategoriesSection() {
                   <div className="relative p-8 text-center h-full flex flex-col justify-center min-h-[200px] z-10">
                     <div className="relative mb-6">
                       <div className="relative inline-block">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl transform group-hover:scale-110 transition-transform duration-500 opacity-0 group-hover:opacity-100 -m-3"></div>
-                        <div className="text-5xl transform group-hover:scale-110 transition-all duration-500 relative z-10 group-hover:-translate-y-1">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#e6f0f9] to-[#e6f0f9] rounded-2xl transform group-hover:scale-110 transition-transform duration-500 opacity-0 group-hover:opacity-100 -m-3"></div>
+                        <div className="text-4xl transform group-hover:scale-110 transition-all duration-500 relative z-10 group-hover:-translate-y-1">
                           {category.icon}
                         </div>
                       </div>
                       {hoveredIndex === index && (
                         <div className="absolute inset-0 -m-4">
-                          <div className="w-full h-full border border-blue-300/30 rounded-full animate-ping opacity-40"></div>
+                          <div className="w-full h-full border border-[--main-color]/30 rounded-full animate-ping opacity-40"></div>
                         </div>
                       )}
                     </div>
 
-                    <h3 className="text-lg font-medium text-slate-800 group-hover:bg-gradient-to-r group-hover:from-blue-700 group-hover:to-indigo-700 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-500 mb-3 leading-tight">
+                    <h3 className="text-lg font-medium text-[--main-color] group-hover:text-[#0d4b8c] transition-all duration-500 mb-3 leading-tight">
                       {category.title}
                     </h3>
-                    <p className="text-sm text-slate-600 group-hover:text-slate-700 transition-colors duration-500 leading-relaxed font-medium">
+                    <p className="text-sm text-gray-600 group-hover:text-gray-700 transition-colors duration-500 leading-relaxed font-medium">
                       {category.description}
                     </p>
 
                     {/* Bottom hover bar */}
-                    <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 rounded-full"></div>
+                    <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-[--main-color] to-[#4a90e2] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 rounded-full"></div>
                   </div>
                 </Link>
               </div>

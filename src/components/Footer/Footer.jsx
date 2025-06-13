@@ -14,7 +14,7 @@ export function Footer() {
   return (
     <footer className="relative overflow-hidden">
       {/* Main Footer */}
-      <div className="bg-gray-900 relative border-b">
+      <div className="bg-gradient-to-r from-[--main-color] to-[#0d4b8c] relative border-b">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-xl"></div>
@@ -29,7 +29,7 @@ export function Footer() {
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
               Get Yourself Discovered!
             </h2>
-            <p className="text-lg text-white max-w-2xl mx-auto">
+            <p className="text-base text-white max-w-2xl mx-auto">
               Join the largest Punjabi business community and connect with
               thousands of customers
             </p>
@@ -268,7 +268,7 @@ export function Footer() {
                   placeholder="Email Address"
                   className="flex-1 px-4 py-2 rounded-lg border-0 bg-white/90 backdrop-blur-sm text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-sm rounded-lg transition-colors flex items-center justify-center gap-2 font-medium">
+                <button className="bg-white hover:bg-white/80 text-[--main-color] px-6 py-2 text-sm rounded-lg transition-colors flex items-center justify-center gap-2 font-medium">
                   <Send className="w-3 h-3" />
                   <span className="hidden sm:inline">Subscribe</span>
                 </button>
@@ -325,7 +325,7 @@ export function Footer() {
       </div>
 
       {/* Copyright Section */}
-      <div className="bg-gray-900 text-white py-4">
+      <div className="bg-gradient-to-r from-[--main-color] to-[#0d4b8c] text-white py-4">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">

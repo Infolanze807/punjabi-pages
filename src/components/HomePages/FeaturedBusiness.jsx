@@ -1,8 +1,8 @@
 import React from 'react'
-import { Star } from "lucide-react"
+import { CheckCircle, Star } from "lucide-react"
 import { Link } from 'react-router-dom'
 
-const featuredBusinesses = [
+const businesses = [
   {
     id: 1,
     name: "Singh's Authentic Kitchen",
@@ -13,6 +13,7 @@ const featuredBusinesses = [
     reviews: 124,
     isPremium: true,
     isVerified: true,
+    location: "Melbourne, VIC",
   },
   {
     id: 2,
@@ -25,6 +26,7 @@ const featuredBusinesses = [
     reviews: 89,
     isPremium: true,
     isVerified: true,
+    location: "Sydney, NSW",
   },
   {
     id: 3,
@@ -37,6 +39,7 @@ const featuredBusinesses = [
     reviews: 156,
     isPremium: false,
     isVerified: true,
+    location: "Brisbane, QLD",
   },
   {
     id: 4,
@@ -48,79 +51,70 @@ const featuredBusinesses = [
     reviews: 78,
     isPremium: true,
     isVerified: true,
+    location: "Perth, WA",
   },
 ]
 
 const FeaturedBusiness = () => {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4 md:px-10 lg:px-24 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Fetured Businesses</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover the most trusted and highly-rated businesses in our community
-          </p>
-        </div>
+    <section className="py-8 sm:py-12 md:py-16 bg-[#e6f0f9]">
+    <div className="container mx-auto px-4 md:px-10 lg:px-24 max-w-7xl">
+      <div className="text-center mb-6 sm:mb-8 md:mb-12">
+        <h2 className="mb-2 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-[--main-color]">Featured Businesses</h2>
+        <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+          Discover the most trusted and highly-rated businesses in our community
+        </p>
+      </div>
 
-        {/* Business Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredBusinesses.map((business) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {businesses.map((business) => (
+          <Link to={"/business-details-data"} key={business.id}>
             <div
-              key={business.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:border border-blue-600 transition-all duration-300 cursor-pointer group"
+              className="rounded-lg border bg-white text-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden"
             >
-              {/* Image Container */}
-              <Link to={"/business-details-data"} >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={business.image || "/placeholder.svg"}
-                    alt={business.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    {business.isPremium && (
-                      <span className="bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                        Premium
-                      </span>
-                    )}
-                    {business.isVerified && (
-                      <span className="bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
-                        ✓ Verified
-                      </span>
-                    )}
-                  </div>
+              <div className="relative">
+                <img
+                  src={business.image || "/placeholder.svg"}
+                  alt={business.name}
+                  className="w-full h-36 sm:h-40 md:h-48 object-cover"
+                />
+                <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex gap-1 sm:gap-2">
+                  {business.isPremium && (
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-[--second-color] text-white">
+                      Premium
+                    </span>
+                  )}
+                  {business.isVerified && (
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-[--main-color] text-white">
+                      <CheckCircle className="h-2 w-2 sm:h-3 sm:w-3 mr-1" /> Verified
+                    </span>
+                  )}
                 </div>
-              </Link>
+              </div>
 
-              {/* Content */}
-              <div className="p-4">
-                {/* Business Name */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+              <div className="p-3 sm:p-4">
+                <h3 className="mb-1 sm:mb-2 font-medium text-sm sm:text-base text-[--main-color] truncate">
                   {business.name}
                 </h3>
 
-                {/* Category and Location */}
-                <p className="text-gray-600 text-sm mb-3">
+                <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2 truncate">
                   {business.category} • {business.location}
                 </p>
 
-                {/* Rating */}
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-blue-500 fill-blue-500" />
-                    <span className="font-semibold text-gray-900">{business.rating}</span>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="flex items-center">
+                    <Star className="h-3 w-3 sm:h-4 sm:w-4 text-[--main-color] mr-1 fill-[--main-color]" />
+                    <span className="text-xs sm:text-sm font-medium">{business.rating}</span>
                   </div>
-                  <span className="text-gray-500 text-sm">({business.reviews} reviews)</span>
+                  <span className="text-xs sm:text-sm text-gray-500">({business.reviews} reviews)</span>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          </Link>
+        ))}
       </div>
-    </section>
+    </div>
+  </section>
   )
 }
 

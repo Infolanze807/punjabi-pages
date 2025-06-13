@@ -48,9 +48,9 @@
 
     export default function TestimonialsSection() {
         return (
-            <div className="bg-gray-100 py-10 px-6">
+            <div className="bg-[#e6f0f9] py-16 px-6">
                 <div className="text-center mb-6 sm:mb-8 md:mb-12">
-                    <h2 className="mb-2 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">Trusted by Our Businesses</h2>
+                    <h2 className="mb-2 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-[--main-color]">Trusted by Our Businesses</h2>
                 </div>
                 <div className="max-w-screen-xl mx-auto grid md:grid-cols-3 gap-6 px-1 md:px-4 lg:px-8">
                     {/* Left column */}
@@ -58,7 +58,7 @@
                         {testimonials
                             .filter((t) => t.position === "left")
                             .map((t, idx) => (
-                                <div key={idx} className="bg-white border-b-2 border-[--second-color] rounded-xl shadow p-4 relative">
+                                <div key={idx} className="bg-white border-b-2 border-[--main-color] rounded-xl shadow p-4 relative">
                                     {t.image && (
                                         <img
                                             src={t.image}
@@ -67,9 +67,9 @@
                                         />
                                     )}
                                     <p className="text-gray-800 italic mb-3">{t.quote}</p>
-                                    <div className="text-sm text-gray-600 font-semibold">{t.name}</div>
-                                    <div className="text-xs text-gray-500">{t.title}</div>
-                                    <div className="text-xs text-gray-500">{t.company}</div>
+                                    <div className="text-sm text-[--main-color] font-semibold">{t.name}</div>
+                                    <div className="text-xs text-gray-600">{t.title}</div>
+                                    <div className="text-xs text-gray-600">{t.company}</div>
                                 </div>
                             ))}
                     </div>
@@ -79,7 +79,7 @@
                         {testimonials
                             .filter((t) => t.position === "center")
                             .map((t, idx) => (
-                                <div key={idx} className="bg-white border-b-2 border-[--second-color] rounded-xl shadow overflow-hidden">
+                                <div key={idx} className="bg-white border-b-2 border-[--main-color] rounded-xl shadow overflow-hidden">
                                     {t.video ? (
                                         <iframe
                                             className="w-full h-64 md:h-80"
@@ -92,9 +92,9 @@
                                     ) : null}
                                     <div className="p-4">
                                         <p className="text-gray-800 text-lg italic mb-3">{t.quote}</p>
-                                        <div className="text-sm text-gray-600 font-semibold">{t.name}</div>
-                                        <div className="text-xs text-gray-500">{t.title}</div>
-                                        <div className="text-xs text-gray-500">{t.company}</div>
+                                        <div className="text-sm text-[--main-color] font-semibold">{t.name}</div>
+                                        <div className="text-xs text-gray-600">{t.title}</div>
+                                        <div className="text-xs text-gray-600">{t.company}</div>
                                     </div>
                                 </div>
                             ))}
@@ -105,7 +105,7 @@
                         {testimonials
                             .filter((t) => t.position === "right")
                             .map((t, idx) => (
-                                <div key={idx} className="bg-white border-b-2 border-[--second-color] rounded-xl shadow p-4 relative">
+                                <div key={idx} className="bg-white border-b-2 border-[--main-color] rounded-xl shadow p-4 relative">
                                     {t.image && (
                                         <img
                                             src={t.image}
@@ -114,9 +114,9 @@
                                         />
                                     )}
                                     <p className="text-gray-800 italic mb-3">{t.quote}</p>
-                                    <div className="text-sm text-gray-600 font-semibold">{t.name}</div>
-                                    <div className="text-xs text-gray-500">{t.title}</div>
-                                    <div className="text-xs text-gray-500">{t.company}</div>
+                                    <div className="text-sm text-[--main-color] font-semibold">{t.name}</div>
+                                    <div className="text-xs text-gray-600">{t.title}</div>
+                                    <div className="text-xs text-gray-600">{t.company}</div>
                                 </div>
                             ))}
                     </div>
