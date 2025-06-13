@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Building2, Phone, Globe, CreditCard, Upload, Clock, Tag, X, Plus, MapPin, Share2, Megaphone, Award, Info, Briefcase } from "lucide-react";
 import SideBar from "./SideBar";
-import { addProfile } from "../../redux/features/dashboardSlice";
+import { addProfile, updateMyBussiness } from "../../redux/features/dashboardSlice";
 import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const daysOfWeek = [
     "monday",
@@ -20,6 +21,9 @@ const hoursInit = daysOfWeek.reduce((acc, day) => {
 }, { publicHolidayNotes: "", is24x7: false });
 
 const AddProfile = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { existingBusiness, isEdit } = location.state || {};
     const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         businessName: "",
@@ -103,6 +107,33 @@ const AddProfile = () => {
         }));
     };
 
+    useEffect(() => {
+        if (isEdit && existingBusiness) {
+            setFormData({
+                businessName: existingBusiness.businessName || "",
+                category: existingBusiness.category || "",
+                phone: existingBusiness.phone || "",
+                website: existingBusiness.website || "",
+                description: existingBusiness.description || "",
+                street: existingBusiness.address?.street || "",
+                city: existingBusiness.address?.suburb || "",
+                stateName: existingBusiness.address?.state || "",
+                // country: "Australia", // or from data
+                postalCode: existingBusiness.address?.postcode || "",
+                facebook: existingBusiness.socialLinks?.facebook || "",
+                instagram: existingBusiness.socialLinks?.instagram || "",
+                linkedin: existingBusiness.socialLinks?.linkedin || "",
+                certifications: existingBusiness.certifications || [""],
+                promotions: existingBusiness.promotions || "",
+                keywords: existingBusiness.keywords || [""],
+                services: existingBusiness.services || [""],
+                others: existingBusiness.socialLinks?.others || [""],
+                hours: existingBusiness.hours || hoursInit,
+                selectedPayments: existingBusiness.paymentMethods || [],
+            });
+        }
+    }, [existingBusiness, isEdit]);
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -139,17 +170,6 @@ const AddProfile = () => {
                 publicHolidayNotes: formData.hours.publicHolidayNotes,
                 is24x7: formData.hours.is24x7,
             },
-            // hours: {
-            //     monday: { open: "09:00", close: "21:00" },
-            //     tuesday: { open: "09:00", close: "21:00" },
-            //     wednesday: { open: "09:00", close: "21:00" },
-            //     thursday: { open: "09:00", close: "21:00" },
-            //     friday: { open: "09:00", close: "22:00" },
-            //     saturday: { open: "10:00", close: "22:00" },
-            //     sunday: { open: "10:00", close: "20:00" },
-            //     publicHolidayNotes: "Closed on public holidays",
-            //     is24x7: false,
-            // },
             logoUrl: "https://www.tastybites.com.au/logo.png",
             gallery: [
                 "https://www.tastybites.com.au/gallery1.jpg",
@@ -168,7 +188,13 @@ const AddProfile = () => {
             promotions: formData.promotions,
         };
 
-        dispatch(addProfile(profileData));
+        if (isEdit && existingBusiness?._id) {
+            dispatch(updateMyBussiness({ bussinessId: existingBusiness._id, bussinessData: profileData }));
+        } else {
+            dispatch(addProfile(profileData));
+        }
+
+        navigate("/dashboard");
     };
 
 
@@ -690,7 +716,7 @@ const AddProfile = () => {
                                 onClick={handleSubmit}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-md transition-all duration-300"
                             >
-                                Submit Profile
+                                {isEdit ? "Update Business" : "Create Business"}
                             </button>
                         </div>
                     </form>

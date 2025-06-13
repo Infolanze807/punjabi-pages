@@ -2,67 +2,8 @@ import React, { useEffect, useState } from "react";
 import SideBar from "../components/Dashboard/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyBussiness } from "../redux/features/dashboardSlice";
+import { useNavigate } from "react-router-dom";
 
-const data = {
-  businessName: "Tasty Bites Restaurant",
-  abn: "12345678901",
-  category: "Restaurants",
-  categoryGroup: "Food & Dining",
-  description: "Delicious homemade meals with fresh ingredients.",
-  establishedYear: 2015,
-
-  contactPerson: "John Doe",
-  phone: "+61 412 345 678",
-  email: "contact@tastybites.com.au",
-  website: "https://www.tastybites.com.au",
-  alternateContacts: {
-    phone: "+61 412 999 999",
-    email: "support@tastybites.com.au",
-  },
-
-  address: {
-    street: "123 Foodie Lane",
-    suburb: "Melbourne",
-    state: "VIC",
-    postcode: "3000",
-  },
-  geocode: {
-    coordinates: [-37.8136, 144.9631],
-  },
-  serviceAreas: ["Melbourne CBD", "Docklands"],
-
-  hours: {
-    monday: { open: "09:00", close: "21:00" },
-    tuesday: { open: "09:00", close: "21:00" },
-    wednesday: { open: "09:00", close: "21:00" },
-    thursday: { open: "09:00", close: "21:00" },
-    friday: { open: "09:00", close: "22:00" },
-    saturday: { open: "10:00", close: "22:00" },
-    sunday: { open: "10:00", close: "20:00" },
-    publicHolidayNotes: "Closed on public holidays",
-    is24x7: false,
-  },
-
-  logoUrl: "https://www.tastybites.com.au/logo.png",
-  gallery: [
-    "https://www.tastybites.com.au/gallery1.jpg",
-    "https://www.tastybites.com.au/gallery2.jpg",
-  ],
-  introVideo: "https://www.youtube.com/embed/example",
-
-  socialLinks: {
-    facebook: "https://www.facebook.com/tastybites",
-    instagram: "https://www.instagram.com/tastybites",
-    linkedin: "",
-    others: ["https://www.tiktok.com/@tastybites"],
-  },
-
-  keywords: ["restaurant", "homemade", "fresh food", "family friendly"],
-  services: ["Dine-in", "Takeaway", "Catering"],
-  paymentMethods: ["Cash", "Credit Card", "EFTPOS", "Apple Pay"],
-  certifications: ["Food Safety Certified"],
-  promotions: "Happy hour from 5pm to 7pm every Friday!",
-};
 
 const formatTime = (time) => {
   // Simple 24h to 12h format (e.g. "21:00" → "9:00 PM")
@@ -78,6 +19,8 @@ const Dashboard = () => {
   const [selectedBusiness, setSelectedBusiness] = useState(null);
 
   const { myBussiness, loading } = useSelector((state) => state.dashboard);
+  const navigate = useNavigate();
+
 
   console.log("myBussiness", myBussiness);
 
@@ -93,6 +36,12 @@ const Dashboard = () => {
     setSelectedBusiness(business);
   };
 
+  const handleUpdateClick = () => {
+  if (myBussiness && myBussiness.length > 0) {
+    navigate("/addProfile", { state: { existingBusiness: selectedBusiness, isEdit: true } });
+  }
+};
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       <SideBar />
@@ -101,7 +50,6 @@ const Dashboard = () => {
           {selectedBusiness ? "Business Details" : "My Businesses"}
         </h1>
         {!selectedBusiness ? (
-          // 🟦 List View
           <div className="grid gap-6">
             {myBussiness?.length > 0 ? (
               myBussiness.map((biz, i) => (
@@ -133,29 +81,39 @@ const Dashboard = () => {
             >
               ← Back to Business List
             </button>
-            <div className="flex items-center gap-6">
-              <img
-                src={myBussiness[0]?.logoUrl}
-                alt="Logo"
-                className="w-24 h-24 rounded-full border border-gray-300 object-cover"
-              />
-              <div>
-                <h1 className="text-3xl font-extrabold text-gray-900">
-                  {myBussiness[0]?.businessName}
-                </h1>
-                <p className="text-lg text-gray-600">
-                 {myBussiness[0]?.category}
-                </p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {myBussiness[0]?.keywords.map((keyword, i) => (
-                    <span
-                      key={i}
-                      className="bg-indigo-600 text-white px-3 py-1 rounded-full text-xs font-semibold"
-                    >
-                      {keyword}
-                    </span>
-                  ))}
+            <div className="flex justify-between">
+              <div className="flex items-center gap-6">
+                <img
+                  src={selectedBusiness?.logoUrl}
+                  alt="Logo"
+                  className="w-24 h-24 rounded-full border border-gray-300 object-cover"
+                />
+                <div>
+                  <h1 className="text-3xl font-extrabold text-gray-900">
+                    {selectedBusiness?.businessName}
+                  </h1>
+                  <p className="text-lg text-gray-600">
+                    {selectedBusiness?.category}
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {selectedBusiness?.keywords.map((keyword, i) => (
+                      <span
+                        key={i}
+                        className="bg-indigo-500 text-white px-3 py-1 rounded-xl text-xs font-semibold"
+                      >
+                        {keyword}
+                      </span>
+                    ))}
+                  </div>
                 </div>
+              </div>
+              <div>
+                <button
+                 onClick={handleUpdateClick}
+                  className="inline-flex items-center gap-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-sm transition duration-200"
+                >
+                  Update Business Profile
+                </button>
               </div>
             </div>
 
@@ -181,19 +139,19 @@ const Dashboard = () => {
               {activeTab === "overview" && (
                 <>
                   <h2 className="text-2xl font-bold mb-4">About Us</h2>
-                  <p className="text-gray-700 leading-relaxed">{myBussiness[0]?.description}</p>
+                  <p className="text-gray-700 leading-relaxed">{selectedBusiness?.description}</p>
                   <div className="mt-4 space-y-1 text-gray-600">
                     <p>
-                      <strong>Established:</strong> {myBussiness[0]?.establishedYear}
+                      <strong>Established:</strong> {selectedBusiness?.establishedYear}
                     </p>
                     <p>
-                      <strong>ABN:</strong> {myBussiness[0]?.abn}
+                      <strong>ABN:</strong> {selectedBusiness?.abn}
                     </p>
                     <p>
-                      <strong>Promotions:</strong> {myBussiness[0]?.promotions}
+                      <strong>Promotions:</strong> {selectedBusiness?.promotions}
                     </p>
                     <p>
-                      <strong>Service Areas:</strong> {myBussiness[0]?.serviceAreas.join(", ")}
+                      <strong>Service Areas:</strong> {selectedBusiness?.serviceAreas.join(", ")}
                     </p>
                   </div>
                 </>
@@ -208,8 +166,8 @@ const Dashboard = () => {
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold mb-2">Address</h3>
                     <p className="text-gray-700">
-                      {myBussiness[0]?.address?.street}, {myBussiness[0]?.address?.suburb},{" "}
-                      {myBussiness[0]?.address?.state} {myBussiness[0]?.address?.postcode}
+                      {selectedBusiness?.address?.street}, {selectedBusiness?.address?.suburb},{" "}
+                      {selectedBusiness?.address?.state} {selectedBusiness?.address?.postcode}
                     </p>
                   </div>
 
@@ -218,50 +176,43 @@ const Dashboard = () => {
                     <h3 className="text-xl font-semibold mb-2">Opening Hours</h3>
                     <table className="w-full text-left text-gray-700">
                       <tbody>
-                        {[
-                          "monday",
-                          "tuesday",
-                          "wednesday",
-                          "thursday",
-                          "friday",
-                          "saturday",
-                          "sunday",
-                        ].map((day) => (
-                          <tr key={day} className="border-b border-gray-200">
-                            <td className="capitalize py-1 font-medium">
-                              {day}
-                            </td>
-                            <td className="py-1">
-                              {data.hours[day].open === "00:00" &&
-                                data.hours[day].close === "00:00"
-                                ? "Closed"
-                                : `${formatTime(data.hours[day].open)} - ${formatTime(
-                                  data.hours[day].close
-                                )}`}
-                            </td>
-                          </tr>
-                        ))}
+                        {Object.entries(selectedBusiness?.hours || {})
+                          .filter(([key]) =>
+                            ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].includes(key)
+                          )
+                          .map(([day, time]) => (
+                            <tr key={day} className="border-b border-gray-200">
+                              <td className="capitalize py-1 font-medium">{day}</td>
+                              <td className="py-1">
+                                {time.open === "00:00" && time.close === "00:00"
+                                  ? "Closed"
+                                  : `${formatTime(time.open)} - ${formatTime(time.close)}`}
+                              </td>
+                            </tr>
+                          ))}
                       </tbody>
                     </table>
-                    {data.hours.publicHolidayNotes && (
+                    {selectedBusiness?.hours?.publicHolidayNotes && (
                       <p className="mt-2 text-sm italic text-gray-500">
-                        {data.hours.publicHolidayNotes}
+                        {selectedBusiness?.hours?.publicHolidayNotes}
                       </p>
                     )}
-                    {data.hours.is24x7 && (
+
+                    {selectedBusiness?.hours?.is24x7 && (
                       <p className="mt-2 text-sm italic text-green-600 font-semibold">
                         Open 24 x 7
                       </p>
                     )}
+
                   </div>
 
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold mb-2">Social Links</h3>
                     <ul className="flex flex-wrap gap-4 text-indigo-600">
-                      {myBussiness[0]?.socialLinks.facebook && (
+                      {selectedBusiness?.socialLinks.facebook && (
                         <li>
                           <a
-                            href={myBussiness[0]?.socialLinks.facebook}
+                            href={selectedBusiness?.socialLinks.facebook}
                             target="_blank"
                             rel="noreferrer"
                             className="underline"
@@ -270,10 +221,10 @@ const Dashboard = () => {
                           </a>
                         </li>
                       )}
-                      {myBussiness[0]?.socialLinks.instagram && (
+                      {selectedBusiness?.socialLinks.instagram && (
                         <li>
                           <a
-                            href={myBussiness[0]?.socialLinks.instagram}
+                            href={selectedBusiness?.socialLinks.instagram}
                             target="_blank"
                             rel="noreferrer"
                             className="underline"
@@ -282,10 +233,10 @@ const Dashboard = () => {
                           </a>
                         </li>
                       )}
-                      {myBussiness[0]?.socialLinks.linkedin && (
+                      {selectedBusiness?.socialLinks.linkedin && (
                         <li>
                           <a
-                            href={myBussiness[0]?.socialLinks.linkedin}
+                            href={selectedBusiness?.socialLinks.linkedin}
                             target="_blank"
                             rel="noreferrer"
                             className="underline"
@@ -294,8 +245,8 @@ const Dashboard = () => {
                           </a>
                         </li>
                       )}
-                      {myBussiness[0]?.socialLinks.others.length > 0 &&
-                        myBussiness[0]?.socialLinks.others.map((url, i) => (
+                      {selectedBusiness?.socialLinks.others.length > 0 &&
+                        selectedBusiness?.socialLinks.others.map((url, i) => (
                           <li key={i}>
                             <a
                               href={url}
@@ -314,7 +265,7 @@ const Dashboard = () => {
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Certifications</h3>
                     <ul className="list-disc pl-5 text-gray-700">
-                      {myBussiness[0]?.certifications.map((cert, i) => (
+                      {selectedBusiness?.certifications.map((cert, i) => (
                         <li key={i}>{cert}</li>
                       ))}
                     </ul>
@@ -327,14 +278,14 @@ const Dashboard = () => {
                 <>
                   <h2 className="text-2xl font-bold mb-4">Our Services</h2>
                   <ul className="list-disc pl-6 text-gray-700">
-                    {myBussiness[0]?.services.map((service, i) => (
+                    {selectedBusiness?.services.map((service, i) => (
                       <li key={i}>{service}</li>
                     ))}
                   </ul>
                   <div className="mt-6">
                     <h3 className="text-xl font-semibold mb-2">Payment Methods</h3>
                     <ul className="list-disc pl-5 text-gray-700">
-                      {myBussiness[0]?.paymentMethods.map((method, i) => (
+                      {selectedBusiness?.paymentMethods.map((method, i) => (
                         <li key={i}>{method}</li>
                       ))}
                     </ul>
@@ -347,7 +298,7 @@ const Dashboard = () => {
                 <>
                   <h2 className="text-2xl font-bold mb-6">Gallery</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                    {myBussiness[0]?.gallery.map((img, i) => (
+                    {selectedBusiness?.gallery.map((img, i) => (
                       <img
                         key={i}
                         src={img}
@@ -359,7 +310,7 @@ const Dashboard = () => {
                   <h2 className="text-2xl font-bold mb-4">Intro Video</h2>
                   <div className="aspect-w-16 aspect-h-9 max-w-4xl">
                     <iframe
-                      src={myBussiness[0]?.introVideo}
+                      src={selectedBusiness?.introVideo}
                       title="Intro Video"
                       allowFullScreen
                       className="w-full h-64 rounded-lg shadow"
@@ -376,50 +327,50 @@ const Dashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <p>
-                        <strong>Primary Contact Person:</strong> {myBussiness[0]?.contactPerson}
+                        <strong>Primary Contact Person:</strong> {selectedBusiness?.contactPerson}
                       </p>
                       <p>
-                        <strong>Phone:</strong> {myBussiness[0]?.phone}
+                        <strong>Phone:</strong> {selectedBusiness?.phone}
                       </p>
                       <p>
                         <strong>Email:</strong>{" "}
                         <a
-                          href={`mailto:${myBussiness[0]?.email}`}
+                          href={`mailto:${selectedBusiness?.email}`}
                           className="text-indigo-600 underline"
                         >
-                          {myBussiness[0]?.email}
+                          {selectedBusiness?.email}
                         </a>
                       </p>
                       <p>
                         <strong>Website:</strong>{" "}
                         <a
-                          href={myBussiness[0]?.website}
+                          href={selectedBusiness?.website}
                           target="_blank"
                           rel="noreferrer"
                           className="text-indigo-600 underline"
                         >
-                          {myBussiness[0]?.website}
+                          {selectedBusiness?.website}
                         </a>
                       </p>
                     </div>
 
                     <div className="space-y-2">
                       <p>
-                        <strong>Alternate Phone:</strong> {myBussiness[0]?.alternateContacts?.phone}
+                        <strong>Alternate Phone:</strong> {selectedBusiness?.alternateContacts?.phone}
                       </p>
                       <p>
                         <strong>Alternate Email:</strong>{" "}
                         <a
-                          href={`mailto:${myBussiness[0]?.alternateContacts?.email}`}
+                          href={`mailto:${selectedBusiness?.alternateContacts?.email}`}
                           className="text-indigo-600 underline"
                         >
-                          {myBussiness[0]?.alternateContacts?.email}
+                          {selectedBusiness?.alternateContacts?.email}
                         </a>
                       </p>
                       <p>
                         <strong>Address:</strong>{" "}
-                        {myBussiness[0]?.address?.street}, {myBussiness[0]?.address?.suburb},{" "}
-                        {myBussiness[0]?.address?.state} {myBussiness[0]?.address?.postcode}
+                        {selectedBusiness?.address?.street}, {selectedBusiness?.address?.suburb},{" "}
+                        {selectedBusiness?.address?.state} {selectedBusiness?.address?.postcode}
                       </p>
                     </div>
                   </div>
