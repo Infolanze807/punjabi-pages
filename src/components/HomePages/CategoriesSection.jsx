@@ -1,21 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import categories from "../../redux/features/enum";
+import { useDispatch, useSelector } from "react-redux";
+import { getBusinessCategory } from "../../redux/features/businessSlice";
 
-const categories = [
-  { icon: "🍽", title: "Food & Dining", description: "Restaurants, caterers, tiffin services" },
-  { icon: "🧰", title: "Home & Trades", description: "Electricians, plumbers, cleaners" },
-  { icon: "🩺", title: "Health & Wellness", description: "GPs, dentists, physiotherapists" },
-  { icon: "🛒", title: "Shops & Groceries", description: "Indian stores, clothing, jewelry" },
-  { icon: "📖", title: "Education & Coaching", description: "Tutors, driving schools, language classes" },
-  { icon: "🕌", title: "Faith & Culture", description: "Gurdwaras, cultural groups, community halls" },
-  { icon: "📷", title: "Media & Events", description: "Photographers, DJs, decorators" },
-  { icon: "🚘", title: "Auto Services", description: "Mechanics, car dealers, detailing" },
-  { icon: "📑", title: "Finance & Legal", description: "Accountants, migration agents, lawyers" },
-  { icon: "🏘", title: "Real Estate", description: "Agents, mortgage brokers, property managers" },
-];
+console.log(categories);
 
 export default function CategoriesSection() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { BusinessCategory, loading } = useSelector((state) => state.business);
+
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+
+   const handleCategoryClick = async (categoryName) => {
+    await dispatch(getBusinessCategory({ category: categoryName }));
+    navigate("/business-details", { state: { selectedCategory: categoryName } });
+  };
 
   return (
     <>
@@ -46,6 +49,7 @@ export default function CategoriesSection() {
                 className="group relative cursor-pointer"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                onClick={() => handleCategoryClick(category.category)}
               >
                 {/* Background hover layer */}
                 <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg group-hover:shadow-2xl transition-all duration-700 transform group-hover:scale-[1.02] border border-[--main-color]/20 group-hover:border-[--main-color]/50">
@@ -56,7 +60,7 @@ export default function CategoriesSection() {
                 </div>
 
                 {/* Card Content */}
-                <Link to={"/categories"}>
+                <Link to={"/business-details"}>
                   <div className="relative p-8 text-center h-full flex flex-col justify-center min-h-[200px] z-10">
                     <div className="relative mb-6">
                       <div className="relative inline-block">
@@ -73,10 +77,10 @@ export default function CategoriesSection() {
                     </div>
 
                     <h3 className="text-lg font-medium text-[--main-color] group-hover:text-[#0d4b8c] transition-all duration-500 mb-3 leading-tight">
-                      {category.title}
+                      {category.category}
                     </h3>
                     <p className="text-sm text-gray-600 group-hover:text-gray-700 transition-colors duration-500 leading-relaxed font-medium">
-                      {category.description}
+                      {category.subcategories.join(", ")}
                     </p>
 
                     {/* Bottom hover bar */}

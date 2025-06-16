@@ -13,7 +13,7 @@ import {
   ThumbsDown,
   Flag,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const businessData = {
   id: 1,
@@ -130,6 +130,11 @@ const reviewsData = [
 ];
 
 const BusinessDetailData = () => {
+  const { state } = useLocation();
+  const business = state?.business;
+
+  console.log("Received business:", business);
+
   const [activeTab, setActiveTab] = useState("about");
   const [selectedImage, setSelectedImage] = useState(0);
   const navigate = useNavigate();
@@ -137,9 +142,12 @@ const BusinessDetailData = () => {
   const onBack = () => {
     navigate(-1);
   };
+
+  const coordinates = business?.location?.coordinates || [];
+  const [longitude, latitude] = coordinates;
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header with Back Button */}
       <div className="bg-yellow-400 px-4 py-3">
         <div className="container mx-auto max-w-7xl">
           <button
@@ -156,61 +164,55 @@ const BusinessDetailData = () => {
 
       <div className="container mx-auto px-7 py-6 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Business Info */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              {/* Business Logo & Basic Info */}
               <div className="flex items-center gap-4 mb-4">
                 <img
-                  src={businessData.logo || "/placeholder.svg"}
-                  alt={businessData.name}
+                  src={business.logoUrl}
+                  alt={business.name}
                   className="w-16 h-16 rounded-lg object-cover"
                 />
                 <div>
                   <h1 className="text-xl font-bold text-gray-800">
-                    {businessData.name}
+                    {business.businessName}
                   </h1>
                   <p className="text-gray-600 text-sm">
-                    {businessData.category}
+                    {business.category}
                   </p>
                 </div>
               </div>
 
-              <p className="text-gray-700 mb-4">{businessData.description}</p>
+              <p className="text-gray-700 mb-4">{business.description}</p>
 
-              {/* Rating */}
               <div className="flex items-center gap-2 mb-4">
-                <span className="font-bold text-lg">{businessData.rating}</span>
+                <span className="font-bold text-lg">{business.rating}</span>
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`h-4 w-4 ${
-                        i < Math.floor(businessData.rating)
-                          ? "text-yellow-400 fill-yellow-400"
-                          : "text-gray-300"
-                      }`}
+                      className={`h-4 w-4 ${i < Math.floor(business.rating)
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
+                        }`}
                     />
                   ))}
                 </div>
-                <span className="text-gray-600">({businessData.reviews})</span>
+                <span className="text-gray-600">({business.reviews})</span>
               </div>
 
               <div className="text-blue-600 text-sm mb-4 cursor-pointer">
                 Write a review
               </div>
 
-              {/* Service Area */}
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
                 <MapPin className="h-4 w-4" />
-                <span>{businessData.serviceArea}</span>
+                <span>{business.serviceAreas?.join(",")}</span>
               </div>
 
-              {/* Contact Buttons */}
               <div className="space-y-3 mb-6">
                 <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
                   <Phone className="h-4 w-4" />
-                  <span>{businessData.phone}</span>
+                  <span>{business.phone}</span>
                 </button>
 
                 <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
@@ -224,18 +226,17 @@ const BusinessDetailData = () => {
                 </button>
               </div>
 
-              {/* Request Quote Button */}
               <button className="w-full bg-yellow-400 text-black font-semibold py-3 rounded-md hover:bg-yellow-500">
                 Request Quote
               </button>
 
-              {/* Opening Hours */}
               <div className="mt-6 pt-6 border-t">
                 <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-4 w-4 text-green-600" />
                   <span className="text-green-600 font-medium">
-                    {businessData.openingHours}
+                    {business?.hours?.is24x7 ? "Open 24x7" : "Closed"}
                   </span>
+
                 </div>
                 <button className="text-blue-600 text-sm">
                   Additional Contacts
@@ -244,33 +245,84 @@ const BusinessDetailData = () => {
             </div>
           </div>
 
-          {/* Right Column - Map */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border h-96 flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <MapPin className="h-12 w-12 mx-auto mb-2" />
-                <p>Interactive Map</p>
-                <p className="text-sm">Location: {businessData.address}</p>
-              </div>
+            <div className="bg-white rounded-lg shadow-sm border lg:h-[650px] h-96">
+              {latitude && longitude ? (
+                <iframe
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  src={`https://www.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`}
+                  allowFullScreen
+                  title="Business Location"
+                  className="rounded-lg"
+                ></iframe>
+              ) : (
+                <div className="h-full flex items-center justify-center text-center text-gray-500">
+                  <MapPin className="h-12 w-12 mx-auto mb-2" />
+                  <div>
+                    <p>Interactive Map</p>
+                    <p className="text-sm">Location: Not Available</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Service Highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
-          {businessData.highlights.map((highlight, index) => (
-            <div
-              key={index}
-              className="bg-gray-800 text-white p-6 rounded-lg text-center"
-            >
-              <h3 className="font-bold text-lg mb-2">{highlight.title}</h3>
-              <p className="text-sm">{highlight.subtitle}</p>
-            </div>
-          ))}
+        <div className="mt-8 pt-6 border-t">
+          <div className="flex items-center gap-2 mb-4">
+            <Clock className="h-4 w-4 text-green-600" />
+            <span className="text-green-600 font-semibold text-base">
+              {business?.hours?.is24x7 ? "Open 24/7" : "Opening Hours"}
+            </span>
+          </div>
+
+          {business?.hours &&
+            ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].some(
+              (day) =>
+                business.hours[day]?.open !== "00:00" || business.hours[day]?.close !== "00:00"
+            ) && (
+              <ul className="text-sm text-gray-800 divide-y divide-gray-200 rounded-md border border-gray-200 overflow-hidden">
+                {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map(
+                  (day) => {
+                    const open = business?.hours?.[day]?.open;
+                    const close = business?.hours?.[day]?.close;
+
+                    const isClosed = open === "00:00" && close === "00:00";
+                    const today = new Date().toLocaleDateString("en-US", {
+                      weekday: "long",
+                    }).toLowerCase();
+                    const isToday = today === day;
+
+                    return (
+                      <li
+                        key={day}
+                        className={`flex justify-around px-4 py-2 ${isToday ? "bg-green-50 font-medium" : "bg-white"
+                          }`}
+                      >
+                        <span className="capitalize">{day}</span>
+                        <span>{isClosed ? "Closed" : `${open} - ${close}`}</span>
+                      </li>
+                    );
+                  }
+                )}
+              </ul>
+            )}
+
+          {/* Optional Public Holiday Note */}
+          {business?.hours?.publicHolidayNotes && (
+            <p className="text-yellow-600 text-xs mt-3 mb-2 italic">
+              Public Holiday Info: {business.hours.publicHolidayNotes}
+            </p>
+          )}
         </div>
 
+
+
+
         {/* Accreditations */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        {/* <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
           <h3 className="font-bold text-lg mb-4">Accreditations</h3>
           <div className="space-y-2">
             {businessData.accreditations.map((accreditation, index) => (
@@ -280,14 +332,14 @@ const BusinessDetailData = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Photo & Video Gallery */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
           <h3 className="font-bold text-lg mb-4">Photos & Videos</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
             {/* Video Thumbnail */}
-            {businessData.videos.map((video) => (
+            {/* {businessData.videos.map((video) => (
               <div key={video.id} className="relative cursor-pointer group">
                 <img
                   src={video.thumbnail || "/placeholder.svg"}
@@ -298,10 +350,10 @@ const BusinessDetailData = () => {
                   <Play className="h-6 w-6 text-white" />
                 </div>
               </div>
-            ))}
+            ))} */}
 
             {/* Photo Thumbnails */}
-            {businessData.gallery.map((image, index) => (
+            {business.gallery.map((image, index) => (
               <img
                 key={index}
                 src={image || "/placeholder.svg"}
@@ -314,18 +366,17 @@ const BusinessDetailData = () => {
         </div>
 
         {/* Tabs Navigation */}
-        <div className="bg-white rounded-lg shadow-sm border mb-8">
+        {/* <div className="bg-white rounded-lg shadow-sm border mb-8">
           <div className="border-b">
             <nav className="flex">
               {["about", "services", "locations", "faqs"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 text-sm font-medium capitalize ${
-                    activeTab === tab
-                      ? "border-b-2 border-blue-500 text-blue-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={`px-6 py-3 text-sm font-medium capitalize ${activeTab === tab
+                    ? "border-b-2 border-blue-500 text-blue-600"
+                    : "text-gray-500 hover:text-gray-700"
+                    }`}
                 >
                   {tab === "about" ? "About Us" : tab}
                 </button>
@@ -370,10 +421,10 @@ const BusinessDetailData = () => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Reviews Section */}
-        <div className="bg-white rounded-lg shadow-sm border p-6">
+        {/* <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-bold text-lg">{businessData.name} Reviews</h3>
             <button className="bg-yellow-400 text-black px-4 py-2 rounded-md font-medium hover:bg-yellow-500">
@@ -400,11 +451,10 @@ const BusinessDetailData = () => {
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${
-                              i < review.rating
-                                ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300"
-                            }`}
+                            className={`h-4 w-4 ${i < review.rating
+                              ? "text-yellow-400 fill-yellow-400"
+                              : "text-gray-300"
+                              }`}
                           />
                         ))}
                       </div>
@@ -444,7 +494,7 @@ const BusinessDetailData = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
