@@ -21,7 +21,7 @@ const SearchDetails = () => {
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-7xl">
           <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link to={"/categories"} className="hover:text-blue-600">
+            <Link to={"/"} className="hover:text-blue-600">
               Home
             </Link>
             <span>›</span>
