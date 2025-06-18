@@ -4,22 +4,24 @@ import axiosConfig from "../axiosConfig";
 
 export const getBusinessCategory = createAsyncThunk(
   "business/getBusinessCategory",
-  async ({ category, page }, { rejectWithValue }) => {
+  async ({ category, keyword, page }, { rejectWithValue }) => {
     try {
-      let url = `businesses/search?category=${encodeURIComponent(category)}`;
-      if (page !== undefined && page !== null) {
-        url += `&page=${page}`;
-      }
+      let url = `/businesses/search?`;
+
+      if (category) url += `category=${encodeURIComponent(category)}&`;
+      if (keyword) url += `keyword=${encodeURIComponent(keyword)}&`;
+      if (page !== undefined && page !== null) url += `page=${page}`;
 
       const response = await axiosConfig.get(url);
       return response.data;
     } catch (error) {
-      throw (
+      return rejectWithValue(
         error.response?.data?.error || error.message || "Something went wrong"
       );
     }
   }
 );
+
 
 const businessSlice = createSlice({
   name: "business",

@@ -16,9 +16,6 @@ const daysOfWeek = [
     "sunday",
 ];
 
-console.log("cat", categories);
-
-
 const hoursInit = daysOfWeek.reduce((acc, day) => {
     acc[day] = { open: "", close: "" };
     return acc;
@@ -30,6 +27,7 @@ const AddProfile = () => {
     const { existingBusiness, isEdit } = location.state || {};
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
     const [formErrors, setFormErrors] = useState({});
     const [formData, setFormData] = useState({
         businessName: "",
@@ -37,8 +35,8 @@ const AddProfile = () => {
         phone: "",
         establishedYear: "",
         subCategory: "",
-        contactPerson: "",
-        email: "",
+        contactPerson: user?.name || "",
+        email: user?.email || "",
         website: "",
         alternateContacts: {
             phone: "",
@@ -261,9 +259,13 @@ const AddProfile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         const isValid = validateForm();
-        if (!isValid) return;
+        if (!isValid) {
+            setLoading(false);
+            return
+        };
 
         const profileData = {
             // ...formData,
@@ -314,20 +316,25 @@ const AddProfile = () => {
             certifications: formData.certifications,
             promotions: formData.promotions,
         };
+        try {
+            if (isEdit && existingBusiness?._id) {
+                await dispatch(updateMyBussiness({ bussinessId: existingBusiness._id, bussinessData: profileData })).unwrap();
+            } else {
+                await dispatch(addProfile(profileData)).unwrap();
+            }
 
-        if (isEdit && existingBusiness?._id) {
-            await dispatch(updateMyBussiness({ bussinessId: existingBusiness._id, bussinessData: profileData })).unwrap();
-        } else {
-            await dispatch(addProfile(profileData)).unwrap();
+            navigate("/dashboard");
+        } catch (error) {
+            console.error("Submit failed:", error);
+        } finally {
+            setLoading(false);
         }
-
-        navigate("/dashboard");
     };
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
             <SideBar />
-            <main className="flex-1 px-4 sm:px-6 md:px-14 py-6 border-l border-gray-200">
+            <main className="flex-1 px-4 sm:px-6 md:px-2 py-6 border-l border-gray-200">
                 <div className="max-w-5xl mx-auto bg-white p-4 sm:p-6 md:p-8 shadow-xl rounded-3xl">
                     <div className="mb-10">
                         <div className="flex items-center gap-3 mb-2">
@@ -348,7 +355,7 @@ const AddProfile = () => {
                                 <span>Business Information</span>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                                 <div>
                                     <label className="block font-medium text-gray-700 mb-1 text-sm">
                                         Business Name <span className="text-red-500">*</span>
@@ -359,11 +366,80 @@ const AddProfile = () => {
                                             name="businessName"
                                             value={formData.businessName}
                                             onChange={handleInputChange}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
+                                            className="w-full p-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                             placeholder="Royal Flow Plumbing Pty Ltd"
                                         />
                                         {formErrors.businessName && (
-                                            <p className="absolute text-red-500 text-[12px] top-10 right-0">{formErrors.businessName}</p>
+                                            <p className="absolute text-red-500 text-[12px] top-7 right-0">
+                                                {formErrors.businessName}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
+                                        Contact Number <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-2.5 top-1.5 text-gray-400 h-4 w-4" />
+                                        <input
+                                            type="tel"
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleInputChange}
+                                            className="w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
+                                            placeholder="0499 986 698"
+                                        />
+                                        {formErrors.phone && (
+                                            <p className="absolute text-red-500 text-[12px] top-7 right-0">
+                                                {formErrors.phone}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
+                                        Contact Person Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            name="contactPerson"
+                                            value={formData.contactPerson}
+                                            onChange={handleInputChange}
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs bg-gray-100 cursor-not-allowed"
+                                            placeholder="Enter your Name"
+                                            disabled
+                                        />
+                                        {formErrors.contactPerson && (
+                                            <p className="absolute text-red-500 text-[12px] top-7 right-0">
+                                                {formErrors.contactPerson}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
+                                        Email <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-2.5 top-2 text-gray-400 w-4 h-4" />
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                            className="w-full py-1.5 pl-8 pr-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs bg-gray-100 cursor-not-allowed"
+                                            placeholder="contact@tastybites.com.au"
+                                            disabled
+                                        />
+                                        {formErrors.email && (
+                                            <p className="absolute text-red-500 text-[12px] top-7 right-0">
+                                                {formErrors.email}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
@@ -377,7 +453,7 @@ const AddProfile = () => {
                                             name="category"
                                             value={formData.category}
                                             onChange={handleInputChange}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                         >
                                             <option value="">Select a category</option>
                                             {categories.map((cat, idx) => (
@@ -387,87 +463,10 @@ const AddProfile = () => {
                                             ))}
                                         </select>
                                         {formErrors.category && (
-                                            <p className="absolute text-red-500 text-[12px] right-[0px]">
+                                            <p className="absolute text-red-500 text-[12px] top-7 right-0">
                                                 {formErrors.category}
                                             </p>
                                         )}
-                                    </div>
-                                </div>
-
-
-                                <div>
-                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
-                                        contact Person Name<span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            name="contactPerson"
-                                            value={formData.contactPerson}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
-                                            placeholder="Enter your Name"
-                                        />
-                                        {formErrors.contactPerson && (
-                                            <p className="absolute text-red-500 text-[12px] top-10 right-0">{formErrors.contactPerson}</p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
-                                        Email<span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-2 text-gray-400" />
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm"
-                                            placeholder="contact@tastybites.com.au"
-                                        />
-                                        {formErrors.email && (
-                                            <p className="absolute text-red-500 text-[12px] right-[1px]">{formErrors.email}</p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
-                                        Contact Number <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <Phone className="absolute left-3 top-2 text-gray-400" />
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm"
-                                            placeholder="0499 986 698"
-                                        />
-                                        {formErrors.phone && (
-                                            <p className="absolute text-red-500 text-[12px] top-10 right-0">{formErrors.phone}</p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
-                                        Website (optional)
-                                    </label>
-                                    <div className="relative">
-                                        <Globe className="absolute left-3 top-2 text-gray-400" />
-                                        <input
-                                            type="url"
-                                            name="website"
-                                            value={formData.website}
-                                            onChange={handleInputChange}
-                                            className="w-full p-2 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm"
-                                            placeholder="https://example.com"
-                                        />
                                     </div>
                                 </div>
                                 <div>
@@ -479,7 +478,7 @@ const AddProfile = () => {
                                             name="subCategory"
                                             value={formData.subCategory}
                                             onChange={handleInputChange}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                         >
                                             <option value="">Select a SubCategory</option>
                                             {categories
@@ -491,7 +490,7 @@ const AddProfile = () => {
                                                 ))}
                                         </select>
                                         {formErrors.subCategory && (
-                                            <p className="absolute text-red-500 text-[12px] right-[0px]">
+                                            <p className="absolute text-red-500 text-[12px] top-7 right-0">
                                                 {formErrors.subCategory}
                                             </p>
                                         )}
@@ -499,25 +498,43 @@ const AddProfile = () => {
                                 </div>
                                 <div>
                                     <label className="block font-medium text-gray-700 mb-1 text-sm">
-                                        EstablishedYear <span className="text-red-500">*</span>
+                                        Website (optional)
+                                    </label>
+                                    <div className="relative">
+                                        <Globe className="absolute left-2.5 top-2 text-gray-400 w-4 h-4" />
+                                        <input
+                                            type="url"
+                                            name="website"
+                                            value={formData.website}
+                                            onChange={handleInputChange}
+                                            className="w-full py-1.5 pl-8 pr-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
+                                            placeholder="https://example.com"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block font-medium text-gray-700 mb-1 text-sm">
+                                        Established Year <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
                                         <select
                                             name="establishedYear"
                                             value={formData.establishedYear}
                                             onChange={handleInputChange}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                         >
-                                            <option value="">Select a EstablishedYear</option>
+                                            <option value="">Select an Established Year</option>
                                             {Array.from({ length: 2025 - 2000 + 1 }, (_, i) => (
                                                 <option key={i} value={2000 + i}>
                                                     {2000 + i}
                                                 </option>
                                             ))}
                                         </select>
-                                         {formErrors.establishedYear && (
-                                        <p className="absolute text-red-500 text-[12px] right-[0px]">{formErrors.establishedYear}</p>
-                                    )}
+                                        {formErrors.establishedYear && (
+                                            <p className="absolute text-red-500 text-[12px] top-7 right-0">
+                                                {formErrors.establishedYear}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -527,35 +544,35 @@ const AddProfile = () => {
                                 <Info className="w-5 h-5 text-blue-600" />
                                 <span>About Your Alternate Contacts</span>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label className="block font-medium text-gray-700 mb-1 text-sm">
-                                        Email<span className="text-red-500">*</span>
+                                        Email
                                     </label>
                                     <div className="relative">
-                                        <Mail className="absolute left-3 top-2 text-gray-400" />
+                                        <Mail className="absolute left-2.5 top-2 text-gray-400 w-4 h-4" />
                                         <input
                                             type="email"
                                             name="alternateContacts.email"
                                             value={formData?.alternateContacts?.email}
                                             onChange={handleInputChange}
-                                            className="w-full p-2 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm"
+                                            className="w-full py-1.5 pl-8 pr-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                             placeholder="contact@tastybites.com.au"
                                         />
                                     </div>
                                 </div>
                                 <div>
                                     <label className="block font-medium text-gray-700 mb-1 text-sm">
-                                        Contact Number <span className="text-red-500">*</span>
+                                        Contact Number
                                     </label>
                                     <div className="relative">
-                                        <Phone className="absolute left-3 top-2 text-gray-400" />
+                                        <Phone className="absolute left-2.5 top-2 text-gray-400 w-4 h-4" />
                                         <input
                                             type="tel"
                                             name="alternateContacts.phone"
                                             value={formData.alternateContacts.phone}
                                             onChange={handleInputChange}
-                                            className="w-full p-2 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 shadow-sm"
+                                            className="w-full py-1.5 pl-8 pr-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                             placeholder="0499 986 698"
                                         />
                                     </div>
@@ -565,24 +582,28 @@ const AddProfile = () => {
                         <section className="border rounded-xl shadow p-5">
                             <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                 <Info className="w-5 h-5 text-blue-600" />
-                                <span>About Your Business</span>
+                                <span>About Your Business <span className="text-red-500">*</span></span>
                             </div>
+
                             <div className="relative">
                                 <textarea
-                                    rows={5}
+                                    rows={4}
                                     name="description"
                                     value={formData.description}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border border-gray-300 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                                    className="w-full py-2 px-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                     placeholder="Write about your business, specialties, service areas, etc."
                                 />
-                            
-                            <p className="text-sm text-gray-500 mt-1">
-                                Minimum 50 characters recommended
-                            </p>
-                            {formErrors.description && (
-                                <p className="absolute text-red-500 text-[12px] right-[0px]">{formErrors.description}</p>
-                            )}
+
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Minimum 50 characters recommended
+                                </p>
+
+                                {formErrors.description && (
+                                    <p className="absolute text-red-500 text-[12px] top-[110px] right-0">
+                                        {formErrors.description}
+                                    </p>
+                                )}
                             </div>
                         </section>
                         <section>
@@ -591,7 +612,7 @@ const AddProfile = () => {
                                     <MapPin className="w-5 h-5 text-green-600" />
                                     <span>Address Information</span>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="md:col-span-2 relative">
                                         <label htmlFor="street" className="block font-medium text-gray-700 mb-1 text-sm">
                                             Street Address <span className="text-red-500">*</span>
@@ -602,10 +623,12 @@ const AddProfile = () => {
                                             name="street"
                                             value={formData.street}
                                             onChange={handleInputChange}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 shadow-sm"
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
                                         />
                                         {formErrors.street && (
-                                            <p className="absolute text-red-500 text-[12px] right-[1px]">{formErrors.street}</p>
+                                            <p className="absolute text-red-500 text-[12px] right-0">
+                                                {formErrors.street}
+                                            </p>
                                         )}
                                     </div>
                                     <div>
@@ -619,13 +642,14 @@ const AddProfile = () => {
                                                 name="city"
                                                 value={formData.city}
                                                 onChange={handleInputChange}
-                                                className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 shadow-sm"
+                                                className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
                                             />
                                             {formErrors.city && (
-                                                <p className="absolute text-red-500 text-[12px] right-[0px]">{formErrors.city}</p>
+                                                <p className="absolute text-red-500 text-[12px] right-0">
+                                                    {formErrors.city}
+                                                </p>
                                             )}
                                         </div>
-
                                     </div>
                                     <div>
                                         <label htmlFor="state" className="block font-medium text-gray-700 mb-1 text-sm">
@@ -638,10 +662,12 @@ const AddProfile = () => {
                                                 name="stateName"
                                                 value={formData.stateName}
                                                 onChange={handleInputChange}
-                                                className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 shadow-sm"
+                                                className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
                                             />
                                             {formErrors.stateName && (
-                                                <p className="absolute text-red-500 text-[12px] right-[0px]">{formErrors.stateName}</p>
+                                                <p className="absolute text-red-500 text-[12px] right-0">
+                                                    {formErrors.stateName}
+                                                </p>
                                             )}
                                         </div>
                                     </div>
@@ -669,10 +695,12 @@ const AddProfile = () => {
                                                 name="postalCode"
                                                 value={formData.postalCode}
                                                 onChange={handleInputChange}
-                                                className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 shadow-sm"
+                                                className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
                                             />
                                             {formErrors.postalCode && (
-                                                <p className="absolute text-red-500 text-[12px] right-[0px]">{formErrors.postalCode}</p>
+                                                <p className="absolute text-red-500 text-[12px] right-0">
+                                                    {formErrors.postalCode}
+                                                </p>
                                             )}
                                         </div>
                                     </div>
@@ -686,10 +714,10 @@ const AddProfile = () => {
                                     <MapPin className="w-5 h-5 text-green-600" />
                                     <span>Location</span>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div>
                                         <label htmlFor="latitude" className="block font-medium text-gray-700 mb-1 text-sm">
-                                            Latitude <span className="text-red-500">*</span>
+                                            Latitude
                                         </label>
                                         <input
                                             type="number"
@@ -697,13 +725,12 @@ const AddProfile = () => {
                                             name="latitude"
                                             value={formData.location?.coordinates?.[1] || ""}
                                             onChange={(e) => handleCoordinateChange("latitude", e.target.value)}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 shadow-sm"
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
                                         />
                                     </div>
-
                                     <div>
                                         <label htmlFor="longitude" className="block font-medium text-gray-700 mb-1 text-sm">
-                                            Longitude <span className="text-red-500">*</span>
+                                            Longitude
                                         </label>
                                         <input
                                             type="number"
@@ -711,16 +738,15 @@ const AddProfile = () => {
                                             name="longitude"
                                             value={formData.location?.coordinates?.[0] || ""}
                                             onChange={(e) => handleCoordinateChange("longitude", e.target.value)}
-                                            className="w-full p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 shadow-sm"
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
                                         />
                                     </div>
                                 </div>
-
                             </div>
                         </section>
 
-                        <section>
-                            <div className="border rounded-xl shadow p-5">
+                        <section className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                            <div className="border rounded-xl shadow p-4 sm:p-5 bg-white">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Clock className="w-5 h-5 text-purple-600" />
                                     <span>Business Hours</span>
@@ -729,28 +755,29 @@ const AddProfile = () => {
                                     {daysOfWeek.map((day) => (
                                         <div
                                             key={day}
-                                            className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center"
+                                            className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center"
                                         >
-                                            <label htmlFor={day} className="capitalize font-medium text-sm">
+                                            <label htmlFor={day} className="capitalize font-medium text-gray-700 text-xs">
                                                 {day}
                                             </label>
+
                                             <input
                                                 type="time"
                                                 id={`${day}-open`}
                                                 value={formData.hours[day]?.open}
                                                 onChange={(e) => handleHoursChange(day, "open", e.target.value)}
-                                                className="border border-gray-300 rounded-lg p-1"
+                                                className="border border-gray-300 rounded-md py-1 px-2 text-xs shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                                             />
+
                                             <input
                                                 type="time"
                                                 id={`${day}-close`}
                                                 value={formData.hours[day]?.close}
                                                 onChange={(e) => handleHoursChange(day, "close", e.target.value)}
-                                                className="border border-gray-300 rounded-lg p-1"
+                                                className="border border-gray-300 rounded-md py-1.5 px-2 text-xs shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
                                             />
                                         </div>
                                     ))}
-
                                 </div>
                                 <div className="mt-4">
                                     <label className="block font-medium text-gray-700 mb-2 text-sm">
@@ -768,10 +795,10 @@ const AddProfile = () => {
                                                 },
                                             })
                                         }
-                                        className="w-full p-2 border border-gray-300 rounded-xl"
+                                        className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
+                                        placeholder="Closed on public holidays"
                                     />
                                 </div>
-
                                 <div className="mt-4 flex items-center gap-2">
                                     <input
                                         type="checkbox"
@@ -789,218 +816,285 @@ const AddProfile = () => {
                                     <label className="text-sm text-gray-700">Open 24/7</label>
                                 </div>
                             </div>
-                        </section>
-
-                        <section>
-                            <div className="border rounded-xl shadow p-5">
+                            <section className="border rounded-xl shadow p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                    <Tag className="w-5 h-5 text-orange-600" />
-                                    <span>Services Offered<span className="text-red-500">*</span></span>
+                                    <CreditCard className="w-5 h-5 text-green-600" />
+                                    Accepted Payment Methods
+                                </div>
+
+                                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-10">
+                                    {paymentMethods.map((method) => (
+                                        <label key={method} className="flex items-center space-x-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={formData.selectedPayments.includes(method)}
+                                                onChange={() => togglePayment(method)}
+                                                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                                            />
+                                            <span className="text-xs font-medium text-gray-700">{method}</span>
+                                        </label>
+                                    ))}
+                                </div>
+
+                            </section>
+                        </section>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <section>
+                                <div className="border rounded-xl shadow p-5">
+                                    <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
+                                        <Tag className="w-5 h-5 text-orange-600" />
+                                        <span>Services Offered<span className="text-red-500">*</span></span>
+                                    </div>
+
+                                    <div className="relative space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
+                                            {formData.services.map((service, index) => (
+                                                <div key={index} className="flex items-center gap-2">
+                                                    <input
+                                                        value={service}
+                                                        onChange={(e) => updateArrayField("services", index, e.target.value)}
+                                                        placeholder="Enter service"
+                                                        className="flex-1 py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-200 focus:outline-none shadow-sm text-xs"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeArrayItem("services", index)}
+                                                        className="p-1 border border-gray-300 rounded-md hover:bg-red-100 transition"
+                                                    >
+                                                        <X className="w-4 h-4 text-gray-600" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => addArrayItem("services")}
+                                            className="w-full flex items-center justify-center gap-2 border border-gray-300 text-orange-600 rounded-md p-1.5 hover:bg-orange-50 text-sm"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                            Add Service
+                                        </button>
+
+                                        {formErrors.services && (
+                                            <p className="absolute text-red-500 text-xs right-0 top-[68px]">{formErrors.services}</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section className="border rounded-xl shadow p-5">
+                                <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
+                                    <Tag className="w-5 h-5 text-pink-600" />
+                                    <span>Keywords</span>
                                 </div>
 
                                 <div className="relative space-y-4">
-                                    {formData.services.map((service, index) => (
-                                        <div key={index} className="flex gap-2">
-                                            <input
-                                                value={service}
-                                                onChange={(e) => updateArrayField("services", index, e.target.value)}
-                                                placeholder="Enter service"
-                                                className="flex-1 p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 shadow-sm transition-all"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeArrayItem("services", index)}
-                                                className="border border-gray-300 rounded-xl p-2 hover:bg-red-100 transition"
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    ))}
+                                    <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
+                                        {formData.keywords.map((keyword, index) => (
+                                            <div key={index} className="flex items-center gap-2">
+                                                <input
+                                                    value={keyword}
+                                                    onChange={(e) => updateArrayField("keywords", index, e.target.value)}
+                                                    placeholder="Enter keyword"
+                                                    className="flex-1 py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-200 focus:outline-none shadow-sm text-xs"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeArrayItem("keywords", index)}
+                                                    className="p-1 border border-gray-300 rounded-md hover:bg-red-100 transition"
+                                                >
+                                                    <X className="w-4 h-4 text-gray-600" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
 
                                     <button
                                         type="button"
-                                        onClick={() => addArrayItem("services")}
-                                        className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-xl p-1.5 text-orange-600 hover:bg-orange-50 transition"
+                                        onClick={() => addArrayItem("keywords")}
+                                        className="w-full flex items-center justify-center gap-2 border border-gray-300 text-orange-600 rounded-md p-1.5 hover:bg-orange-50 text-sm"
                                     >
                                         <Plus className="w-4 h-4" />
-                                        Add Service
+                                        Add Keyword
                                     </button>
-                                    {formErrors.services && (
-                                        <p className="absolute text-red-500 text-xs mt-1 top-[80px] right-0">{formErrors.services}</p>
+                                </div>
+                            </section>
+
+                            <section className="border rounded-xl shadow p-5">
+                                <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
+                                    <Tag className="w-5 h-5 text-pink-600" />
+                                    <span>ServiceAreas<span className="text-red-500">*</span></span>
+                                </div>
+
+                                <div className="relative space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
+                                        {formData.serviceAreas.map((area, index) => (
+                                            <div key={index} className="flex items-center gap-2">
+                                                <input
+                                                    value={area}
+                                                    onChange={(e) => updateArrayField("serviceAreas", index, e.target.value)}
+                                                    placeholder="Enter service area"
+                                                    className="flex-1 py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-200 focus:outline-none shadow-sm text-xs"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeArrayItem("serviceAreas", index)}
+                                                    className="p-1 border border-gray-300 rounded-md hover:bg-red-100 transition"
+                                                >
+                                                    <X className="w-4 h-4 text-gray-600" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => addArrayItem("serviceAreas")}
+                                        className="w-full flex items-center justify-center gap-2 border border-gray-300 text-orange-600 rounded-md p-1.5 hover:bg-orange-50 text-sm"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                        Add Service Area
+                                    </button>
+
+                                    {formErrors.serviceAreas && (
+                                        <p className="absolute text-red-500 text-xs top-[68px] right-0">{formErrors.serviceAreas}</p>
                                     )}
                                 </div>
-                            </div>
-                        </section>
+                            </section>
 
-                        <section className="border rounded-xl shadow p-5">
-                            <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                <Tag className="w-5 h-5 text-pink-600" />
-                                <span>Keywords<span className="text-red-500">*</span></span>
-                            </div>
+                            <section className="border rounded-xl shadow p-6">
+                                <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
+                                    <Tag className="w-5 h-5 text-pink-600" />
+                                    Certifications
+                                </div>
 
-                            <div className="relative space-y-4">
-                                {formData.keywords.map((service, index) => (
-                                    <div key={index} className="flex gap-2">
-                                        <input
-                                            value={service}
-                                            onChange={(e) => updateArrayField("keywords", index, e.target.value)}
-                                            placeholder="Enter service"
-                                            className="flex-1 p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 shadow-sm transition-all"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeArrayItem("keywords", index)}
-                                            className="border border-gray-300 rounded-xl p-2 hover:bg-red-100 transition"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                        {formData.certifications.map((cert, index) => (
+                                            <div key={index} className="flex gap-2 items-center">
+                                                <input
+                                                    value={cert}
+                                                    onChange={(e) => updateArrayField("certifications", index, e.target.value)}
+                                                    placeholder="Enter certification"
+                                                    className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-200 focus:outline-none shadow-sm transition-all text-xs"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeArrayItem("certifications", index)}
+                                                    className="border border-gray-300 rounded-md p-1 hover:bg-red-100 transition"
+                                                    aria-label="Remove certification"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
 
-                                <button
-                                    type="button"
-                                    onClick={() => addArrayItem("keywords")}
-                                    className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-xl p-1.5 text-orange-600 hover:bg-orange-50 transition"
-                                >
-                                    <Plus className="w-4 h-4" />
-                                    Add KeyWord
-                                </button>
-                            </div>
-                        </section>
+                                    <button
+                                        type="button"
+                                        onClick={() => addArrayItem("certifications")}
+                                        className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md p-1.5 text-orange-600 hover:bg-orange-50 transition text-sm"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                        Add Certification
+                                    </button>
+                                </div>
+                            </section>
 
-                        <section className="border rounded-xl shadow p-5">
-                            <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                <Tag className="w-5 h-5 text-pink-600" />
-                                <span>ServiceAreas<span className="text-red-500">*</span></span>
-                            </div>
-
-                            <div className="relative space-y-4">
-                                {formData.serviceAreas.map((serviceAreas, index) => (
-                                    <div key={index} className="flex gap-2">
-                                        <input
-                                            value={serviceAreas}
-                                            onChange={(e) => updateArrayField("serviceAreas", index, e.target.value)}
-                                            placeholder="Enter service"
-                                            className="flex-1 p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 shadow-sm transition-all"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeArrayItem("serviceAreas", index)}
-                                            className="border border-gray-300 rounded-xl p-2 hover:bg-red-100 transition"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                ))}
-
-                                <button
-                                    type="button"
-                                    onClick={() => addArrayItem("serviceAreas")}
-                                    className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-xl p-1.5 text-orange-600 hover:bg-orange-50 transition"
-                                >
-                                    <Plus className="w-4 h-4" />
-                                    Add ServiceAreas
-                                </button>
-                                {formErrors.serviceAreas && (
-                                    <p className="absolute text-red-500 text-xs mt-1 top-[80px] right-0">{formErrors.serviceAreas}</p>
-                                )}
-                            </div>
-                        </section>
-
-                        <section className="border rounded-xl shadow p-5">
-                            <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                <CreditCard className="w-5 h-5 text-green-600" />
-                                Accepted Payment Methods
-                            </div>
-
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
-                                {paymentMethods.map((method) => (
-                                    <label key={method} className="flex items-center space-x-2 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData.selectedPayments.includes(method)}
-                                            onChange={() => togglePayment(method)}
-                                            className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                                        />
-                                        <span className="text-sm font-medium text-gray-700">{method}</span>
-                                    </label>
-                                ))}
-                            </div>
-
-                        </section>
-
+                        </div>
                         <section className="border rounded-xl shadow p-5">
                             <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                 <Share2 className="w-5 h-5 text-blue-600" />
                                 Social Media Links
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div>
-                                    <label htmlFor="facebook" className="block text-sm font-medium text-gray-700">Facebook</label>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div className="mb-4">
+                                    <label
+                                        htmlFor="facebook"
+                                        className="block text-sm font-medium text-gray-700 mb-1"
+                                    >
+                                        Facebook
+                                    </label>
                                     <input
                                         id="facebook"
                                         type="url"
                                         name="facebook"
                                         value={formData.facebook}
                                         onChange={handleInputChange}
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="https://facebook.com/yourpage"
+                                        className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
                                     />
                                 </div>
-
-                                <div>
-                                    <label htmlFor="instagram" className="block text-sm font-medium text-gray-700">Instagram</label>
+                                <div className="mb-4">
+                                    <label
+                                        htmlFor="instagram"
+                                        className="block text-sm font-medium text-gray-700 mb-1"
+                                    >
+                                        Instagram
+                                    </label>
                                     <input
                                         id="instagram"
                                         type="url"
                                         name="instagram"
                                         value={formData.instagram}
                                         onChange={handleInputChange}
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="https://instagram.com/yourprofile"
+                                        className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
                                     />
                                 </div>
-
-                                <div>
-                                    <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700">LinkedIn</label>
+                                <div className="mb-4">
+                                    <label
+                                        htmlFor="linkedin"
+                                        className="block text-sm font-medium text-gray-700 mb-1"
+                                    >
+                                        LinkedIn
+                                    </label>
                                     <input
                                         id="linkedin"
                                         type="url"
                                         name="linkedin"
                                         value={formData.linkedin}
                                         onChange={handleInputChange}
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="https://linkedin.com/in/yourprofile"
+                                        className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-4">
                                 <label className="block text-sm font-medium text-gray-700">Other Social Links</label>
-                                {formData.others.map((service, index) => (
-                                    <div key={index} className="flex gap-2">
-                                        <input
-                                            value={service}
-                                            type="url"
-                                            onChange={(e) => updateArrayField("others", index, e.target.value)}
-                                            placeholder="Enter social Link"
-                                            className="flex-1 p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 shadow-sm transition-all"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeArrayItem("others", index)}
-                                            className="border border-gray-300 rounded-xl p-2 hover:bg-red-100 transition"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                ))}
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {formData.others.map((link, index) => (
+                                        <div key={index} className="flex gap-2 items-center">
+                                            <input
+                                                type="url"
+                                                value={link}
+                                                onChange={(e) => updateArrayField("others", index, e.target.value)}
+                                                placeholder="https://example.com/your-link"
+                                                className="flex-1 p-1.5 border border-gray-300 rounded-md focus:ring-2 focus:outline-none shadow-sm transition-all text-xs"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeArrayItem("others", index)}
+                                                className="border border-gray-300 rounded-md p-1 hover:bg-red-100 transition"
+                                                aria-label="Remove social link"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
 
                                 <button
                                     type="button"
                                     onClick={() => addArrayItem("others")}
-                                    className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-xl p-1.5 text-orange-600 hover:bg-orange-50 transition"
+                                    className="w-full flex items-center justify-center gap-2 border border-gray-300 text-orange-600 rounded-md p-1.5 hover:bg-orange-50 text-sm"
                                 >
                                     <Plus className="w-4 h-4" />
-                                    Add Social Links
+                                    Add Social Link
                                 </button>
                             </div>
                         </section>
@@ -1013,9 +1107,9 @@ const AddProfile = () => {
                             <input
                                 type="file"
                                 multiple
-                                className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-xl bg-white shadow-sm"
+                                className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
                             />
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-xs text-gray-500 mt-1">
                                 You can upload multiple files. Max 10MB each.
                             </p>
                         </section>
@@ -1028,43 +1122,6 @@ const AddProfile = () => {
                             </div>
 
                             <div className="space-y-3">
-                                {/* Certifications Field */}
-                                <section className="border rounded-xl shadow p-6">
-                                    <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                        <Tag className="w-5 h-5 text-pink-600" />
-                                        Certifications
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        {formData.certifications.map((service, index) => (
-                                            <div key={index} className="flex gap-2">
-                                                <input
-                                                    value={service}
-                                                    onChange={(e) => updateArrayField("certifications", index, e.target.value)}
-                                                    placeholder="Enter service"
-                                                    className="flex-1 p-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 shadow-sm transition-all"
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeArrayItem("certifications", index)}
-                                                    className="border border-gray-300 rounded-xl p-2 hover:bg-red-100 transition"
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        ))}
-
-                                        <button
-                                            type="button"
-                                            onClick={() => addArrayItem("certifications")}
-                                            className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-xl p-1.5 text-orange-600 hover:bg-orange-50 transition"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                            Add certifications
-                                        </button>
-                                    </div>
-                                </section>
-
                                 {/* Promotions Field */}
                                 <div>
                                     <label htmlFor="promotions" className="block text-sm font-medium text-gray-700">
@@ -1074,25 +1131,36 @@ const AddProfile = () => {
                                         <Megaphone className="absolute left-3 top-2 w-4 h-4 text-gray-400" />
                                         <textarea
                                             id="promotions"
-                                            rows={3}
                                             name="promotions"
+                                            rows={3}
+                                            placeholder="Describe any ongoing deals, discounts or offers"
                                             value={formData.promotions}
                                             onChange={handleInputChange}
-                                            className="pl-10 block w-full rounded-xl border border-gray-300 shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                                            className="pl-10 pr-3 py-2 block w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 text-xs"
                                         />
                                     </div>
                                 </div>
                             </div>
                         </section>
 
-
                         <div className="pt-6 md:pt-8 text-right">
                             <button
                                 type="submit"
                                 onClick={handleSubmit}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-md transition-all duration-300"
+                                // disabled={loading}
+                                className={`flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold shadow-md transition-all duration-300 ${loading ? "opacity-70" : ""}`}
                             >
-                                {isEdit ? "Update Business" : "Create Business"}
+                                {loading ? (
+                                    <>
+                                        <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
+                                        </svg>
+                                        {isEdit ? "Updating..." : "Creating..."}
+                                    </>
+                                ) : (
+                                    isEdit ? "Update Business" : "Create Business"
+                                )}
                             </button>
                         </div>
                     </form>

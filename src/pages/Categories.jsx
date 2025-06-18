@@ -9,7 +9,10 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { Button } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getBusinessCategory } from "../redux/features/businessSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const cityCategories = {
   Sydney: [
@@ -75,12 +78,24 @@ const cityCategories = {
 };
 
 const Categories = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm, "in", selectedLocation);
-    // Add your search logic here
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+
+    try {
+      const actionResult = await dispatch(getBusinessCategory({ keyword: searchTerm }));
+      const data = unwrapResult(actionResult); 
+      console.log("Search Success:", data);
+
+      navigate(`/business-details?keyword=${encodeURIComponent(searchTerm)}`);
+    } catch (err) {
+      console.error("Search failed", err);
+    }
   };
 
   return (
@@ -133,7 +148,7 @@ const Categories = () => {
                   <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                 </div>
               </div>
-              <Link to={"/business-details"}>
+              <Link>
                 <Button
                   onClick={handleSearch}
                   className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8 py-3 rounded-md transition-colors w-full md:w-auto font-medium"

@@ -1,9 +1,31 @@
 import { Button } from "@material-tailwind/react";
 import { Search } from "lucide-react";
 import heroimage from "../../assets/architecture-ancient-monument-world-heritage-day-celebration.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { getBusinessCategory } from "../../redux/features/businessSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export function HeroSection() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [searchTerm, setSearchTerm] = useState();
+
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+
+    try {
+      const actionResult = await dispatch(getBusinessCategory({ keyword: searchTerm }));
+      const data = unwrapResult(actionResult);
+      console.log("xdcfvgbhnjmk", data);
+      navigate(`/business-details?keyword=${encodeURIComponent(searchTerm)}`);
+    } catch (err) {
+      console.error("search failed", err);
+    }
+  }
+
   return (
     <section
       className="relative min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex items-center justify-center bg-cover bg-center bg-no-repeat py-12 sm:py-16 md:py-20"
@@ -33,6 +55,8 @@ export function HeroSection() {
               <input
                 type="text"
                 placeholder="Search for businesses, services..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full rounded-md border border-gray-300 text-black bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -67,8 +91,9 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
-            <Link to={"/business-details"}>
+            <Link>
               <Button
+                onClick={handleSearch}
                 size="lg"
                 className="bg-[--main-color] hover:bg-blue-700 text-white flex font-normal justify-center items-center gap-2 px-4 sm:px-6 md:px-8 py-2 rounded-md w-full md:w-auto mt-2 md:mt-0"
               >
