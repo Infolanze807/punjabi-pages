@@ -80,6 +80,8 @@ const cityCategories = {
 const Categories = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -87,14 +89,19 @@ const Categories = () => {
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
 
+    setLoading(true);
+
     try {
       const actionResult = await dispatch(getBusinessCategory({ keyword: searchTerm }));
-      const data = unwrapResult(actionResult); 
+      const data = unwrapResult(actionResult);
       console.log("Search Success:", data);
 
       navigate(`/business-details?keyword=${encodeURIComponent(searchTerm)}`);
     } catch (err) {
       console.error("Search failed", err);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -151,10 +158,36 @@ const Categories = () => {
               <Link>
                 <Button
                   onClick={handleSearch}
-                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8 py-3 rounded-md transition-colors w-full md:w-auto font-medium"
+                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8 py-3 rounded-md transition-colors w-full md:w-auto font-medium disabled:opacity-60"
+                  disabled={loading}
                 >
-                  <Search className="h-4 w-4" />
-                  <span>Search</span>
+                  {loading ? (
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      />
+                    </svg>
+                  ) : (
+                    <>
+                      <Search className="h-4 w-4" />
+                      <span>Search</span>
+                    </>
+                  )}
                 </Button>
               </Link>
             </div>

@@ -12,9 +12,12 @@ export function HeroSection() {
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState();
+  const [loading, setLoading] = useState(false);
+
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
+    setLoading(true);
 
     try {
       const actionResult = await dispatch(getBusinessCategory({ keyword: searchTerm }));
@@ -23,6 +26,8 @@ export function HeroSection() {
       navigate(`/business-details?keyword=${encodeURIComponent(searchTerm)}`);
     } catch (err) {
       console.error("search failed", err);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -94,11 +99,36 @@ export function HeroSection() {
             <Link>
               <Button
                 onClick={handleSearch}
-                size="lg"
-                className="bg-[--main-color] hover:bg-blue-700 text-white flex font-normal justify-center items-center gap-2 px-4 sm:px-6 md:px-8 py-2 rounded-md w-full md:w-auto mt-2 md:mt-0"
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8 py-3 rounded-md transition-colors w-full md:w-auto font-medium disabled:opacity-60"
+                disabled={loading}
               >
-                <Search className="h-4 w-4" />
-                <span>Search</span>
+                {loading ? (
+                  <svg
+                    className="animate-spin h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                  </svg>
+                ) : (
+                  <>
+                    <Search className="h-4 w-4" />
+                    <span>Search</span>
+                  </>
+                )}
               </Button>
             </Link>
           </div>

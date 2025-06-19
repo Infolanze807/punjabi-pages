@@ -247,25 +247,15 @@ const BusinessDetailData = () => {
 
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm border lg:h-[650px] h-96">
-              {latitude && longitude ? (
-                <iframe
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  src={`https://www.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`}
-                  allowFullScreen
-                  title="Business Location"
-                  className="rounded-lg"
-                ></iframe>
-              ) : (
-                <div className="h-full flex items-center justify-center text-center text-gray-500">
-                  <MapPin className="h-12 w-12 mx-auto mb-2" />
-                  <div>
-                    <p>Interactive Map</p>
-                    <p className="text-sm">Location: Not Available</p>
-                  </div>
-                </div>
-              )}
+              <iframe
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                src={`https://www.google.com/maps?q=${latitude && longitude ? `${latitude},${longitude}` : "28.6139,77.2090"}&z=15&output=embed`}
+                allowFullScreen
+                title="Business Location"
+                className="rounded-lg"
+              ></iframe>
             </div>
           </div>
         </div>

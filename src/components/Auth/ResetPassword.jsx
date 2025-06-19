@@ -19,8 +19,18 @@ function ResetPassword() {
         confirmPassword: "",
     });
 
-    const [passwordShown, setPasswordShown] = useState(false);
+    const [newPasswordShown, setNewPasswordShown] = useState(false);
+    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const toggleNewPasswordVisibility = () => {
+        setNewPasswordShown(!newPasswordShown);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setConfirmPasswordShown(!confirmPasswordShown);
+    };
+
 
     useEffect(() => {
         if (email) {
@@ -95,6 +105,7 @@ function ResetPassword() {
                             onChange={handleChange}
                             placeholder="name@mail.com"
                             crossOrigin={undefined}
+                            disabled
                         />
 
                         <Input
@@ -111,7 +122,7 @@ function ResetPassword() {
                             size="md"
                             label="New Password"
                             name="newPassword"
-                            type={passwordShown ? "text" : "password"}
+                            type={newPasswordShown ? "text" : "password"}
                             value={formData.newPassword}
                             onChange={handleChange}
                             placeholder="********"
@@ -119,10 +130,10 @@ function ResetPassword() {
                                 <IconButton
                                     variant="text"
                                     size="sm"
-                                    onClick={togglePasswordVisibility}
+                                    onClick={toggleNewPasswordVisibility}
                                     className="!absolute right-0.5 -top-1.5 rounded"
                                 >
-                                    {passwordShown ? (
+                                    {newPasswordShown ? (
                                         <EyeIcon className="h-4 w-4 text-gray-700" />
                                     ) : (
                                         <EyeSlashIcon className="h-4 w-4 text-gray-700" />
@@ -136,10 +147,24 @@ function ResetPassword() {
                             size="md"
                             label="Confirm Password"
                             name="confirmPassword"
-                            type={passwordShown ? "text" : "password"}
+                            type={confirmPasswordShown ? "text" : "password"}
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             placeholder="********"
+                            icon={
+                                <IconButton
+                                    variant="text"
+                                    size="sm"
+                                    onClick={toggleConfirmPasswordVisibility}
+                                    className="!absolute right-0.5 -top-1.5 rounded"
+                                >
+                                    {confirmPasswordShown ? (
+                                        <EyeIcon className="h-4 w-4 text-gray-700" />
+                                    ) : (
+                                        <EyeSlashIcon className="h-4 w-4 text-gray-700" />
+                                    )}
+                                </IconButton>
+                            }
                             crossOrigin={undefined}
                         />
 
