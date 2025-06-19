@@ -12,7 +12,7 @@ import BusinessDetailData from "./components/BusinessDetails/BusinessDetailData"
 import Dashboard from "./pages/Dashboard";
 import PrivateLayout from "./layouts/PrivateLayout";
 import PublicLayout from "./layouts/PublicLayout";
-import Registration from "./components/Registration/registration";
+import Registration from "./components/Registration/Registration";
 import { Business } from "./pages/Business";
 import Login from "./components/Auth/Login";
 import { ToastContainer } from "react-toastify";
