@@ -41,6 +41,28 @@ export const verifyEmail = createAsyncThunk(
   }
 );
 
+export const forgotPassword = createAsyncThunk("auth/forgotPassword", async (forgotEmail) => {
+  try {
+    const response = await axiosConfig.post("auth/forgot-password", forgotEmail);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data?.error || error.message || "Something went wrong"
+    );
+  }
+});
+
+export const resetPassword = createAsyncThunk("auth/resetPassword", async (resetPasswordData) => {
+  try {
+    const response = await axiosConfig.post("auth/reset-password", resetPasswordData);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data?.error || error.message || "Something went wrong"
+    );
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -106,6 +128,32 @@ const authSlice = createSlice({
       .addCase(verifyEmail.rejected, (state, action) => {
         state.loading = false;
         state.isAuthenticated = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        toast.success(state.message);
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        toast.success(state.message);
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.error.message;
         toast.error(state.error);
       });

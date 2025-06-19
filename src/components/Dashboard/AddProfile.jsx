@@ -4,7 +4,7 @@ import SideBar from "./SideBar";
 import { addProfile, updateMyBussiness } from "../../redux/features/dashboardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import categories from "../../redux/features/enum";
+import { getCategoryDropdown } from "../../redux/features/businessSlice";
 
 const daysOfWeek = [
     "monday",
@@ -27,6 +27,9 @@ const AddProfile = () => {
     const { existingBusiness, isEdit } = location.state || {};
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const { categoriesDropdown } = useSelector((state) => state.business);
+    console.log("categoriesDropdown", categoriesDropdown);
+
     const [loading, setLoading] = useState(false);
     const [formErrors, setFormErrors] = useState({});
     const [formData, setFormData] = useState({
@@ -75,6 +78,11 @@ const AddProfile = () => {
     ]);
 
     const [selectedPayments, setSelectedPayments] = useState([]);
+
+    useEffect(() => {
+        dispatch(getCategoryDropdown());
+
+    }, [])
 
     const togglePayment = (method) => {
         const updated = formData.selectedPayments.includes(method)
@@ -334,7 +342,7 @@ const AddProfile = () => {
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
             <SideBar />
-            <main className="flex-1 px-4 sm:px-6 md:px-2 py-6 border-l border-gray-200">
+            <main className="flex-1 border-l border-gray-200">
                 <div className="max-w-5xl mx-auto bg-white p-4 sm:p-6 md:p-8 shadow-xl rounded-3xl">
                     <div className="mb-10">
                         <div className="flex items-center gap-3 mb-2">
@@ -409,7 +417,7 @@ const AddProfile = () => {
                                             name="contactPerson"
                                             value={formData.contactPerson}
                                             onChange={handleInputChange}
-                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs bg-gray-100 cursor-not-allowed"
+                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs bg-gray-100"
                                             placeholder="Enter your Name"
                                             disabled
                                         />
@@ -432,7 +440,7 @@ const AddProfile = () => {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleInputChange}
-                                            className="w-full py-1.5 pl-8 pr-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs bg-gray-100 cursor-not-allowed"
+                                            className="w-full py-1.5 pl-8 pr-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs bg-gray-100"
                                             placeholder="contact@tastybites.com.au"
                                             disabled
                                         />
@@ -456,7 +464,7 @@ const AddProfile = () => {
                                             className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                         >
                                             <option value="">Select a category</option>
-                                            {categories.map((cat, idx) => (
+                                            {categoriesDropdown?.categories?.map((cat, idx) => (
                                                 <option key={idx} value={cat.category}>
                                                     {cat.category}
                                                 </option>
@@ -481,9 +489,9 @@ const AddProfile = () => {
                                             className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                         >
                                             <option value="">Select a SubCategory</option>
-                                            {categories
-                                                .find((cat) => cat.category === formData.category)
-                                                ?.subcategories.map((sub, idx) => (
+                                            {categoriesDropdown?.categories
+                                                ?.find((cat) => cat.category === formData.category)
+                                                ?.subcategories?.map((sub, idx) => (
                                                     <option key={idx} value={sub}>
                                                         {sub}
                                                     </option>
@@ -524,7 +532,7 @@ const AddProfile = () => {
                                             className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm transition-all text-xs"
                                         >
                                             <option value="">Select an Established Year</option>
-                                            {Array.from({ length: 2025 - 2000 + 1 }, (_, i) => (
+                                            {Array.from({ length: 2028 - 2000 + 1 }, (_, i) => (
                                                 <option key={i} value={2000 + i}>
                                                     {2000 + i}
                                                 </option>
@@ -544,7 +552,7 @@ const AddProfile = () => {
                                 <Info className="w-5 h-5 text-blue-600" />
                                 <span>About Your Alternate Contacts</span>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div>
                                     <label className="block font-medium text-gray-700 mb-1 text-sm">
                                         Email
@@ -838,7 +846,7 @@ const AddProfile = () => {
 
                             </section>
                         </section>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
                             <section>
                                 <div className="border rounded-xl shadow p-5">
                                     <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
@@ -877,7 +885,7 @@ const AddProfile = () => {
                                         </button>
 
                                         {formErrors.services && (
-                                            <p className="absolute text-red-500 text-xs right-0 top-[68px]">{formErrors.services}</p>
+                                            <p className="absolute text-red-500 text-xs right-0 top-[40px]">{formErrors.services}</p>
                                         )}
                                     </div>
                                 </div>
@@ -958,7 +966,7 @@ const AddProfile = () => {
                                     </button>
 
                                     {formErrors.serviceAreas && (
-                                        <p className="absolute text-red-500 text-xs top-[68px] right-0">{formErrors.serviceAreas}</p>
+                                        <p className="absolute text-red-500 text-xs top-[40px] right-0">{formErrors.serviceAreas}</p>
                                     )}
                                 </div>
                             </section>
@@ -1003,146 +1011,146 @@ const AddProfile = () => {
                             </section>
 
                         </div>
-                        <section className="border rounded-xl shadow p-5">
-                            <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                <Share2 className="w-5 h-5 text-blue-600" />
-                                Social Media Links
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                <div className="mb-4">
-                                    <label
-                                        htmlFor="facebook"
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                    >
-                                        Facebook
-                                    </label>
-                                    <input
-                                        id="facebook"
-                                        type="url"
-                                        name="facebook"
-                                        value={formData.facebook}
-                                        onChange={handleInputChange}
-                                        placeholder="https://facebook.com/yourpage"
-                                        className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label
-                                        htmlFor="instagram"
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                    >
-                                        Instagram
-                                    </label>
-                                    <input
-                                        id="instagram"
-                                        type="url"
-                                        name="instagram"
-                                        value={formData.instagram}
-                                        onChange={handleInputChange}
-                                        placeholder="https://instagram.com/yourprofile"
-                                        className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label
-                                        htmlFor="linkedin"
-                                        className="block text-sm font-medium text-gray-700 mb-1"
-                                    >
-                                        LinkedIn
-                                    </label>
-                                    <input
-                                        id="linkedin"
-                                        type="url"
-                                        name="linkedin"
-                                        value={formData.linkedin}
-                                        onChange={handleInputChange}
-                                        placeholder="https://linkedin.com/in/yourprofile"
-                                        className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <label className="block text-sm font-medium text-gray-700">Other Social Links</label>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {formData.others.map((link, index) => (
-                                        <div key={index} className="flex gap-2 items-center">
-                                            <input
-                                                type="url"
-                                                value={link}
-                                                onChange={(e) => updateArrayField("others", index, e.target.value)}
-                                                placeholder="https://example.com/your-link"
-                                                className="flex-1 p-1.5 border border-gray-300 rounded-md focus:ring-2 focus:outline-none shadow-sm transition-all text-xs"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeArrayItem("others", index)}
-                                                className="border border-gray-300 rounded-md p-1 hover:bg-red-100 transition"
-                                                aria-label="Remove social link"
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    ))}
+                        <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-2 gap-2">
+                            <section className="border rounded-xl shadow p-5">
+                                <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
+                                    <Share2 className="w-5 h-5 text-blue-600" />
+                                    Social Media Links
                                 </div>
 
-                                <button
-                                    type="button"
-                                    onClick={() => addArrayItem("others")}
-                                    className="w-full flex items-center justify-center gap-2 border border-gray-300 text-orange-600 rounded-md p-1.5 hover:bg-orange-50 text-sm"
-                                >
-                                    <Plus className="w-4 h-4" />
-                                    Add Social Link
-                                </button>
-                            </div>
-                        </section>
-
-                        <section className="border rounded-xl shadow p-5">
-                            <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
-                                <Upload className="w-5 h-5 text-blue-500" />
-                                Upload Photos or Videos
-                            </h3>
-                            <input
-                                type="file"
-                                multiple
-                                className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
-                            />
-                            <p className="text-xs text-gray-500 mt-1">
-                                You can upload multiple files. Max 10MB each.
-                            </p>
-                        </section>
-
-
-                        <section className="border rounded-2xl shadow-sm bg-white p-5">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Award className="w-5 h-5 text-yellow-600" />
-                                <h2 className="text-lg font-semibold">Additional Information</h2>
-                            </div>
-
-                            <div className="space-y-3">
-                                {/* Promotions Field */}
-                                <div>
-                                    <label htmlFor="promotions" className="block text-sm font-medium text-gray-700">
-                                        Current Promotions
-                                    </label>
-                                    <div className="relative mt-1">
-                                        <Megaphone className="absolute left-3 top-2 w-4 h-4 text-gray-400" />
-                                        <textarea
-                                            id="promotions"
-                                            name="promotions"
-                                            rows={3}
-                                            placeholder="Describe any ongoing deals, discounts or offers"
-                                            value={formData.promotions}
+                                <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
+                                    <div className="mb-4">
+                                        <label
+                                            htmlFor="facebook"
+                                            className="block text-sm font-medium text-gray-700 mb-1"
+                                        >
+                                            Facebook
+                                        </label>
+                                        <input
+                                            id="facebook"
+                                            type="url"
+                                            name="facebook"
+                                            value={formData.facebook}
                                             onChange={handleInputChange}
-                                            className="pl-10 pr-3 py-2 block w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 text-xs"
+                                            placeholder="https://facebook.com/yourpage"
+                                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label
+                                            htmlFor="instagram"
+                                            className="block text-sm font-medium text-gray-700 mb-1"
+                                        >
+                                            Instagram
+                                        </label>
+                                        <input
+                                            id="instagram"
+                                            type="url"
+                                            name="instagram"
+                                            value={formData.instagram}
+                                            onChange={handleInputChange}
+                                            placeholder="https://instagram.com/yourprofile"
+                                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label
+                                            htmlFor="linkedin"
+                                            className="block text-sm font-medium text-gray-700 mb-1"
+                                        >
+                                            LinkedIn
+                                        </label>
+                                        <input
+                                            id="linkedin"
+                                            type="url"
+                                            name="linkedin"
+                                            value={formData.linkedin}
+                                            onChange={handleInputChange}
+                                            placeholder="https://linkedin.com/in/yourprofile"
+                                            className="block w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
                                         />
                                     </div>
                                 </div>
-                            </div>
-                        </section>
 
+                                <div className="space-y-2">
+                                    <label className="block text-sm font-medium text-gray-700">Other Social Links</label>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                        {formData.others.map((link, index) => (
+                                            <div key={index} className="flex gap-2 items-center">
+                                                <input
+                                                    type="url"
+                                                    value={link}
+                                                    onChange={(e) => updateArrayField("others", index, e.target.value)}
+                                                    placeholder="https://example.com/your-link"
+                                                    className="flex-1 p-1.5 border border-gray-300 rounded-md focus:ring-2 focus:outline-none shadow-sm transition-all text-xs"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeArrayItem("others", index)}
+                                                    className="border border-gray-300 rounded-md p-1 hover:bg-red-100 transition"
+                                                    aria-label="Remove social link"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => addArrayItem("others")}
+                                        className="w-full flex items-center justify-center gap-2 border border-gray-300 text-orange-600 rounded-md p-1.5 hover:bg-orange-50 text-sm"
+                                    >
+                                        <Plus className="w-4 h-4" />
+                                        Add Social Link
+                                    </button>
+                                </div>
+                            </section>
+                            <div className="space-y-2">
+                                <section className="border rounded-xl shadow p-5">
+                                    <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
+                                        <Upload className="w-5 h-5 text-blue-500" />
+                                        Upload Photos or Videos
+                                    </h3>
+                                    <input
+                                        type="file"
+                                        multiple
+                                        className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        You can upload multiple files. Max 10MB each.
+                                    </p>
+                                </section>
+                                <section className="border rounded-2xl shadow-sm bg-white p-5">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Award className="w-5 h-5 text-yellow-600" />
+                                        <h2 className="text-lg font-semibold">Additional Information</h2>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        {/* Promotions Field */}
+                                        <div>
+                                            <label htmlFor="promotions" className="block text-sm font-medium text-gray-700">
+                                                Current Promotions
+                                            </label>
+                                            <div className="relative mt-1">
+                                                <Megaphone className="absolute left-3 top-2 w-4 h-4 text-gray-400" />
+                                                <textarea
+                                                    id="promotions"
+                                                    name="promotions"
+                                                    rows={4}
+                                                    placeholder="Describe any ongoing deals, discounts or offers"
+                                                    value={formData.promotions}
+                                                    onChange={handleInputChange}
+                                                    className="pl-10 pr-3 py-2 block w-full rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 text-xs"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
                         <div className="pt-6 md:pt-8 text-right">
                             <button
                                 type="submit"

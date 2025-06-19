@@ -22,7 +22,7 @@ const PrivateLayout = () => {
 
     return (
         <>
-            <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+            <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between border-b">
                 {/* Logo + App Name */}
                 <div className="flex items-center gap-3">
                     <img src={logo} alt="Punjabi Pages" className="w-12 h-12 object-contain" />
@@ -33,7 +33,7 @@ const PrivateLayout = () => {
 
                 {/* User Info + Logout Button */}
                 <div className="flex items-center gap-4">
-                    <span className="text-gray-800 font-medium text-lg">
+                    <span className="text-gray-800 font-medium text-sm">
                         Welcome, {user?.name || 'User'}
                     </span>
                     <button
@@ -45,7 +45,7 @@ const PrivateLayout = () => {
                 </div>
             </header>
 
-            <main className="p-4">
+            <main className="">
                 <Outlet />
             </main>
         </>

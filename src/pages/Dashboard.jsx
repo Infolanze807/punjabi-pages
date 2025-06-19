@@ -3,6 +3,7 @@ import SideBar from "../components/Dashboard/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyBussiness } from "../redux/features/dashboardSlice";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 
 const formatTime = (time) => {
@@ -52,7 +53,23 @@ const Dashboard = () => {
       <SideBar />
       <main className="border-l flex-1 p-6 md:p-10 space-y-8 max-w-7xl mx-auto">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
-          {selectedBusiness ? "Business Details" : "My Businesses"}
+          {selectedBusiness ? (
+            <div className="flex items-center gap-2 mb-4">
+              <button
+                onClick={() => setSelectedBusiness(null)}
+                className="text-indigo-600 hover:text-indigo-800 flex items-center bg-gray-200 hover:bg-gray-100 rounded-full p-1.5"
+              >
+                <ArrowLeft className="w-7 h-6" />
+              </button>
+              <h1 className="text-3xl font-extrabold text-gray-900">
+                Business Details
+              </h1>
+            </div>
+          ) : (
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
+              My Businesses
+            </h1>
+          )}
         </h1>
         {!selectedBusiness ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -68,7 +85,7 @@ const Dashboard = () => {
                   onClick={() => handleCardClick(biz)}
                   className="bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:ring-2 hover:ring-blue-500 hover:scale-[1.02] transition-transform duration-300"
                 >
-                  <div className="h-48 flex items-center justify-center bg-gray-50">
+                  <div className="h-48 flex items-center justify-center bg-white">
                     <img
                       src={biz.logoUrl}
                       alt={biz.businessName}
@@ -108,12 +125,6 @@ const Dashboard = () => {
           </div>
         ) : (
           <>
-            <button
-              onClick={() => setSelectedBusiness(null)}
-              className="text-sm text-indigo-600 underline mb-4"
-            >
-              ← Back to Business List
-            </button>
             <div className="flex justify-between">
               <div className="flex items-center gap-6">
                 <img
@@ -171,9 +182,9 @@ const Dashboard = () => {
               {/* Overview */}
               {activeTab === "overview" && (
                 <>
-                  <h2 className="text-2xl font-bold mb-4">About Us</h2>
+                  <h2 className="text-xl font-bold mb-4">About Us</h2>
                   <p className="text-gray-700 leading-relaxed">{selectedBusiness?.description}</p>
-                  <div className="mt-4 space-y-1 text-gray-600">
+                  <div className="mt-4 text-gray-600">
                     <p>
                       <strong>Established:</strong> {selectedBusiness?.establishedYear}
                     </p>

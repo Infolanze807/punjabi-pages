@@ -42,6 +42,11 @@ const Login = () => {
         }
     };
 
+    const handleForgotPassword = (e) => {
+        e.preventDefault();
+        navigate("/forgot-password");
+    };
+
 
     return (
         <div>
@@ -124,6 +129,7 @@ const Login = () => {
                                         variant="small"
                                         color="blue"
                                         className="font-medium font-inter hover:text-blue-700"
+                                        onClick={handleForgotPassword}
                                     >
                                         Forgot password?
                                     </Typography>

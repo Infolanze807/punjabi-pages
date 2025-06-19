@@ -18,6 +18,8 @@ import Login from "./components/Auth/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddProfile from "./components/Dashboard/AddProfile";
+import ForgotPassword from "./components/Auth/ForgotPassword";
+import ResetPassword from "./components/Auth/ResetPassword";
 
 // ✅ Wrapper for handling scroll-to-top on route change
 function ScrollToTopWrapper() {
@@ -43,6 +45,8 @@ function ScrollToTopWrapper() {
         <Route path="/business-details" element={<SearchDetails />} />
         <Route path="/business" element={<Business />} />
         <Route path="/business-details-data" element={<BusinessDetailData />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Route>
 
       {/* Private Routes */}
