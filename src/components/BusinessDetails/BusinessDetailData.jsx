@@ -156,7 +156,7 @@ const BusinessDetailData = () => {
           >
             <ArrowLeft className="h-4 w-4" />
             <span className="text-sm">
-              Search Plumbers & Gas Fitters in Glenmore Park, NSW
+              Search {business.category} in Location
             </span>
           </button>
         </div>
@@ -184,7 +184,7 @@ const BusinessDetailData = () => {
 
               <p className="text-gray-700 mb-4">{business.description}</p>
 
-              <div className="flex items-center gap-2 mb-4">
+              {/* <div className="flex items-center gap-2 mb-4">
                 <span className="font-bold text-lg">{business.rating}</span>
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
@@ -198,11 +198,11 @@ const BusinessDetailData = () => {
                   ))}
                 </div>
                 <span className="text-gray-600">({business.reviews})</span>
-              </div>
+              </div> */}
 
-              <div className="text-blue-600 text-sm mb-4 cursor-pointer">
+              {/* <div className="text-blue-600 text-sm mb-4 cursor-pointer">
                 Write a review
-              </div>
+              </div> */}
 
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
                 <MapPin className="h-4 w-4" />
@@ -231,13 +231,13 @@ const BusinessDetailData = () => {
               </button>
 
               <div className="mt-6 pt-6 border-t">
-                <div className="flex items-center gap-2 mb-2">
+                {/* <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-4 w-4 text-green-600" />
                   <span className="text-green-600 font-medium">
                     {business?.hours?.is24x7 ? "Open 24x7" : "Closed"}
                   </span>
 
-                </div>
+                </div> */}
                 <button className="text-blue-600 text-sm">
                   Additional Contacts
                 </button>
@@ -260,7 +260,7 @@ const BusinessDetailData = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t">
+        <div className="mt-8 pt-6">
           <div className="flex items-center gap-2 mb-4">
             <Clock className="h-4 w-4 text-green-600" />
             <span className="text-green-600 font-semibold text-base">
@@ -268,37 +268,33 @@ const BusinessDetailData = () => {
             </span>
           </div>
 
-          {business?.hours &&
-            ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].some(
-              (day) =>
-                business.hours[day]?.open !== "00:00" || business.hours[day]?.close !== "00:00"
-            ) && (
-              <ul className="text-sm text-gray-800 divide-y divide-gray-200 rounded-md border border-gray-200 overflow-hidden">
-                {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map(
-                  (day) => {
-                    const open = business?.hours?.[day]?.open;
-                    const close = business?.hours?.[day]?.close;
+          {business?.hours && (
+            <ul className="text-sm text-gray-800 divide-y divide-gray-200 rounded-md border border-gray-200 overflow-hidden">
+              {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map(
+                (day) => {
+                  const open = business.hours?.[day]?.open || "00:00";
+                  const close = business.hours?.[day]?.close || "00:00";
 
-                    const isClosed = open === "00:00" && close === "00:00";
-                    const today = new Date().toLocaleDateString("en-US", {
-                      weekday: "long",
-                    }).toLowerCase();
-                    const isToday = today === day;
+                  const isClosed = open === "00:00" && close === "00:00";
+                  const today = new Date().toLocaleDateString("en-US", {
+                    weekday: "long",
+                  }).toLowerCase();
+                  const isToday = today === day;
 
-                    return (
-                      <li
-                        key={day}
-                        className={`flex justify-around px-4 py-2 ${isToday ? "bg-green-50 font-medium" : "bg-white"
-                          }`}
-                      >
-                        <span className="capitalize">{day}</span>
-                        <span>{isClosed ? "Closed" : `${open} - ${close}`}</span>
-                      </li>
-                    );
-                  }
-                )}
-              </ul>
-            )}
+                  return (
+                    <li
+                      key={day}
+                      className={`flex justify-around px-4 py-2 ${isToday ? "bg-green-50 font-medium" : "bg-white"
+                        }`}
+                    >
+                      <span className="capitalize">{day}</span>
+                      <span>{isClosed ? "N/A" : `${open} - ${close}`}</span>
+                    </li>
+                  );
+                }
+              )}
+            </ul>
+          )}
 
           {/* Optional Public Holiday Note */}
           {business?.hours?.publicHolidayNotes && (
@@ -325,7 +321,7 @@ const BusinessDetailData = () => {
         </div> */}
 
         {/* Photo & Video Gallery */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8 mt-2">
           <h3 className="font-bold text-lg mb-4">Photos & Videos</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
             {/* Video Thumbnail */}
