@@ -49,8 +49,8 @@ const Dashboard = () => {
 
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <SideBar />
+    <div className="bg-[#f9fafb] flex min-h-screen bg-slate-50">
+      {/* <SideBar /> */}
       <main className="border-l flex-1 p-6 md:p-10 space-y-8 max-w-7xl mx-auto">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
           {selectedBusiness ? (
@@ -75,7 +75,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               // Loading Placeholder (you can enhance this with a skeleton loader)
-              <div className="col-span-full text-center py-16">
+              <div className="col-span-full text-center py-16 shadow-lg">
                 <p className="text-gray-500 text-lg animate-pulse">Loading businesses...</p>
               </div>
             ) : myBussiness?.length > 0 ? (
@@ -83,7 +83,7 @@ const Dashboard = () => {
                 <div
                   key={i}
                   onClick={() => handleCardClick(biz)}
-                  className="bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:ring-2 hover:ring-blue-500 hover:scale-[1.02] transition-transform duration-300"
+                  className="bg-white rounded-lg shadow-lg cursor-pointer overflow-hidden hover:ring-2 hover:ring-blue-500 hover:scale-[1.02] transition-transform duration-300"
                 >
                   <div className="h-48 flex items-center justify-center bg-white">
                     <img

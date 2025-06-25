@@ -3,7 +3,7 @@ import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, selectIsAuthenticated } from '../redux/features/authSlice';
 import logo from "../assets/logo.jpeg";
-
+import SideBar from '../components/Dashboard/SideBar';
 
 const PrivateLayout = () => {
     const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -21,8 +21,10 @@ const PrivateLayout = () => {
     };
 
     return (
-        <>
-            <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between border-b">
+        <div className="h-screen flex flex-col">
+
+            {/* Header - sticky to the top */}
+            <header className="bg-white shadow-sm px-6 py-3 flex items-center justify-between border-b sticky top-0 z-30">
                 {/* Logo + App Name */}
                 <div className="flex items-center gap-3">
                     <img src={logo} alt="Punjabi Pages" className="w-12 h-12 object-contain" />
@@ -31,7 +33,7 @@ const PrivateLayout = () => {
                     </span>
                 </div>
 
-                {/* User Info + Logout Button */}
+                {/* User Info + Logout */}
                 <div className="flex items-center gap-4">
                     <span className="text-gray-800 font-medium text-sm">
                         Welcome, {user?.name || 'User'}
@@ -44,11 +46,16 @@ const PrivateLayout = () => {
                     </button>
                 </div>
             </header>
+            {/* Sidebar - sticky to the left */}
+            <div className="flex-1 flex overflow-auto">
+                <SideBar />
 
-            <main className="">
-                <Outlet />
-            </main>
-        </>
+                {/* Page Content */}
+                <main className="flex-1 overflow-y-auto bg-gray-50">
+                    <Outlet />
+                </main>
+            </div>
+        </div>
     );
 };
 

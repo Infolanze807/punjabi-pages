@@ -14,12 +14,12 @@ const SideBar = () => {
         {
             name: "My Profile",
             path: "/dashboard",
-            icon: <User className="w-5 h-5" />,
+            icon: <User className="w-4 h-4" />,
         },
         {
             name: "Add Profile",
             path: "/addProfile",
-            icon: <PlusSquare className="w-5 h-5" />,
+            icon: <PlusSquare className="w-4 h-4" />,
         },
     ];
 
@@ -33,8 +33,8 @@ const SideBar = () => {
                 {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            <div
-                className={`fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-white via-blue-50 to-white shadow-lg
+            <aside
+                className={`fixed top-0 left-0 w-64 bg-[#f9fafb] shadow-lg
         transform ${isOpen ? "translate-x-0" : "-translate-x-full"}
         transition-transform duration-300 ease-in-out
         md:translate-x-0 md:static md:shadow-none
@@ -50,14 +50,14 @@ const SideBar = () => {
                     </div>
                 </div> */}
 
-                <div className="flex-1 flex flex-col justify-center px-4 py-6">
-                    <nav className="space-y-3">
+                <div className="flex-1 flex flex-col px-5 pt-6">
+                    <nav className="space-y-2">
                         {navItems.map(({ name, path, icon }) => (
                             <NavLink
                                 to={path}
                                 end
                                 className={({ isActive }) =>
-                                    `flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${isActive ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-blue-100"
+                                    `flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${isActive ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-blue-50"
                                     }`
                                 }
                                 onClick={() => setIsOpen(false)}
@@ -72,7 +72,7 @@ const SideBar = () => {
                 <div className="p-4 text-center text-sm text-gray-400 border-t border-gray-200">
                     © 2025 Punjabi Pages
                 </div>
-            </div>
+            </aside>
 
             {isOpen && (
                 <div

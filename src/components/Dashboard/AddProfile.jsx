@@ -341,23 +341,23 @@ const AddProfile = () => {
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <SideBar />
+            {/* <SideBar /> */}
             <main className="flex-1 border-l border-gray-200">
-                <div className="max-w-5xl mx-auto bg-white p-4 sm:p-6 md:p-8 shadow-xl rounded-3xl">
-                    <div className="mb-10">
+                <div className="max-w-5xl mx-auto bg-[#f9fafb] p-4 sm:p-6 md:p-8 shadow-xl">
+                    <div className="border rounded-lg bg-white shadow-md p-3 px-5 mb-5">
                         <div className="flex items-center gap-3 mb-2">
-                            <Building2 className="w-8 h-8 text-blue-600" />
-                            <h2 className="text-3xl font-extrabold text-gray-800">
+                            <Building2 className="w-6 h-6 text-blue-600" />
+                            <h2 className="text-2xl font-extrabold text-gray-800">
                                 Create Business Profile
                             </h2>
                         </div>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-gray-500 text-xs">
                             Share your business details and grow your reach.
                         </p>
                     </div>
 
                     <form className="space-y-4">
-                        <section className="border rounded-xl shadow-sm bg-white p-4 sm:p-5 md:p-5">
+                        <section className="border rounded-xl shadow-md bg-white p-4 sm:p-5 md:p-5">
                             <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                 <Briefcase className="w-5 h-5 text-blue-600" />
                                 <span>Business Information</span>
@@ -547,7 +547,7 @@ const AddProfile = () => {
                                 </div>
                             </div>
                         </section>
-                        <section className="border rounded-xl shadow p-5">
+                        <section className="rounded-xl  p-5 shadow-md bg-white">
                             <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                 <Info className="w-5 h-5 text-blue-600" />
                                 <span>About Your Alternate Contacts</span>
@@ -587,7 +587,7 @@ const AddProfile = () => {
                                 </div>
                             </div>
                         </section>
-                        <section className="border rounded-xl shadow p-5">
+                        <section className="shadow-md bg-white rounded-xl  p-5">
                             <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                 <Info className="w-5 h-5 text-blue-600" />
                                 <span>About Your Business <span className="text-red-500">*</span></span>
@@ -615,7 +615,7 @@ const AddProfile = () => {
                             </div>
                         </section>
                         <section>
-                            <div className="border rounded-xl shadow p-5">
+                            <div className="shadow-md bg-white rounded-xl  p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <MapPin className="w-5 h-5 text-green-600" />
                                     <span>Address Information</span>
@@ -717,7 +717,7 @@ const AddProfile = () => {
                         </section>
 
                         <section>
-                            <div className="border rounded-xl shadow p-5">
+                            <div className="shadow-md bg-white rounded-xl  p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <MapPin className="w-5 h-5 text-green-600" />
                                     <span>Location</span>
@@ -754,7 +754,7 @@ const AddProfile = () => {
                         </section>
 
                         <section className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                            <div className="border rounded-xl shadow p-4 sm:p-5 bg-white">
+                            <div className="rounded-xl shadow-md p-4 sm:p-5 bg-white">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Clock className="w-5 h-5 text-purple-600" />
                                     <span>Business Hours</span>
@@ -824,7 +824,7 @@ const AddProfile = () => {
                                     <label className="text-sm text-gray-700">Open 24/7</label>
                                 </div>
                             </div>
-                            <section className="border rounded-xl shadow p-5">
+                            <section className=" rounded-xl shadow-md bg-white p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <CreditCard className="w-5 h-5 text-green-600" />
                                     Accepted Payment Methods
@@ -848,7 +848,7 @@ const AddProfile = () => {
                         </section>
                         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
                             <section>
-                                <div className="border rounded-xl shadow p-5">
+                                <div className=" rounded-xl shadow-md bg-white p-5">
                                     <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                         <Tag className="w-5 h-5 text-orange-600" />
                                         <span>Services Offered<span className="text-red-500">*</span></span>
@@ -891,7 +891,7 @@ const AddProfile = () => {
                                 </div>
                             </section>
 
-                            <section className="border rounded-xl shadow p-5">
+                            <section className=" rounded-xl shadow-md bg-white p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Tag className="w-5 h-5 text-pink-600" />
                                     <span>Keywords</span>
@@ -929,7 +929,7 @@ const AddProfile = () => {
                                 </div>
                             </section>
 
-                            <section className="border rounded-xl shadow p-5">
+                            <section className="border rounded-xl shadow-md bg-white p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Tag className="w-5 h-5 text-pink-600" />
                                     <span>ServiceAreas<span className="text-red-500">*</span></span>
@@ -971,7 +971,7 @@ const AddProfile = () => {
                                 </div>
                             </section>
 
-                            <section className="border rounded-xl shadow p-6">
+                            <section className="border rounded-xl shadow-md bg-white p-6">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Tag className="w-5 h-5 text-pink-600" />
                                     Certifications
@@ -1012,7 +1012,7 @@ const AddProfile = () => {
 
                         </div>
                         <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-2 gap-2">
-                            <section className="border rounded-xl shadow p-5">
+                            <section className="border rounded-xl shadow-md bg-white p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Share2 className="w-5 h-5 text-blue-600" />
                                     Social Media Links
@@ -1108,7 +1108,7 @@ const AddProfile = () => {
                                 </div>
                             </section>
                             <div className="space-y-2">
-                                <section className="border rounded-xl shadow p-5">
+                                <section className="border rounded-xl bg-white shadow-md p-5">
                                     <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
                                         <Upload className="w-5 h-5 text-blue-500" />
                                         Upload Photos or Videos
@@ -1122,7 +1122,7 @@ const AddProfile = () => {
                                         You can upload multiple files. Max 10MB each.
                                     </p>
                                 </section>
-                                <section className="border rounded-2xl shadow-sm bg-white p-5">
+                                <section className="border rounded-xl shadow-md bg-white p-5">
                                     <div className="flex items-center gap-2 mb-4">
                                         <Award className="w-5 h-5 text-yellow-600" />
                                         <h2 className="text-lg font-semibold">Additional Information</h2>
