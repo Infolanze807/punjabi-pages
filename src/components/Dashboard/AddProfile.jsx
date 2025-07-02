@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Building2, Phone, Globe, CreditCard, Upload, Clock, Tag, X, Plus, MapPin, Share2, Megaphone, Award, Info, Briefcase, Mail } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Building2, Phone, Globe, CreditCard, Upload, Clock, Tag, X, Plus, MapPin, Share2, Megaphone, Award, Info, Briefcase, Mail, Loader, LoaderCircle } from "lucide-react";
 import SideBar from "./SideBar";
 import { addProfile, updateMyBussiness } from "../../redux/features/dashboardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCategoryDropdown } from "../../redux/features/businessSlice";
+import { toast } from "react-toastify";
 
 const daysOfWeek = [
     "monday",
@@ -31,6 +32,13 @@ const AddProfile = () => {
     console.log("categoriesDropdown", categoriesDropdown);
 
     const [loading, setLoading] = useState(false);
+    const [loading1, setLoading1] = useState(false);
+    const [loading2, setLoading2] = useState(false);
+    const [file, setFile] = useState(null);
+    const [uploadedUrl, setUploadedUrl] = useState("");
+    const [imageUploadedUrl, setImageUploadedUrl] = useState([]);
+    console.log("imageUploadedUrl", imageUploadedUrl);
+
     const [formErrors, setFormErrors] = useState({});
     const [formData, setFormData] = useState({
         businessName: "",
@@ -171,6 +179,12 @@ const AddProfile = () => {
             },
         }));
     };
+    const handleRemoveImage = (indexToRemove) => {
+        setImageUploadedUrl(prev =>
+            prev.filter((_, index) => index !== indexToRemove)
+        );
+    };
+
 
     const validateForm = () => {
         const errors = {};
@@ -217,12 +231,23 @@ const AddProfile = () => {
                 coordinates: coord,
             },
         }));
+
+        console.log("Updated Coordinates:", {
+            latitude: coord[1],
+            longitude: coord[0],
+        });
     };
+
+    const latitude = formData.location.coordinates[1];
+    const longitude = formData.location.coordinates[0];
+
 
 
 
     useEffect(() => {
         if (isEdit && existingBusiness) {
+            setUploadedUrl(existingBusiness?.logoUrl)
+            setImageUploadedUrl(existingBusiness?.gallery)
             setFormData({
                 businessName: existingBusiness.businessName || "",
                 category: existingBusiness.category || "",
@@ -264,6 +289,80 @@ const AddProfile = () => {
         }
     }, [existingBusiness, isEdit]);
 
+    const handleLogoUpload = async (e) => {
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+
+        if (!selectedFile) return;
+
+        const data = new FormData();
+        data.append("file", selectedFile);
+        data.append("upload_preset", "unsigned_preset"); // Make sure this matches your Cloudinary settings
+
+        try {
+            setLoading1(true); // Optional: show loader
+            const response = await fetch("https://api.cloudinary.com/v1_1/dbgg7xvrm/image/upload", {
+                method: "POST",
+                body: data,
+            });
+
+            if (!response.ok) {
+                const errorJson = await response.json();
+                console.log("error", errorJson);
+
+                toast.error(errorJson?.error?.message || "Image upload failed");
+                return;
+            }
+
+            const json = await response.json();
+            if (json.secure_url) {
+                setUploadedUrl(json.secure_url);
+            } else {
+                // alert("❌ Logo upload failed: " + (json.error?.message || "Unknown error"));
+            }
+        } catch (err) {
+            // alert("Logo upload exception: " + err.message);
+        } finally {
+            setLoading1(false);
+        }
+    };
+
+    const handleImageUpload = async (e) => {
+        const selectedFile = e.target.files[0];
+        if (!selectedFile) return;
+
+        setFile(selectedFile);
+        setLoading2(true);
+
+        try {
+            const data = new FormData();
+            data.append("file", selectedFile);
+            data.append("upload_preset", "unsigned_preset");
+
+            const response = await fetch("https://api.cloudinary.com/v1_1/dbgg7xvrm/image/upload", {
+                method: "POST",
+                body: data,
+            });
+
+            const json = await response.json();
+
+            if (!response.ok) {
+                toast.error(json?.error?.message || "Image upload failed");
+                console.error("❌ Upload error:", json);
+                return;
+            }
+
+            if (json.secure_url) {
+                // Add this image URL to the array of uploaded URLs
+                setImageUploadedUrl(prev => [...prev, json.secure_url]);
+            }
+        } catch (err) {
+            alert("❌ Image upload exception: " + err.message);
+        } finally {
+            setLoading2(false);
+        }
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -272,8 +371,8 @@ const AddProfile = () => {
         const isValid = validateForm();
         if (!isValid) {
             setLoading(false);
-            return
-        };
+            return;
+        }
 
         const profileData = {
             // ...formData,
@@ -307,10 +406,8 @@ const AddProfile = () => {
                 publicHolidayNotes: formData.hours.publicHolidayNotes,
                 is24x7: formData.hours.is24x7,
             },
-            // logoUrl: "data:image/jpeg;base64,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",
-            gallery: [
-                "https://www.tastybites.com.au/gallery1.jpg",
-            ],
+            logoUrl: uploadedUrl,
+            gallery: imageUploadedUrl,
             introVideo: "https://www.youtube.com/watch?v=example",
             socialLinks: {
                 facebook: formData.facebook,
@@ -338,6 +435,53 @@ const AddProfile = () => {
             setLoading(false);
         }
     };
+
+    const mapRef = useRef(null);
+    const mapInstance = useRef(null);
+    const markerRef = useRef(null);
+
+    useEffect(() => {
+        const initMap = () => {
+            if (!window.google || !mapRef.current) return;
+
+            // Initialize map centered on India
+            mapInstance.current = new window.google.maps.Map(mapRef.current, {
+                center: { lat: 20.5937, lng: 78.9629 },
+                zoom: 5,
+            });
+
+            // On map click
+            mapInstance.current.addListener("click", (e) => {
+                const lat = e.latLng.lat();
+                const lng = e.latLng.lng();
+
+                // Show pin
+                if (markerRef.current) {
+                    markerRef.current.setMap(null);
+                }
+
+                markerRef.current = new window.google.maps.Marker({
+                    position: { lat, lng },
+                    map: mapInstance.current,
+                });
+
+                console.log("Clicked coordinates:", { latitude: lat, longitude: lng });
+            });
+        };
+
+        // Inject Google Maps script if not already loaded
+        if (!window.google) {
+            const script = document.createElement("script");
+            script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY`;
+            script.async = true;
+            script.defer = true;
+            script.onload = initMap;
+            document.head.appendChild(script);
+        } else {
+            initMap();
+        }
+    }, []);
+
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -722,39 +866,14 @@ const AddProfile = () => {
                                     <MapPin className="w-5 h-5 text-green-600" />
                                     <span>Location</span>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
-                                        <label htmlFor="latitude" className="block font-medium text-gray-700 mb-1 text-sm">
-                                            Latitude
-                                        </label>
-                                        <input
-                                            type="number"
-                                            id="latitude"
-                                            name="latitude"
-                                            value={formData.location?.coordinates?.[1] || ""}
-                                            onChange={(e) => handleCoordinateChange("latitude", e.target.value)}
-                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="longitude" className="block font-medium text-gray-700 mb-1 text-sm">
-                                            Longitude
-                                        </label>
-                                        <input
-                                            type="number"
-                                            id="longitude"
-                                            name="longitude"
-                                            value={formData.location?.coordinates?.[0] || ""}
-                                            onChange={(e) => handleCoordinateChange("longitude", e.target.value)}
-                                            className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
-                                        />
-                                    </div>
+                                <div className="w-full h-[500px]">
+                                    <div ref={mapRef} className="w-full h-full rounded-xl border" />
                                 </div>
                             </div>
                         </section>
 
-                        <section className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                            <div className="rounded-xl shadow-md p-4 sm:p-5 bg-white">
+                        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
+                            <section className="rounded-xl shadow-md p-4 sm:p-5 bg-white">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Clock className="w-5 h-5 text-purple-600" />
                                     <span>Business Hours</span>
@@ -823,29 +942,51 @@ const AddProfile = () => {
                                     />
                                     <label className="text-sm text-gray-700">Open 24/7</label>
                                 </div>
-                            </div>
-                            <section className=" rounded-xl shadow-md bg-white p-5">
-                                <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                    <CreditCard className="w-5 h-5 text-green-600" />
-                                    Accepted Payment Methods
-                                </div>
-
-                                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-10">
-                                    {paymentMethods.map((method) => (
-                                        <label key={method} className="flex items-center space-x-2 cursor-pointer">
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.selectedPayments.includes(method)}
-                                                onChange={() => togglePayment(method)}
-                                                className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
-                                            />
-                                            <span className="text-xs font-medium text-gray-700">{method}</span>
-                                        </label>
-                                    ))}
-                                </div>
-
                             </section>
-                        </section>
+                            <div className="space-y-2">
+                                <section className=" rounded-xl shadow-md bg-white p-5">
+                                    <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
+                                        <CreditCard className="w-5 h-5 text-green-600" />
+                                        Accepted Payment Methods
+                                    </div>
+
+                                    <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mt-10">
+                                        {paymentMethods.map((method) => (
+                                            <label key={method} className="flex items-center space-x-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.selectedPayments.includes(method)}
+                                                    onChange={() => togglePayment(method)}
+                                                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                                                />
+                                                <span className="text-xs font-medium text-gray-700">{method}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+
+                                </section>
+                                <section className="border rounded-xl bg-white shadow-md p-5">
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
+                                            <Upload className="w-5 h-5 text-blue-500" />
+                                            Upload Logo
+                                        </h3>
+                                        <div className="relative">
+                                            <input type="file" onChange={handleLogoUpload} className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs" />
+                                            {loading1 && (
+                                                <div className="absolute right-3 top-1.5"><LoaderCircle className="animate-spin w-6 text-[--main-color]" /></div>
+                                            )}
+                                        </div>
+                                        {uploadedUrl && (
+                                            <div className="mt-4 border p-2 rounded-md">
+                                                <p className="text-xs">Uploaded Image:</p>
+                                                <img src={uploadedUrl} alt="Uploaded Logo" className="h-24 mt-2" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
                             <section>
                                 <div className=" rounded-xl shadow-md bg-white p-5">
@@ -974,7 +1115,7 @@ const AddProfile = () => {
                             <section className="border rounded-xl shadow-md bg-white p-6">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Tag className="w-5 h-5 text-pink-600" />
-                                    Certifications
+                                    <span>Certifications</span>
                                 </div>
 
                                 <div className="space-y-4">
@@ -1011,7 +1152,7 @@ const AddProfile = () => {
                             </section>
 
                         </div>
-                        <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
                             <section className="border rounded-xl shadow-md bg-white p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
                                     <Share2 className="w-5 h-5 text-blue-600" />
@@ -1108,20 +1249,6 @@ const AddProfile = () => {
                                 </div>
                             </section>
                             <div className="space-y-2">
-                                <section className="border rounded-xl bg-white shadow-md p-5">
-                                    <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
-                                        <Upload className="w-5 h-5 text-blue-500" />
-                                        Upload Photos or Videos
-                                    </h3>
-                                    <input
-                                        type="file"
-                                        multiple
-                                        className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        You can upload multiple files. Max 10MB each.
-                                    </p>
-                                </section>
                                 <section className="border rounded-xl shadow-md bg-white p-5">
                                     <div className="flex items-center gap-2 mb-4">
                                         <Award className="w-5 h-5 text-yellow-600" />
@@ -1134,7 +1261,7 @@ const AddProfile = () => {
                                             <label htmlFor="promotions" className="block text-sm font-medium text-gray-700">
                                                 Current Promotions
                                             </label>
-                                            <div className="relative mt-1">
+                                            <div className="relative mt-2">
                                                 <Megaphone className="absolute left-3 top-2 w-4 h-4 text-gray-400" />
                                                 <textarea
                                                     id="promotions"
@@ -1150,6 +1277,58 @@ const AddProfile = () => {
                                     </div>
                                 </section>
                             </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
+                            <section className="border rounded-xl bg-white shadow-md p-5">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
+                                    <Upload className="w-5 h-5 text-blue-500" />
+                                    Upload Photos
+                                </h3>
+                                <div className="relative">
+                                    <input
+                                        type="file"
+                                        onChange={handleImageUpload}
+                                        className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
+                                    />
+                                    {loading2 && (
+                                        <div className="absolute right-3 top-1.5"><LoaderCircle className="animate-spin w-6 text-[--main-color]" /></div>
+                                    )}
+                                </div>
+                                {imageUploadedUrl.length > 0 && (
+                                    <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        {imageUploadedUrl.map((url, index) => (
+                                            <div key={index} className="relative border p-1 rounded-md">
+                                                {/* Remove button */}
+                                                <button
+                                                    onClick={() => handleRemoveImage(index)}
+                                                    className="absolute right-0.5 top-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center transition"
+                                                    title="Remove image"
+                                                >
+                                                    ×
+                                                </button>
+                                                <img
+                                                    src={url}
+                                                    alt={`Uploaded ${index + 1}`}
+                                                    className="h-24 w-full object-cover rounded"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </section>
+                            <section className="border rounded-xl bg-white shadow-md p-5">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
+                                    <Upload className="w-5 h-5 text-blue-500" />
+                                    Upload Video
+                                </h3>
+                                <input
+                                    type="file"
+                                    className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">
+                                    You can upload video.
+                                </p>
+                            </section>
                         </div>
                         <div className="pt-6 md:pt-8 text-right">
                             <button
