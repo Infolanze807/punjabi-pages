@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCategoryDropdown } from "../../redux/features/businessSlice";
 import { toast } from "react-toastify";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 const daysOfWeek = [
     "monday",
@@ -22,6 +25,13 @@ const hoursInit = daysOfWeek.reduce((acc, day) => {
     return acc;
 }, { publicHolidayNotes: "", is24x7: false });
 
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png",
+    iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
+});
+
 const AddProfile = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -37,8 +47,8 @@ const AddProfile = () => {
     const [file, setFile] = useState(null);
     const [uploadedUrl, setUploadedUrl] = useState("");
     const [imageUploadedUrl, setImageUploadedUrl] = useState([]);
-    console.log("imageUploadedUrl", imageUploadedUrl);
-
+    const [position, setPosition] = useState(null);
+    const [mapType, setMapType] = useState("default");
     const [formErrors, setFormErrors] = useState({});
     const [formData, setFormData] = useState({
         businessName: "",
@@ -436,51 +446,29 @@ const AddProfile = () => {
         }
     };
 
-    const mapRef = useRef(null);
-    const mapInstance = useRef(null);
-    const markerRef = useRef(null);
+    const LocationMarker = () => {
+        useMapEvents({
+            click(e) {
+                const { lat, lng } = e.latlng;
+                setFormData((prev) => ({
+                    ...prev,
+                    location: {
+                        type: "Point",
+                        coordinates: [lng, lat], // GeoJSON format
+                    },
+                }));
+                console.log("Clicked coordinates:", [lng, lat]);
+            },
+        });
 
-    useEffect(() => {
-        const initMap = () => {
-            if (!window.google || !mapRef.current) return;
+        const [lng, lat] = formData.location.coordinates;
 
-            // Initialize map centered on India
-            mapInstance.current = new window.google.maps.Map(mapRef.current, {
-                center: { lat: 20.5937, lng: 78.9629 },
-                zoom: 5,
-            });
+        return lng !== 0 && lat !== 0 ? (
+            <Marker position={[lat, lng]} />
+        ) : null;
+    };
 
-            // On map click
-            mapInstance.current.addListener("click", (e) => {
-                const lat = e.latLng.lat();
-                const lng = e.latLng.lng();
 
-                // Show pin
-                if (markerRef.current) {
-                    markerRef.current.setMap(null);
-                }
-
-                markerRef.current = new window.google.maps.Marker({
-                    position: { lat, lng },
-                    map: mapInstance.current,
-                });
-
-                console.log("Clicked coordinates:", { latitude: lat, longitude: lng });
-            });
-        };
-
-        // Inject Google Maps script if not already loaded
-        if (!window.google) {
-            const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY`;
-            script.async = true;
-            script.defer = true;
-            script.onload = initMap;
-            document.head.appendChild(script);
-        } else {
-            initMap();
-        }
-    }, []);
 
 
     return (
@@ -861,13 +849,24 @@ const AddProfile = () => {
                         </section>
 
                         <section>
-                            <div className="shadow-md bg-white rounded-xl  p-5">
+                            <div className="shadow-md bg-white rounded-xl p-5">
                                 <div className="flex items-center gap-2 mb-4 text-lg font-semibold text-gray-800">
-                                    <MapPin className="w-5 h-5 text-green-600" />
+                                    <span className="text-green-600">📍</span>
                                     <span>Location</span>
                                 </div>
-                                <div className="w-full h-[500px]">
-                                    <div ref={mapRef} className="w-full h-full rounded-xl border" />
+                                <div className="h-[300px] w-full mt-4 rounded-md overflow-hidden border border-gray-300">
+                                    <MapContainer
+                                        center={[-25.2744, 133.7751]} // Australia center
+                                        zoom={4}
+                                        scrollWheelZoom={true}
+                                        className="h-full w-full"
+                                    >
+                                        <TileLayer
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+                                        />
+                                        <LocationMarker />
+                                    </MapContainer>
                                 </div>
                             </div>
                         </section>
