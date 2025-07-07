@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowLeft,
   Star,
@@ -138,6 +138,14 @@ const BusinessDetailData = () => {
   const [activeTab, setActiveTab] = useState("about");
   const [selectedImage, setSelectedImage] = useState(0);
   const navigate = useNavigate();
+  const [galleryImages, setGalleryImages] = useState([]);
+
+  useEffect(() => {
+    if (business?.gallery?.length > 0) {
+      setGalleryImages(business.gallery);
+    }
+  }, [business]);
+
 
   const onBack = () => {
     navigate(-1);
@@ -246,7 +254,7 @@ const BusinessDetailData = () => {
           </div>
 
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border lg:h-[650px] h-96">
+            <div className="bg-white rounded-lg shadow-sm border lg:h-[600px] h-96">
               <iframe
                 width="100%"
                 height="100%"
@@ -325,21 +333,19 @@ const BusinessDetailData = () => {
           <h3 className="font-bold text-lg mb-4">Photos & Videos</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
             {/* Video Thumbnail */}
-            {/* {businessData.videos.map((video) => (
-              <div key={video.id} className="relative cursor-pointer group">
+            {business.introVideo && (
+              <div className="relative cursor-pointer group">
                 <img
-                  src={video.thumbnail || "/placeholder.svg"}
-                  alt={video.title}
+                  src={business.introVideo.thumbnail || "/placeholder.svg"}
+                  alt={business.introVideo.title || "Video"}
                   className="w-full h-20 object-cover rounded-lg"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
-                  <Play className="h-6 w-6 text-white" />
-                </div>
               </div>
-            ))} */}
+            )}
+
 
             {/* Photo Thumbnails */}
-            {business.gallery.map((image, index) => (
+            {galleryImages.map((image, index) => (
               <img
                 key={index}
                 src={image || "/placeholder.svg"}
@@ -348,6 +354,7 @@ const BusinessDetailData = () => {
                 onClick={() => setSelectedImage(index)}
               />
             ))}
+
           </div>
         </div>
 

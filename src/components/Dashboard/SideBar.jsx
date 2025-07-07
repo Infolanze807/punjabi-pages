@@ -12,12 +12,12 @@ const SideBar = () => {
 
     const navItems = [
         {
-            name: "My Profile",
+            name: "My Business",
             path: "/dashboard",
             icon: <User className="w-4 h-4" />,
         },
         {
-            name: "Add Profile",
+            name: "Add Business",
             path: "/addProfile",
             icon: <PlusSquare className="w-4 h-4" />,
         },

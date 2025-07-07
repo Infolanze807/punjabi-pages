@@ -3,7 +3,7 @@ import SideBar from "../components/Dashboard/SideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyBussiness } from "../redux/features/dashboardSlice";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Facebook, Instagram, Link2, Linkedin, Pencil } from "lucide-react";
 
 
 const formatTime = (time) => {
@@ -61,12 +61,12 @@ const Dashboard = () => {
               >
                 <ArrowLeft className="w-7 h-6" />
               </button>
-              <h1 className="text-3xl font-extrabold text-gray-900">
+              <h1 className="text-xl font-extrabold text-gray-900">
                 Business Details
               </h1>
             </div>
           ) : (
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
+            <h1 className="text-xl font-extrabold text-gray-900 mb-4">
               My Businesses
             </h1>
           )}
@@ -133,22 +133,12 @@ const Dashboard = () => {
                   className="w-24 h-24 rounded-full border border-gray-300 object-cover"
                 />
                 <div>
-                  <h1 className="text-3xl font-extrabold text-gray-900">
+                  <h1 className="text-2xl font-extrabold text-gray-900">
                     {selectedBusiness?.businessName}
                   </h1>
-                  <p className="text-lg text-gray-600">
+                  <p className="text-base text-gray-600">
                     {selectedBusiness?.category}
                   </p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {selectedBusiness?.keywords.map((keyword, i) => (
-                      <span
-                        key={i}
-                        className="bg-indigo-500 text-white px-3 py-1 rounded-xl text-xs font-semibold"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               </div>
               <div>
@@ -156,6 +146,7 @@ const Dashboard = () => {
                   onClick={handleUpdateClick}
                   className="inline-flex items-center gap-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-sm transition duration-200"
                 >
+                  <Pencil className="w-4 h-4" />
                   Update Business Profile
                 </button>
               </div>
@@ -181,243 +172,362 @@ const Dashboard = () => {
             <section className="bg-white p-6 rounded-xl shadow border min-h-[300px]">
               {/* Overview */}
               {activeTab === "overview" && (
-                <>
-                  <h2 className="text-xl font-bold mb-4">About Us</h2>
-                  <p className="text-gray-700 leading-relaxed">{selectedBusiness?.description}</p>
-                  <div className="mt-4 text-gray-600">
-                    <p>
-                      <strong>Established:</strong> {selectedBusiness?.establishedYear}
-                    </p>
-                    <p>
-                      <strong>ABN:</strong> {selectedBusiness?.abn}
-                    </p>
-                    <p>
-                      <strong>Promotions:</strong> {selectedBusiness?.promotions}
-                    </p>
-                    <p>
-                      <strong>Service Areas:</strong> {selectedBusiness?.serviceAreas.join(", ")}
-                    </p>
+                <section className="">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-1">About Us</h2>
+
+                  <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                    <span className="font-semibold">Description:</span><br />
+                    {selectedBusiness?.description || "-"}
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+                    <div className="flex flex-col">
+                      <span className="text-gray-500 text-xs">Category :</span>
+                      <span className="font-medium">{selectedBusiness?.category || "-"}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-500 text-xs">Subcategory :</span>
+                      <span className="font-medium">{selectedBusiness?.subCategory || "-"}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-500 text-xs">Established Year :</span>
+                      <span className="font-medium">{selectedBusiness?.establishedYear || "-"}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-500 text-xs">ABN :</span>
+                      <span className="font-medium">{selectedBusiness?.abn || "-"}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-500 text-xs">Promotions :</span>
+                      <span className="font-medium">{selectedBusiness?.promotions || "-"}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-500 text-xs">Service Areas :</span>
+                      <span className="font-medium break-words">
+                        {selectedBusiness?.serviceAreas?.join(", ") || "-"}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-500 text-xs">Keyword :</span>
+                      <span className="font-medium break-words">
+                        {selectedBusiness?.keywords?.join(", ") || "-"}
+                      </span>
+                    </div>
                   </div>
-                </>
+                </section>
               )}
 
               {/* Details */}
               {activeTab === "details" && (
                 <>
-                  <h2 className="text-2xl font-bold mb-4">Business Details</h2>
+                  <section className="space-y-10">
 
-                  {/* Address */}
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-2">Address</h3>
-                    <p className="text-gray-700">
-                      {selectedBusiness?.address?.street}, {selectedBusiness?.address?.suburb},{" "}
-                      {selectedBusiness?.address?.state} {selectedBusiness?.address?.postcode}
-                    </p>
-                  </div>
+                    {/* Business Details Header */}
+                    <div>
+                      <h2 className="text-2xl font-extrabold text-gray-800 border-b pb-2 mb-4">
+                        Business Details
+                      </h2>
+                    </div>
 
-                  {/* Hours */}
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-2">Opening Hours</h3>
-                    <table className="w-full text-left text-gray-700">
-                      <tbody>
-                        {Object.entries(selectedBusiness?.hours || {})
-                          .filter(([key]) =>
-                            ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].includes(key)
-                          )
-                          .map(([day, time]) => (
-                            <tr key={day} className="border-b border-gray-200">
-                              <td className="capitalize py-1 font-medium">{day}</td>
-                              <td className="py-1">
-                                {time.open === "00:00" && time.close === "00:00"
-                                  ? "Closed"
-                                  : `${formatTime(time.open)} - ${formatTime(time.close)}`}
-                              </td>
+                    {/* Address */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-2">Address</h3>
+                      <p className="text-gray-600 leading-relaxed text-sm">
+                        {selectedBusiness?.address?.street}, {selectedBusiness?.address?.suburb},{" "}
+                        {selectedBusiness?.address?.state} {selectedBusiness?.address?.postcode}
+                      </p>
+                    </div>
+
+                    {/* Opening Hours */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-3">Opening Hours</h3>
+                      <div className="overflow-x-auto shadow-md rounded-lg border border-gray-200">
+                        <table className="w-full text-left text-sm text-gray-700">
+                          <thead className="bg-gray-100 text-gray-600 uppercase text-xs tracking-wide">
+                            <tr>
+                              <th className="px-4 py-3 border-b border-gray-200">Day</th>
+                              <th className="px-4 py-3 border-b border-gray-200"></th>
+                              <th className="px-4 py-3 border-b border-gray-200">Hours</th>
                             </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                    {selectedBusiness?.hours?.publicHolidayNotes && (
-                      <p className="mt-2 text-sm italic text-gray-500">
-                        {selectedBusiness?.hours?.publicHolidayNotes}
-                      </p>
-                    )}
+                          </thead>
+                          <tbody>
+                            {Object.entries(selectedBusiness?.hours || {})
+                              .filter(([key]) =>
+                                ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].includes(key)
+                              )
+                              .map(([day, time]) => (
+                                <tr key={day} className="hover:bg-gray-50 transition">
+                                  <td className="capitalize px-4 py-3 border-b border-gray-200 font-medium text-gray-600">
+                                    {day}
+                                  </td>
+                                  <td className="capitalize px-4 py-3 border-b border-gray-200 font-medium text-gray-600"></td>
+                                  <td className="px-4 py-3 border-b border-gray-200 text-gray-700">
+                                    {time.open === "00:00" && time.close === "00:00"
+                                      ? "Closed"
+                                      : `${formatTime(time.open)} - ${formatTime(time.close)}`}
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
 
-                    {selectedBusiness?.hours?.is24x7 && (
-                      <p className="mt-2 text-sm italic text-green-600 font-semibold">
-                        Open 24 x 7
-                      </p>
-                    )}
 
-                  </div>
+                      {selectedBusiness?.hours?.publicHolidayNotes && (
+                        <p className="mt-2 text-sm italic text-gray-500">
+                          {selectedBusiness.hours.publicHolidayNotes}
+                        </p>
+                      )}
 
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-2">Social Links</h3>
-                    <ul className="flex flex-wrap gap-4 text-indigo-600">
-                      {selectedBusiness?.socialLinks.facebook && (
-                        <li>
-                          <a
-                            href={selectedBusiness?.socialLinks.facebook}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="underline"
-                          >
-                            Facebook
-                          </a>
-                        </li>
+                      {(selectedBusiness?.hours?.is24x7 === true || selectedBusiness?.hours?.is24x7 === "true") && (
+                        <p className="mt-2 text-sm font-semibold text-green-600">
+                          ✅ Open 24 x 7
+                        </p>
                       )}
-                      {selectedBusiness?.socialLinks.instagram && (
-                        <li>
-                          <a
-                            href={selectedBusiness?.socialLinks.instagram}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="underline"
-                          >
-                            Instagram
-                          </a>
-                        </li>
-                      )}
-                      {selectedBusiness?.socialLinks.linkedin && (
-                        <li>
-                          <a
-                            href={selectedBusiness?.socialLinks.linkedin}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="underline"
-                          >
-                            LinkedIn
-                          </a>
-                        </li>
-                      )}
-                      {selectedBusiness?.socialLinks.others.length > 0 &&
-                        selectedBusiness?.socialLinks.others.map((url, i) => (
-                          <li key={i}>
+                    </div>
+
+                    {/* Social Links */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4">Social Links</h3>
+
+                      {selectedBusiness?.socialLinks &&
+                        (selectedBusiness.socialLinks.facebook ||
+                          selectedBusiness.socialLinks.instagram ||
+                          selectedBusiness.socialLinks.linkedin ||
+                          (selectedBusiness.socialLinks.others?.length > 0)) ? (
+                        <div className="flex flex-wrap gap-4">
+                          {selectedBusiness.socialLinks.facebook && (
                             <a
+                              href={selectedBusiness.socialLinks.facebook}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg hover:bg-blue-100 transition"
+                            >
+                              <Facebook className="w-5 h-5" />
+                              <span>Facebook</span>
+                            </a>
+                          )}
+                          {selectedBusiness.socialLinks.instagram && (
+                            <a
+                              href={selectedBusiness.socialLinks.instagram}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-700 border border-pink-100 rounded-lg hover:bg-pink-100 transition"
+                            >
+                              <Instagram className="w-5 h-5" />
+                              <span>Instagram</span>
+                            </a>
+                          )}
+                          {selectedBusiness.socialLinks.linkedin && (
+                            <a
+                              href={selectedBusiness.socialLinks.linkedin}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg hover:bg-blue-100 transition"
+                            >
+                              <Linkedin className="w-5 h-5" />
+                              <span>LinkedIn</span>
+                            </a>
+                          )}
+                          {selectedBusiness.socialLinks.others?.map((url, i) => (
+                            <a
+                              key={i}
                               href={url}
                               target="_blank"
                               rel="noreferrer"
-                              className="underline"
+                              className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-100 transition"
                             >
-                              Other {i + 1}
+                              <Link2 className="w-5 h-5" />
+                              <span>Other {i + 1}</span>
                             </a>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">No social links available.</p>
+                      )}
+                    </div>
 
-                  {/* Certifications */}
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Certifications</h3>
-                    <ul className="list-disc pl-5 text-gray-700">
-                      {selectedBusiness?.certifications.map((cert, i) => (
-                        <li key={i}>{cert}</li>
-                      ))}
-                    </ul>
-                  </div>
+
+
+                    {/* Certifications */}
+
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                        <BadgeCheck className="w-5 h-5 text-green-600" />
+                        Certifications
+                      </h3>
+
+                      {selectedBusiness?.certifications?.length > 0 ? (
+                        <ul className="grid sm:grid-cols-2 gap-3">
+                          {selectedBusiness.certifications.map((cert, i) => (
+                            <li
+                              key={i}
+                              className="flex items-start gap-2 p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
+                            >
+                              <span className="mt-1 w-2 h-2 bg-green-500 rounded-full"></span>
+                              <p className="text-sm text-gray-700 font-medium leading-snug">{cert}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-gray-500">No certifications listed.</p>
+                      )}
+                    </div>
+                  </section>
                 </>
               )}
 
               {/* Services */}
               {activeTab === "services" && (
                 <>
-                  <h2 className="text-2xl font-bold mb-4">Our Services</h2>
-                  <ul className="list-disc pl-6 text-gray-700">
-                    {selectedBusiness?.services.map((service, i) => (
-                      <li key={i}>{service}</li>
-                    ))}
-                  </ul>
-                  <div className="mt-6">
-                    <h3 className="text-xl font-semibold mb-2">Payment Methods</h3>
-                    <ul className="list-disc pl-5 text-gray-700">
-                      {selectedBusiness?.paymentMethods.map((method, i) => (
-                        <li key={i}>{method}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  <section>
+                    <h2 className="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-2">Our Services</h2>
+
+                    {selectedBusiness?.services?.length > 0 ? (
+                      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 list-disc px-6 text-gray-700 text-sm leading-relaxed">
+                        {selectedBusiness.services.map((service, i) => (
+                          <li key={i}>{service}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-500 italic">No services listed.</p>
+                    )}
+
+                    <div className="mt-8">
+                      <h3 className="text-xl font-bold text-gray-800 mb-4 border-b pb-1">Accepted Payment Methods</h3>
+
+                      {selectedBusiness?.paymentMethods?.length > 0 ? (
+                        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 list-disc pl-6 space-y-2 text-gray-700 text-sm leading-relaxed">
+                          {selectedBusiness.paymentMethods.map((method, i) => (
+                            <li key={i}>{method}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 italic">No payment methods listed.</p>
+                      )}
+                    </div>
+                  </section>
                 </>
               )}
+
 
               {/* Media */}
               {activeTab === "media" && (
                 <>
-                  <h2 className="text-2xl font-bold mb-6">Gallery</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                    {selectedBusiness?.gallery.map((img, i) => (
-                      <img
-                        key={i}
-                        src={img}
-                        alt={`Gallery ${i + 1}`}
-                        className="rounded-lg object-cover w-full h-48 shadow-sm border"
-                      />
-                    ))}
-                  </div>
-                  <h2 className="text-2xl font-bold mb-4">Intro Video</h2>
-                  <div className="aspect-w-16 aspect-h-9 max-w-4xl">
-                    <iframe
-                      src={selectedBusiness?.introVideo}
-                      title="Intro Video"
-                      allowFullScreen
-                      className="w-full h-64 rounded-lg shadow"
-                    />
-                  </div>
+                  <section className="">
+
+                    {/* Gallery Section */}
+                    <h2 className="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-2">Gallery</h2>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+                      {selectedBusiness?.gallery?.length > 0 ? (
+                        selectedBusiness.gallery.map((img, i) => (
+                          <div
+                            key={i}
+                            className="relative overflow-hidden rounded-xl group shadow hover:shadow-lg transition-all duration-300 border"
+                          >
+                            <img
+                              src={img}
+                              alt={`Gallery ${i + 1}`}
+                              className="w-full h-52 object-cover transform group-hover:scale-105 transition-all duration-300"
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-gray-500 italic">No images available.</p>
+                      )}
+                    </div>
+
+                    {/* Intro Video Section */}
+                    <h2 className="text-2xl font-extrabold text-gray-800 mb-4 border-b pb-2">Intro Video</h2>
+
+                    {selectedBusiness?.introVideo ? (
+                      <div className="relative w-full h-0 pb-[35.25%] rounded-xl overflow-hidden shadow-lg">
+                        <iframe
+                          src={selectedBusiness.introVideo}
+                          title="Intro Video"
+                          allowFullScreen
+                          className="absolute top-0 left-0 w-full h-full rounded-xl border"
+                        />
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 italic">No intro video available.</p>
+                    )}
+                  </section>
                 </>
               )}
+
 
               {/* Contact */}
               {activeTab === "contact" && (
                 <>
-                  <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
+                  <section className="">
+                    <h2 className="text-2xl font-extrabold text-gray-800 mb-6 border-b pb-2">Contact Information</h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <p>
-                        <strong>Primary Contact Person:</strong> {selectedBusiness?.contactPerson}
-                      </p>
-                      <p>
-                        <strong>Phone:</strong> {selectedBusiness?.phone}
-                      </p>
-                      <p>
-                        <strong>Email:</strong>{" "}
-                        <a
-                          href={`mailto:${selectedBusiness?.email}`}
-                          className="text-indigo-600 underline"
-                        >
-                          {selectedBusiness?.email}
-                        </a>
-                      </p>
-                      <p>
-                        <strong>Website:</strong>{" "}
-                        <a
-                          href={selectedBusiness?.website}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-indigo-600 underline"
-                        >
-                          {selectedBusiness?.website}
-                        </a>
-                      </p>
-                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700 text-sm leading-relaxed">
 
-                    <div className="space-y-2">
-                      <p>
-                        <strong>Alternate Phone:</strong> {selectedBusiness?.alternateContacts?.phone}
-                      </p>
-                      <p>
-                        <strong>Alternate Email:</strong>{" "}
-                        <a
-                          href={`mailto:${selectedBusiness?.alternateContacts?.email}`}
-                          className="text-indigo-600 underline"
-                        >
-                          {selectedBusiness?.alternateContacts?.email}
-                        </a>
-                      </p>
-                      <p>
-                        <strong>Address:</strong>{" "}
-                        {selectedBusiness?.address?.street}, {selectedBusiness?.address?.suburb},{" "}
-                        {selectedBusiness?.address?.state} {selectedBusiness?.address?.postcode}
-                      </p>
+                      {/* Left Column */}
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-1"><i className="fas fa-user-circle"></i></span>
+                          <p><strong>Primary Contact:</strong> {selectedBusiness?.contactPerson || "-"}</p>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-1"><i className="fas fa-phone"></i></span>
+                          <p><strong>Phone:</strong> {selectedBusiness?.phone || "-"}</p>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-1"><i className="fas fa-envelope"></i></span>
+                          <p>
+                            <strong>Email:</strong>{" "}
+                            <a href={`mailto:${selectedBusiness?.email}`} className="text-indigo-600 underline">
+                              {selectedBusiness?.email || "-"}
+                            </a>
+                          </p>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-1"><i className="fas fa-globe"></i></span>
+                          <p>
+                            <strong>Website:</strong>{" "}
+                            <a href={selectedBusiness?.website} target="_blank" rel="noreferrer" className="text-indigo-600 underline">
+                              {selectedBusiness?.website || "-"}
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right Column */}
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-1"><i className="fas fa-phone-alt"></i></span>
+                          <p><strong>Alt. Phone:</strong> {selectedBusiness?.alternateContacts?.phone || "-"}</p>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-1"><i className="fas fa-envelope-open-text"></i></span>
+                          <p>
+                            <strong>Alt. Email:</strong>{" "}
+                            <a href={`mailto:${selectedBusiness?.alternateContacts?.email}`} className="text-indigo-600 underline">
+                              {selectedBusiness?.alternateContacts?.email || "-"}
+                            </a>
+                          </p>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-1"><i className="fas fa-map-marker-alt"></i></span>
+                          <p>
+                            <strong>Address:</strong>{" "}
+                            {selectedBusiness?.address
+                              ? `${selectedBusiness?.address?.street}, ${selectedBusiness?.address?.suburb}, ${selectedBusiness?.address?.state} ${selectedBusiness?.address?.postcode}`
+                              : "-"}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </section>
                 </>
               )}
             </section>
