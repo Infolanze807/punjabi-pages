@@ -15,10 +15,10 @@ const PrivateLayout = () => {
         return <Navigate to="/login" replace />;
     }
 
-    const handleLogout = () => {
-        dispatch(logout());
-        navigate('/');
-    };
+    // const handleLogout = () => {
+    //     dispatch(logout());
+    //     navigate('/');
+    // };
 
     return (
         <div className="h-screen flex flex-col">
@@ -38,12 +38,12 @@ const PrivateLayout = () => {
                     <span className="text-gray-800 font-medium text-sm">
                         Welcome, {user?.name || 'User'}
                     </span>
-                    <button
+                    {/* <button
                         onClick={handleLogout}
                         className="bg-red-500 text-white px-4 py-2 rounded-md text-sm hover:bg-red-600 transition duration-200"
                     >
                         Logout
-                    </button>
+                    </button> */}
                 </div>
             </header>
             {/* Sidebar - sticky to the left */}

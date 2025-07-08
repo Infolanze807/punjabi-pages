@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import heroimage from "../../assets/architecture-ancient-monument-world-heritage-day-celebration.jpg";
 import { Button, CardBody, IconButton, Input, Option, Select, Typography } from '@material-tailwind/react';
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid"
@@ -9,7 +9,7 @@ import Registration02 from './Registration02';
 import Registration03 from './Registration03';
 import Registration04 from './Registration04';
 import { useDispatch, useSelector } from 'react-redux';
-import { register, verifyEmail } from '../../redux/features/authSlice';
+import { register, resendOtp, verifyEmail } from '../../redux/features/authSlice';
 
 const Registration = () => {
     const dispatch = useDispatch();
@@ -17,6 +17,8 @@ const Registration = () => {
     const { loading } = useSelector((state) => state.auth);
     const [step, setStep] = useState("register");
     const [registeredEmail, setRegisteredEmail] = useState("");
+    const [timer, setTimer] = useState(60);
+    const [canResend, setCanResend] = useState(false);
 
     const [otp, setOtp] = useState("");
     const [otpError, setOtpError] = useState("");
@@ -31,6 +33,14 @@ const Registration = () => {
         password: "",
     })
 
+    useEffect(() => {
+        if (timer > 0) {
+            const timeout = setTimeout(() => setTimer((prev) => prev - 1), 1000);
+            return () => clearTimeout(timeout);
+        } else {
+            setCanResend(true);
+        }
+    }, [timer]);
 
 
     const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur)
@@ -100,6 +110,23 @@ const Registration = () => {
             console.error("Registration failed:", err);
         }
     }
+
+    const handleResendOtp = async () => {
+        if (!registeredEmail) {
+            toast.error("Email not found.");
+            return;
+        }
+
+        try {
+            await dispatch(resendOtp({ email: registeredEmail })).unwrap();
+            setTimer(60);
+            setCanResend(false);
+        } catch (error) {
+            console.error("Resend OTP failed:", error);
+        }
+    };
+
+
 
     return (
         <div>
@@ -271,10 +298,14 @@ const Registration = () => {
                                             Didn’t receive the code?{" "}
                                             <button
                                                 type="button"
-                                                // onClick={handleResendOtp}
-                                                className="text-[--second-color] hover:underline font-medium"
+                                                onClick={handleResendOtp}
+                                                disabled={!canResend}
+                                                className={`font-medium transition ${canResend
+                                                    ? "text-[--second-color] hover:underline"
+                                                    : "text-gray-400 cursor-not-allowed"
+                                                    }`}
                                             >
-                                                Resend OTP
+                                                {canResend ? "Resend OTP" : `Resend in ${timer}s`}
                                             </button>
                                         </Typography>
                                     </div>

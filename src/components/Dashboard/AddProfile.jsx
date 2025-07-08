@@ -475,7 +475,7 @@ const AddProfile = () => {
         <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
             {/* <SideBar /> */}
             <main className="flex-1 border-l border-gray-200">
-                <div className="max-w-5xl mx-auto bg-[#f9fafb] p-4 sm:p-6 md:p-8 shadow-xl">
+                <div className="max-w-5xl mx-auto bg-[#f4f8fe] p-4 sm:p-6 md:p-8 shadow-xl">
                     <div className="border rounded-lg bg-white shadow-md p-3 px-5 mb-5">
                         <div className="flex items-center gap-3 mb-2">
                             <Building2 className="w-6 h-6 text-blue-600" />

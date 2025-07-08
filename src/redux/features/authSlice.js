@@ -63,6 +63,17 @@ export const resetPassword = createAsyncThunk("auth/resetPassword", async (reset
   }
 });
 
+export const resendOtp = createAsyncThunk("auth/resendOtp", async (resendOtpData) => {
+  try {
+    const response = await axiosConfig.post("auth/resend-registration-otp", resendOtpData);
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data?.error || error.message || "Something went wrong"
+    );
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -153,6 +164,19 @@ const authSlice = createSlice({
         toast.success(state.message);
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
+      .addCase(resendOtp.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(resendOtp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        toast.success(state.message);
+      })
+      .addCase(resendOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
         toast.error(state.error);
