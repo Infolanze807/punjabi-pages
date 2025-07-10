@@ -84,7 +84,7 @@ const SideBar = () => {
                                     `flex items-center gap-3 px-4 py-3 mb-2 rounded-xl transition-all duration-200 text-sm font-medium relative
                                     ${isActive
                                         ? "bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 border border-blue-200 shadow-sm"
-                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                        : "text-gray-600 hover:bg-gray-50 hover:text-indigo-700"
                                     }`
                                 }
                                 onClick={() => setIsOpen(false)}
