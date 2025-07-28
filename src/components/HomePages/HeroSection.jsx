@@ -2,16 +2,27 @@ import { Button } from "@material-tailwind/react";
 import { Search } from "lucide-react";
 import heroimage from "../../assets/architecture-ancient-monument-world-heritage-day-celebration.jpg";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
-import { getBusinessCategory } from "../../redux/features/businessSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { getBusinessCategory, getCities } from "../../redux/features/businessSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export function HeroSection() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { cities } = useSelector((state) => state.business);
+
   const [searchTerm, setSearchTerm] = useState();
+  const [selectedCity, setSelectedCity] = useState("");
+  
+
+  useEffect(() => {
+    dispatch(getCities());
+  }, []);
+
+
+  console.log("cities", cities);
 
 
   // const handleSearch = async () => {
@@ -75,17 +86,19 @@ export function HeroSection() {
               <div className="relative">
                 <select
                   className="w-full appearance-none rounded-md border border-gray-300 bg-white px-3 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  //   defaultValue=""
-                  placeholder="Select"
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
                 >
                   <option value="" disabled>
                     Select Location
                   </option>
-                  <option value="melbourne">Melbourne, VIC</option>
-                  <option value="sydney">Sydney, NSW</option>
-                  <option value="brisbane">Brisbane, QLD</option>
-                  <option value="perth">Perth, WA</option>
-                  <option value="adelaide">Adelaide, SA</option>
+
+                  {Array.isArray(cities) &&
+                    cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <svg

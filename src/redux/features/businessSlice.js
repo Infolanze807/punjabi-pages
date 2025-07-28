@@ -37,12 +37,27 @@ export const getCategoryDropdown = createAsyncThunk(
   }
 );
 
+export const getCities = createAsyncThunk(
+  "business/getCities",
+  async () => {
+    try {
+      const response = await axiosConfig.get("location/cities");
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data?.error || error.message || "Something went wrong"
+      );
+    }
+  }
+);
+
 
 const businessSlice = createSlice({
   name: "business",
   initialState: {
     BusinessCategory: [],
-    categoriesDropdown:[],
+    categoriesDropdown: [],
+    cities: [],
     loading: false,
     error: null,
     message: null,
@@ -74,6 +89,20 @@ const businessSlice = createSlice({
         // toast.success(action.payload.message);
       })
       .addCase(getCategoryDropdown.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
+      .addCase(getCities.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getCities.fulfilled, (state, action) => {
+        state.loading = false;
+        state.cities = action.payload?.cities || [];
+        state.message = action.payload.message;
+        // toast.success(action.payload.message);
+      })
+      .addCase(getCities.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
         toast.error(state.error);

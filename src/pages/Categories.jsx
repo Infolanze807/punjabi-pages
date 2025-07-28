@@ -1,5 +1,5 @@
 import { Search, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../components/ui/input";
 import {
   Select,
@@ -10,8 +10,8 @@ import {
 } from "../components/ui/select";
 import { Button } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getBusinessCategory } from "../redux/features/businessSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getBusinessCategory, getCities } from "../redux/features/businessSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 const cityCategories = {
@@ -82,9 +82,15 @@ const Categories = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  const { cities } = useSelector((state) => state.business);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
+  useEffect(() => {
+    dispatch(getCities());
+  }, []);
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
@@ -128,34 +134,38 @@ const Categories = () => {
                   Location
                 </label>
                 <div className="relative">
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Location" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="sydney">Sydney, NSW</SelectItem>
-                      <SelectItem value="melbourne">Melbourne, VIC</SelectItem>
-                      <SelectItem value="brisbane">Brisbane, QLD</SelectItem>
-                      <SelectItem value="adelaide">Adelaide, SA</SelectItem>
-                      <SelectItem value="perth">Perth, WA</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <select
+                    className="w-full appearance-none rounded-md border border-gray-300 bg-white px-3 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={selectedCity}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Select Location
+                    </option>
+
+                    {Array.isArray(cities) &&
+                      cities.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                  </select>
                   <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                 </div>
               </div>
-                <Button
-                  onClick={handleSearch}
-                  className="p-0"
-                >
-                  <Link to={"/business-details"}>
-                    <div
-                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8 py-3 rounded-md transition-colors w-full md:w-auto font-medium"
-                    >
-                      <Search className="h-4 w-4" />
-                      <span>Search</span>
-                    </div>
-                  </Link>
-                </Button>
+              <Button
+                onClick={handleSearch}
+                className="p-0"
+              >
+                <Link to={"/business-details"}>
+                  <div
+                    className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-8 py-3 rounded-md transition-colors w-full md:w-auto font-medium"
+                  >
+                    <Search className="h-4 w-4" />
+                    <span>Search</span>
+                  </div>
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
