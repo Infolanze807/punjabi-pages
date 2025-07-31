@@ -5,12 +5,14 @@ import categories from "./enum";
 
 export const getBusinessCategory = createAsyncThunk(
   "business/getBusinessCategory",
-  async ({ category, keyword, page }, { rejectWithValue }) => {
+  async ({ category, subCategory, keyword, page, city }, { rejectWithValue }) => {
     try {
       let url = `/businesses/search?`;
 
       if (category) url += `category=${encodeURIComponent(category)}&`;
+      if (subCategory) url += `subCategory=${encodeURIComponent(subCategory)}&`;
       if (keyword) url += `keyword=${encodeURIComponent(keyword)}&`;
+      if (city) url += `city=${encodeURIComponent(city)}&`;
       if (page !== undefined && page !== null) url += `page=${page}`;
 
       const response = await axiosConfig.get(url);
@@ -22,6 +24,7 @@ export const getBusinessCategory = createAsyncThunk(
     }
   }
 );
+
 
 export const getCategoryDropdown = createAsyncThunk(
   "business/getCategoryDropdown",
@@ -51,6 +54,33 @@ export const getCities = createAsyncThunk(
   }
 );
 
+export const getFeatureBusiness = createAsyncThunk(
+  "business/getFeatureBusiness",
+  async () => {
+    try {
+      const response = await axiosConfig.get("businesses/feature");
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data?.error || error.message || "Something went wrong"
+      );
+    }
+  }
+);
+
+export const getStates = createAsyncThunk(
+  "business/getStates",
+  async () => {
+    try {
+      const response = await axiosConfig.get("location/states");
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data?.error || error.message || "Something went wrong"
+      );
+    }
+  }
+);
 
 const businessSlice = createSlice({
   name: "business",
@@ -58,6 +88,8 @@ const businessSlice = createSlice({
     BusinessCategory: [],
     categoriesDropdown: [],
     cities: [],
+    states: [],
+    featureBusiness: [],
     loading: false,
     error: null,
     message: null,
@@ -106,7 +138,35 @@ const businessSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
         toast.error(state.error);
-      });
+      })
+      .addCase(getFeatureBusiness.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getFeatureBusiness.fulfilled, (state, action) => {
+        state.loading = false;
+        state.featureBusiness = action.payload.data;
+        state.message = action.payload.message;
+        // toast.success(action.payload.message);
+      })
+      .addCase(getFeatureBusiness.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
+      .addCase(getStates.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getStates.fulfilled, (state, action) => {
+        state.loading = false;
+        state.states = action.payload;
+        state.message = action.payload.message;
+        // toast.success(action.payload.message);
+      })
+      .addCase(getStates.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
   },
 });
 

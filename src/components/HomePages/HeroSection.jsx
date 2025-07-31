@@ -13,9 +13,9 @@ export function HeroSection() {
 
   const { cities } = useSelector((state) => state.business);
 
-  const [searchTerm, setSearchTerm] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
-  
+
 
   useEffect(() => {
     dispatch(getCities());
@@ -24,25 +24,25 @@ export function HeroSection() {
 
   console.log("cities", cities);
 
-
-  // const handleSearch = async () => {
-  //   if (!searchTerm.trim()) return;
-
-  //   try {
-  //     const actionResult = await dispatch(getBusinessCategory({ keyword: searchTerm }));
-  //     const data = unwrapResult(actionResult);
-  //     console.log("xdcfvgbhnjmk", data);
-  //     navigate(`/business-details?keyword=${encodeURIComponent(searchTerm)}`);
-  //   } catch (err) {
-  //     console.error("search failed", err);
-  //   } 
-  // }
-
   const handleSearch = async () => {
-    if (!searchTerm.trim()) return;
-    await dispatch(getBusinessCategory({ keyword: searchTerm }));
-    navigate("/business-details", { state: { selectedCategory: searchTerm } });
+    if (!searchTerm.trim() && !selectedCity.trim()) return;
+  
+    await dispatch(
+      getBusinessCategory({
+        keyword: searchTerm,
+        city: selectedCity
+      })
+    );
+  
+    navigate("/business-details", {
+      state: {
+        selectedCategory: searchTerm,
+        location: selectedCity
+      }
+    });
   };
+  
+
 
   return (
     <section

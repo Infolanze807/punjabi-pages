@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getBusinessCategory, getCities } from "../redux/features/businessSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
+import categories from "../redux/features/enum";
 
 const cityCategories = {
   Sydney: [
@@ -93,9 +94,77 @@ const Categories = () => {
   }, []);
 
   const handleSearch = async () => {
-    if (!searchTerm.trim()) return;
-    await dispatch(getBusinessCategory({ keyword: searchTerm }));
-    navigate("/business-details", { state: { selectedCategory: searchTerm } });
+    if (!searchTerm.trim() && !selectedCity.trim()) return;
+    await dispatch(
+      getBusinessCategory({
+        keyword: searchTerm,
+        city: selectedCity,
+      })
+    );
+    navigate("/business-details", {
+      state: {
+        selectedCategory: searchTerm,
+        location: selectedCity
+      }
+    });
+  };
+
+  const uniqueSubcategories = Array.from(
+    new Set(categories.flatMap(cat => cat.category))
+  );
+
+  const handleClickCategoryOnly = async (category) => {
+    if (!category.trim()) return;
+
+    try {
+      setLoading(true);
+      const resultAction = await dispatch(
+        getBusinessCategory({
+          keyword: "", // You can leave this empty or use category if needed
+          city: selectedCity,
+          category: category, // explicitly pass category
+        })
+      );
+      unwrapResult(resultAction);
+
+      navigate("/business-details", {
+        state: {
+          selectedCategory: category,
+          location: selectedCity,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCityCategoryClick = async (city, subCategory) => {
+    if (!subCategory.trim() || !city.trim()) return;
+
+    try {
+      setLoading(true);
+      const resultAction = await dispatch(
+        getBusinessCategory({
+          keyword: "", // optional
+          city: city,
+          subCategory: subCategory,
+        })
+      );
+      unwrapResult(resultAction);
+
+      navigate("/business-details", {
+        state: {
+          selectedCategory: subCategory,
+          location: city,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching businesses:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -189,17 +258,16 @@ const Categories = () => {
                 <h3 className="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-blue-100">
                   {city}
                 </h3>
-
                 {/* Categories List */}
                 <div className="space-y-3">
-                  {categories.map((category, index) => (
-                    <a
+                  {categories.map((subCategory, index) => (
+                    <button
                       key={index}
-                      href="#"
-                      className="block text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md transition-all duration-200 text-sm"
+                      onClick={() => handleCityCategoryClick(city, subCategory)}
+                      className="block w-full text-left text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-md transition-all duration-200 text-sm"
                     >
-                      {category}
-                    </a>
+                      {subCategory}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -213,39 +281,14 @@ const Categories = () => {
             </h3>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {[
-                "Restaurants",
-                "Beauty Salons",
-                "Grocery Stores",
-                "Driving Schools",
-                "Real Estate",
-                "Photography",
-                "Event Planning",
-                "Tutoring",
-                "Cleaning Services",
-                "IT Services",
-                "Travel Agents",
-                "Insurance",
-                "Dentists",
-                "Physiotherapy",
-                "Optometrists",
-                "Veterinarians",
-                "Jewelers",
-                "Clothing Stores",
-                "Car Dealers",
-                "Florists",
-                "Bakeries",
-                "Catering",
-                "DJ Services",
-                "Wedding Planners",
-              ].map((category, index) => (
-                <a
+              {uniqueSubcategories.map((category, index) => (
+                <button
                   key={index}
-                  href="#"
+                  onClick={() => handleClickCategoryOnly(category)}
                   className="bg-white text-center py-3 px-4 rounded-lg text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   {category}
-                </a>
+                </button>
               ))}
             </div>
           </div>

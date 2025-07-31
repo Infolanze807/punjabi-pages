@@ -4,7 +4,7 @@ import SideBar from "./SideBar";
 import { addProfile, updateMyBussiness } from "../../redux/features/dashboardSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getCategoryDropdown } from "../../redux/features/businessSlice";
+import { getCategoryDropdown, getCities, getStates } from "../../redux/features/businessSlice";
 import { toast } from "react-toastify";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -38,7 +38,7 @@ const AddProfile = () => {
     const { existingBusiness, isEdit } = location.state || {};
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
-    const { categoriesDropdown } = useSelector((state) => state.business);
+    const { categoriesDropdown, cities, states } = useSelector((state) => state.business);
     console.log("categoriesDropdown", categoriesDropdown);
 
     const [loading, setLoading] = useState(false);
@@ -99,8 +99,11 @@ const AddProfile = () => {
 
     useEffect(() => {
         dispatch(getCategoryDropdown());
-
+        dispatch(getCities());
+        dispatch(getStates());
     }, [])
+    console.log("states", states);
+
 
     const togglePayment = (method) => {
         const updated = formData.selectedPayments.includes(method)
@@ -776,14 +779,20 @@ const AddProfile = () => {
                                             City <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
-                                            <input
-                                                type="text"
+                                            <select
                                                 id="city"
                                                 name="city"
                                                 value={formData.city}
                                                 onChange={handleInputChange}
                                                 className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
-                                            />
+                                            >
+                                                <option value="">Select a city</option>
+                                                {cities?.map((city) => (
+                                                    <option key={city.id || city._id || city.name} value={city.name}>
+                                                        {city}
+                                                    </option>
+                                                ))}
+                                            </select>
                                             {formErrors.city && (
                                                 <p className="absolute text-red-500 text-[12px] right-0">
                                                     {formErrors.city}
@@ -791,19 +800,26 @@ const AddProfile = () => {
                                             )}
                                         </div>
                                     </div>
+
                                     <div>
                                         <label htmlFor="state" className="block font-medium text-gray-700 mb-1 text-sm">
                                             State/Province <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
-                                            <input
-                                                type="text"
+                                            <select
                                                 id="state"
                                                 name="stateName"
                                                 value={formData.stateName}
                                                 onChange={handleInputChange}
                                                 className="w-full py-1.5 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:outline-none shadow-sm transition-all text-xs"
-                                            />
+                                            >
+                                                <option value="">Select a state</option>
+                                                {states?.map((state) => (
+                                                    <option key={state.code} value={state.name}>
+                                                        {`${state.code} - ${state.name}`}
+                                                    </option>
+                                                ))}
+                                            </select>
                                             {formErrors.stateName && (
                                                 <p className="absolute text-red-500 text-[12px] right-0">
                                                     {formErrors.stateName}

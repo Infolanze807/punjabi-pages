@@ -93,11 +93,11 @@ const SearchDetails = () => {
                                 </p>
                               </div>
                               {/* Featured Badge */}
-                              {/* {business.isFeatured && ( */}
-                              <span className="text-xs bg-blue-100 text-blue-600 font-semibold px-3 py-1 rounded-full">
-                                FEATURED
-                              </span>
-                              {/* )} */}
+                              {business.isFeature && (
+                                <span className="text-xs bg-blue-100 text-blue-600 font-semibold px-3 py-1 rounded-full">
+                                  FEATURED
+                                </span>
+                              )}
                             </div>
 
                             {/* Rating & Hours */}
