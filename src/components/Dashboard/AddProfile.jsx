@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import axiosConfig from "../../redux/axiosConfig";
 
 const daysOfWeek = [
     "monday",
@@ -50,6 +51,15 @@ const AddProfile = () => {
     const [position, setPosition] = useState(null);
     const [mapType, setMapType] = useState("default");
     const [formErrors, setFormErrors] = useState({});
+    const [logoPreview, setLogoPreview] = useState("");
+    const [videoPreview, setVideoPreview] = useState(null);
+    const [uploadedVideoUrl, setUploadedVideoUrl] = useState(null);
+    const [loadingVideo, setLoadingVideo] = useState(false);
+
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [existingImages, setExistingImages] = useState([]);
+    const [existingVideoUrl, setExistingVideoUrl] = useState("");
+
     const [formData, setFormData] = useState({
         businessName: "",
         category: "",
@@ -261,6 +271,8 @@ const AddProfile = () => {
         if (isEdit && existingBusiness) {
             setUploadedUrl(existingBusiness?.logoUrl)
             setImageUploadedUrl(existingBusiness?.gallery)
+            setUploadedVideoUrl(existingBusiness?.introVideo || "");
+            setVideoPreview(existingBusiness?.introVideo || "");
             setFormData({
                 businessName: existingBusiness.businessName || "",
                 category: existingBusiness.category || "",
@@ -304,37 +316,23 @@ const AddProfile = () => {
 
     const handleLogoUpload = async (e) => {
         const selectedFile = e.target.files[0];
-        setFile(selectedFile);
-
         if (!selectedFile) return;
 
-        const data = new FormData();
-        data.append("file", selectedFile);
-        data.append("upload_preset", "unsigned_preset"); // Make sure this matches your Cloudinary settings
+        setFile(selectedFile);
+        setLogoPreview(URL.createObjectURL(selectedFile)); // preview
+        const formData = new FormData();
+        formData.append("files", selectedFile);
 
         try {
-            setLoading1(true); // Optional: show loader
-            const response = await fetch("https://api.cloudinary.com/v1_1/dbgg7xvrm/image/upload", {
-                method: "POST",
-                body: data,
+            setLoading1(true);
+            const res = await axiosConfig.post("upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
+            setUploadedUrl(res.data.urls?.[0]); // ✅ first URL from S3 upload array
 
-            if (!response.ok) {
-                const errorJson = await response.json();
-                console.log("error", errorJson);
-
-                toast.error(errorJson?.error?.message || "Image upload failed");
-                return;
-            }
-
-            const json = await response.json();
-            if (json.secure_url) {
-                setUploadedUrl(json.secure_url);
-            } else {
-                // alert("❌ Logo upload failed: " + (json.error?.message || "Unknown error"));
-            }
-        } catch (err) {
-            // alert("Logo upload exception: " + err.message);
+        } catch (error) {
+            console.error("Upload error", error);
+            toast.error("Upload failed");
         } finally {
             setLoading1(false);
         }
@@ -344,37 +342,51 @@ const AddProfile = () => {
         const selectedFile = e.target.files[0];
         if (!selectedFile) return;
 
-        setFile(selectedFile);
-        setLoading2(true);
+        const previewUrl = URL.createObjectURL(selectedFile);
+        console.log("preview ", previewUrl);
+        setImagePreviews((prev) => [...prev, previewUrl]);
+
+        const formData = new FormData();
+        formData.append("files", selectedFile);
+        console.log("formdata", formData);
 
         try {
-            const data = new FormData();
-            data.append("file", selectedFile);
-            data.append("upload_preset", "unsigned_preset");
-
-            const response = await fetch("https://api.cloudinary.com/v1_1/dbgg7xvrm/image/upload", {
-                method: "POST",
-                body: data,
+            setLoading2(true);
+            const res = await axiosConfig.post("upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
-
-            const json = await response.json();
-
-            if (!response.ok) {
-                toast.error(json?.error?.message || "Image upload failed");
-                console.error("❌ Upload error:", json);
-                return;
-            }
-
-            if (json.secure_url) {
-                // Add this image URL to the array of uploaded URLs
-                setImageUploadedUrl(prev => [...prev, json.secure_url]);
-            }
-        } catch (err) {
-            alert("❌ Image upload exception: " + err.message);
+            setImageUploadedUrl((prev) => [...prev, ...(res.data.urls || [])]);
+        } catch (error) {
+            console.error("Image Upload error", error);
+            toast.error("Image upload failed");
         } finally {
             setLoading2(false);
         }
     };
+    const handleVideoUpload = async (e) => {
+        const selectedFile = e.target.files[0];
+        if (!selectedFile) return;
+
+        setFile(selectedFile);
+        setVideoPreview(URL.createObjectURL(selectedFile)); // 🎬 Show video preview
+
+        const formData = new FormData();
+        formData.append("files", selectedFile); // ✅ same backend field
+
+        try {
+            setLoadingVideo(true);
+            const res = await axiosConfig.post("upload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            setUploadedVideoUrl(res.data.urls?.[0]); // ✅ single URL
+        } catch (error) {
+            console.error("Video upload error", error);
+            toast.error("Video upload failed");
+        } finally {
+            setLoadingVideo(false);
+        }
+    };
+
 
 
     const handleSubmit = async (e) => {
@@ -421,7 +433,7 @@ const AddProfile = () => {
             },
             logoUrl: uploadedUrl,
             gallery: imageUploadedUrl,
-            introVideo: "https://www.youtube.com/watch?v=example",
+            introVideo: uploadedVideoUrl,
             socialLinks: {
                 facebook: formData.facebook,
                 instagram: formData.instagram,
@@ -986,16 +998,21 @@ const AddProfile = () => {
                                             <Upload className="w-5 h-5 text-blue-500" />
                                             Upload Logo
                                         </h3>
+                                        {/* Logo Upload */}
                                         <div className="relative">
-                                            <input type="file" onChange={handleLogoUpload} className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs" />
-                                            {loading1 && (
-                                                <div className="absolute right-3 top-1.5"><LoaderCircle className="animate-spin w-6 text-[--main-color]" /></div>
-                                            )}
+                                            <input type="file" onChange={handleLogoUpload} />
+                                            {loading1 && <LoaderCircle className="animate-spin w-6 text-[--main-color]" />}
                                         </div>
+                                        {logoPreview && (
+                                            <div className="mt-2">
+                                                <p className="text-xs">Preview:</p>
+                                                <img src={logoPreview} className="h-24" />
+                                            </div>
+                                        )}
                                         {uploadedUrl && (
-                                            <div className="mt-4 border p-2 rounded-md">
-                                                <p className="text-xs">Uploaded Image:</p>
-                                                <img src={uploadedUrl} alt="Uploaded Logo" className="h-24 mt-2" />
+                                            <div className="mt-2">
+                                                <p className="text-xs">Uploaded:</p>
+                                                <img src={uploadedUrl} className="h-24" />
                                             </div>
                                         )}
                                     </div>
@@ -1299,51 +1316,50 @@ const AddProfile = () => {
                                     <Upload className="w-5 h-5 text-blue-500" />
                                     Upload Photos
                                 </h3>
+                                {/* Image Uploads */}
                                 <div className="relative">
-                                    <input
-                                        type="file"
-                                        onChange={handleImageUpload}
-                                        className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
-                                    />
-                                    {loading2 && (
-                                        <div className="absolute right-3 top-1.5"><LoaderCircle className="animate-spin w-6 text-[--main-color]" /></div>
-                                    )}
+                                    <input type="file" onChange={handleImageUpload} />
+                                    {loading2 && <LoaderCircle className="animate-spin w-6 text-[--main-color]" />}
                                 </div>
-                                {imageUploadedUrl.length > 0 && (
-                                    <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
-                                        {imageUploadedUrl.map((url, index) => (
-                                            <div key={index} className="relative border p-1 rounded-md">
-                                                {/* Remove button */}
-                                                <button
-                                                    onClick={() => handleRemoveImage(index)}
-                                                    className="absolute right-0.5 top-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 flex items-center justify-center transition"
-                                                    title="Remove image"
-                                                >
-                                                    ×
-                                                </button>
-                                                <img
-                                                    src={url}
-                                                    alt={`Uploaded ${index + 1}`}
-                                                    className="h-24 w-full object-cover rounded"
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                                <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {imagePreviews.map((preview, index) => (
+                                        <div key={index} className="relative border p-1 rounded-md">
+                                            <img src={preview} className="h-24 object-cover" />
+                                        </div>
+                                    ))}
+                                    {/* Existing Uploaded Video */}
+                                    {existingVideoUrl && !videoPreview && (
+                                        <video
+                                            src={existingVideoUrl}
+                                            controls
+                                            width="100%"
+                                            className="rounded-md shadow mt-4"
+                                        />
+                                    )}
+
+                                </div>
                             </section>
                             <section className="border rounded-xl bg-white shadow-md p-5">
                                 <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
                                     <Upload className="w-5 h-5 text-blue-500" />
                                     Upload Video
                                 </h3>
+
                                 <input
                                     type="file"
+                                    accept="video/*"
+                                    onChange={handleVideoUpload}
                                     className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">
-                                    You can upload video.
-                                </p>
+
+                                {videoPreview && (
+                                    <video src={videoPreview} controls className="mt-3 w-full max-h-60 rounded-md shadow" />
+                                )}
+
+                                <p className="text-xs text-gray-500 mt-1">Only 1 video can be uploaded.</p>
                             </section>
+
+
                         </div>
                         <div className="pt-6 md:pt-8 text-right">
                             <button
