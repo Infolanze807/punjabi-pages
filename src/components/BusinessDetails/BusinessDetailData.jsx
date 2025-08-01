@@ -192,7 +192,7 @@ const BusinessDetailData = () => {
 
               <p className="text-gray-700 mb-4">{business.description}</p>
 
-              {/* <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-4">
                 <span className="font-bold text-lg">{business.rating}</span>
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
@@ -206,11 +206,11 @@ const BusinessDetailData = () => {
                   ))}
                 </div>
                 <span className="text-gray-600">({business.reviews})</span>
-              </div> */}
+              </div>
 
-              {/* <div className="text-blue-600 text-sm mb-4 cursor-pointer">
+              <div className="text-blue-600 text-sm mb-4 cursor-pointer">
                 Write a review
-              </div> */}
+              </div>
 
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
                 <MapPin className="h-4 w-4" />
@@ -239,13 +239,13 @@ const BusinessDetailData = () => {
               </button>
 
               <div className="mt-6 pt-6 border-t">
-                {/* <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-4 w-4 text-green-600" />
                   <span className="text-green-600 font-medium">
                     {business?.hours?.is24x7 ? "Open 24x7" : "Closed"}
                   </span>
 
-                </div> */}
+                </div>
                 <button className="text-blue-600 text-sm">
                   Additional Contacts
                 </button>
@@ -272,7 +272,7 @@ const BusinessDetailData = () => {
           <div className="flex items-center gap-2 mb-4">
             <Clock className="h-4 w-4 text-green-600" />
             <span className="text-green-600 font-semibold text-base">
-              {business?.hours?.is24x7 ? "Open 24/7" : "Opening Hours"}
+              Opening Hours
             </span>
           </div>
 
@@ -316,7 +316,7 @@ const BusinessDetailData = () => {
 
 
         {/* Accreditations */}
-        {/* <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
           <h3 className="font-bold text-lg mb-4">Accreditations</h3>
           <div className="space-y-2">
             {businessData.accreditations.map((accreditation, index) => (
@@ -326,7 +326,7 @@ const BusinessDetailData = () => {
               </div>
             ))}
           </div>
-        </div> */}
+        </div>
 
         {/* Photo & Video Gallery */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-8 mt-2">
@@ -359,7 +359,7 @@ const BusinessDetailData = () => {
         </div>
 
         {/* Tabs Navigation */}
-        {/* <div className="bg-white rounded-lg shadow-sm border mb-8">
+        <div className="bg-white rounded-lg shadow-sm border mb-8">
           <div className="border-b">
             <nav className="flex">
               {["about", "services", "locations", "faqs"].map((tab) => (
@@ -414,7 +414,7 @@ const BusinessDetailData = () => {
               </div>
             )}
           </div>
-        </div> */}
+        </div>
 
         {/* Reviews Section */}
         {/* <div className="bg-white rounded-lg shadow-sm border p-6">

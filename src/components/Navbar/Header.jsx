@@ -2,16 +2,20 @@ import { useState } from "react";
 import { Menu, X, Cloud, User } from "lucide-react";
 import { Button } from "@material-tailwind/react";
 import logo from "../../assets/logo.jpeg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Header() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="w-full bg-white border-b border-gray-200">
       <div className="container flex py-3 items-center justify-between px-4 md:px-6 lg:px-8 mx-auto max-w-7xl">
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
           <img src={logo} alt="Punjabi Pages" className="w-12 h-12" />
           <span className="text-xl font-semibold text-[--main-color]">
             Punjabi Pages

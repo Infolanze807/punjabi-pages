@@ -5,7 +5,10 @@ import categories from "./enum";
 
 export const getBusinessCategory = createAsyncThunk(
   "business/getBusinessCategory",
-  async ({ category, subCategory, keyword, page, city }, { rejectWithValue }) => {
+  async (
+    { category, subCategory, keyword, page, city },
+    { rejectWithValue }
+  ) => {
     try {
       let url = `/businesses/search?`;
 
@@ -25,7 +28,6 @@ export const getBusinessCategory = createAsyncThunk(
   }
 );
 
-
 export const getCategoryDropdown = createAsyncThunk(
   "business/getCategoryDropdown",
   async () => {
@@ -40,19 +42,16 @@ export const getCategoryDropdown = createAsyncThunk(
   }
 );
 
-export const getCities = createAsyncThunk(
-  "business/getCities",
-  async () => {
-    try {
-      const response = await axiosConfig.get("location/cities");
-      return response.data;
-    } catch (error) {
-      throw (
-        error.response?.data?.error || error.message || "Something went wrong"
-      );
-    }
+export const getCities = createAsyncThunk("business/getCities", async () => {
+  try {
+    const response = await axiosConfig.get("location/cities");
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data?.error || error.message || "Something went wrong"
+    );
   }
-);
+});
 
 export const getFeatureBusiness = createAsyncThunk(
   "business/getFeatureBusiness",
@@ -68,11 +67,22 @@ export const getFeatureBusiness = createAsyncThunk(
   }
 );
 
-export const getStates = createAsyncThunk(
-  "business/getStates",
-  async () => {
+export const getStates = createAsyncThunk("business/getStates", async () => {
+  try {
+    const response = await axiosConfig.get("location/states");
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data?.error || error.message || "Something went wrong"
+    );
+  }
+});
+
+export const getBusinessById = createAsyncThunk(
+  "business/getBusinessById",
+  async (id) => {
     try {
-      const response = await axiosConfig.get("location/states");
+      const response = await axiosConfig.get(`businesses/${id}`);
       return response.data;
     } catch (error) {
       throw (
@@ -90,6 +100,7 @@ const businessSlice = createSlice({
     cities: [],
     states: [],
     featureBusiness: [],
+    businessById: [],
     loading: false,
     error: null,
     message: null,
@@ -167,6 +178,20 @@ const businessSlice = createSlice({
         state.error = action.error.message;
         toast.error(state.error);
       })
+      .addCase(getBusinessById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getBusinessById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.states = action.payload;
+        state.message = action.payload.message;
+        // toast.success(action.payload.message);
+      })
+      .addCase(getBusinessById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      });
   },
 });
 
