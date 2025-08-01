@@ -323,23 +323,23 @@ const Dashboard = () => {
                         selectedBusiness.socialLinks.instagram ||
                         selectedBusiness.socialLinks.linkedin ||
                         (selectedBusiness.socialLinks.others?.length > 0)) ? (
-                        <div className="flex flex-wrap gap-4">
-                          {selectedBusiness.socialLinks.facebook && (
-                            <a href={selectedBusiness.socialLinks.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg hover:bg-blue-100 transition"><Facebook className="w-5 h-5" /><span>Facebook</span></a>
-                          )}
-                          {selectedBusiness.socialLinks.instagram && (
-                            <a href={selectedBusiness.socialLinks.instagram} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-700 border border-pink-100 rounded-lg hover:bg-pink-100 transition"><Instagram className="w-5 h-5" /><span>Instagram</span></a>
-                          )}
-                          {selectedBusiness.socialLinks.linkedin && (
-                            <a href={selectedBusiness.socialLinks.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg hover:bg-blue-100 transition"><Linkedin className="w-5 h-5" /><span>LinkedIn</span></a>
-                          )}
-                          {selectedBusiness.socialLinks.others?.map((url, i) => (
-                            <a key={i} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-100 transition"><Link2 className="w-5 h-5" /><span>Other {i + 1}</span></a>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm text-gray-500">No social links available.</p>
-                      )}
+                      <div className="flex flex-wrap gap-4">
+                        {selectedBusiness.socialLinks.facebook && (
+                          <a href={selectedBusiness.socialLinks.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg hover:bg-blue-100 transition"><Facebook className="w-5 h-5" /><span>Facebook</span></a>
+                        )}
+                        {selectedBusiness.socialLinks.instagram && (
+                          <a href={selectedBusiness.socialLinks.instagram} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-700 border border-pink-100 rounded-lg hover:bg-pink-100 transition"><Instagram className="w-5 h-5" /><span>Instagram</span></a>
+                        )}
+                        {selectedBusiness.socialLinks.linkedin && (
+                          <a href={selectedBusiness.socialLinks.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-100 rounded-lg hover:bg-blue-100 transition"><Linkedin className="w-5 h-5" /><span>LinkedIn</span></a>
+                        )}
+                        {selectedBusiness.socialLinks.others?.map((url, i) => (
+                          <a key={i} href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-100 transition"><Link2 className="w-5 h-5" /><span>Other {i + 1}</span></a>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">No social links available.</p>
+                    )}
                   </div>
                   {/* Certifications Card */}
                   <div className="rounded-xl p-6 border hover:shadow-lg hover:border-indigo-800 flex flex-col gap-4">
@@ -426,11 +426,15 @@ const Dashboard = () => {
                     </div>
                     {selectedBusiness?.introVideo ? (
                       <div className="relative w-full h-0 pb-[32.25%] rounded-xl overflow-hidden shadow-lg">
-                        <iframe src={selectedBusiness.introVideo} title="Intro Video" allowFullScreen className="absolute top-0 left-0 w-full h-full rounded-xl border" />
+                        <video
+                          src={selectedBusiness.introVideo}
+                          controls
+                          className="absolute top-0 left-0 w-full h-full rounded-xl border"
+                        />
                       </div>
                     ) : (
                       <p className="text-gray-500 italic">No intro video available.</p>
-                    )}
+                    )}  
                   </div>
                 </section>
               )}

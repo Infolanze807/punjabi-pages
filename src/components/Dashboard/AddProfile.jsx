@@ -202,11 +202,11 @@ const AddProfile = () => {
             },
         }));
     };
+
     const handleRemoveImage = (indexToRemove) => {
-        setImageUploadedUrl(prev =>
-            prev.filter((_, index) => index !== indexToRemove)
-        );
+        setImageUploadedUrl(prev => prev.filter((_, index) => index !== indexToRemove));
     };
+
 
 
     const validateForm = () => {
@@ -368,13 +368,14 @@ const AddProfile = () => {
         if (!selectedFile) return;
 
         setFile(selectedFile);
+        setLoadingVideo(true);
         setVideoPreview(URL.createObjectURL(selectedFile)); // 🎬 Show video preview
 
         const formData = new FormData();
         formData.append("files", selectedFile); // ✅ same backend field
 
         try {
-            setLoadingVideo(true);
+            // setLoadingVideo(true);
             const res = await axiosConfig.post("upload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
@@ -392,7 +393,11 @@ const AddProfile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
+        if (loadingVideo) {
+            toast.warning("Please wait for the video to finish uploading.");
+            return;
+        }
+        setLoading(true);
         const isValid = validateForm();
         if (!isValid) {
             setLoading(false);
@@ -1003,12 +1008,6 @@ const AddProfile = () => {
                                             <input type="file" onChange={handleLogoUpload} />
                                             {loading1 && <LoaderCircle className="animate-spin w-6 text-[--main-color]" />}
                                         </div>
-                                        {logoPreview && (
-                                            <div className="mt-2">
-                                                <p className="text-xs">Preview:</p>
-                                                <img src={logoPreview} className="h-24" />
-                                            </div>
-                                        )}
                                         {uploadedUrl && (
                                             <div className="mt-2">
                                                 <p className="text-xs">Uploaded:</p>
@@ -1311,34 +1310,36 @@ const AddProfile = () => {
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
+                            {/* Image Upload Section */}
                             <section className="border rounded-xl bg-white shadow-md p-5">
                                 <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
                                     <Upload className="w-5 h-5 text-blue-500" />
                                     Upload Photos
                                 </h3>
-                                {/* Image Uploads */}
+
                                 <div className="relative">
                                     <input type="file" onChange={handleImageUpload} />
                                     {loading2 && <LoaderCircle className="animate-spin w-6 text-[--main-color]" />}
                                 </div>
+
                                 <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {imagePreviews.map((preview, index) => (
-                                        <div key={index} className="relative border p-1 rounded-md">
-                                            <img src={preview} className="h-24 object-cover" />
+                                    {imageUploadedUrl.map((url, index) => (
+                                        <div key={index} className="relative border p-1 rounded-md group">
+                                            <img src={url} className="h-24 w-full object-cover rounded" />
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveImage(index)}
+                                                className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:bg-red-500 group-hover:block"
+                                                title="Delete Image"
+                                            >
+                                                <X className="w-4 h-4 text-gray-600 hover:text-white" />
+                                            </button>
                                         </div>
                                     ))}
-                                    {/* Existing Uploaded Video */}
-                                    {existingVideoUrl && !videoPreview && (
-                                        <video
-                                            src={existingVideoUrl}
-                                            controls
-                                            width="100%"
-                                            className="rounded-md shadow mt-4"
-                                        />
-                                    )}
-
                                 </div>
                             </section>
+
+                            {/* Video Upload Section */}
                             <section className="border rounded-xl bg-white shadow-md p-5">
                                 <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2 border-b pb-2">
                                     <Upload className="w-5 h-5 text-blue-500" />
@@ -1349,16 +1350,63 @@ const AddProfile = () => {
                                     type="file"
                                     accept="video/*"
                                     onChange={handleVideoUpload}
-                                    className="block w-full p-1.5 text-gray-600 border border-gray-300 rounded-md bg-white shadow-sm text-xs"
+                                    disabled={loadingVideo} // disable during upload
+                                    className={`block w-full p-1.5 text-gray-600 border rounded-md shadow-sm text-xs ${loadingVideo ? "bg-gray-100 cursor-not-allowed" : "bg-white"
+                                        }`}
                                 />
 
-                                {videoPreview && (
-                                    <video src={videoPreview} controls className="mt-3 w-full max-h-60 rounded-md shadow" />
+                                {loadingVideo && (
+                                    <p className="text-sm text-blue-500 mt-2 flex items-center gap-2">
+                                        <svg
+                                            className="animate-spin h-4 w-4 text-blue-500"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                            />
+                                        </svg>
+                                        Uploading video... please wait.
+                                    </p>
                                 )}
 
-                                <p className="text-xs text-gray-500 mt-1">Only 1 video can be uploaded.</p>
-                            </section>
+                                {(videoPreview || uploadedVideoUrl) && (
+                                    <div className="relative mt-3">
+                                        <video
+                                            src={videoPreview || uploadedVideoUrl}
+                                            controls
+                                            className="w-full max-h-60 rounded-md shadow"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setVideoPreview(null);
+                                                setUploadedVideoUrl(null);
+                                                setFile(null);
+                                            }}
+                                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                            title="Remove Video"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                )}
 
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Only 1 video can be uploaded.
+                                </p>
+                            </section>
 
                         </div>
                         <div className="pt-6 md:pt-8 text-right">
