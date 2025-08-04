@@ -51,7 +51,7 @@ const FeaturedBusiness = () => {
         >
           {featureBusiness?.map((business) => (
             <SwiperSlide key={business.id}>
-              <Link to="/business-details-data">
+              <Link to="/business-details-data" state={{ businessId: business._id }}>
                 <div className="rounded-lg border bg-white text-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden">
                   <div className="relative">
                     <img

@@ -183,7 +183,7 @@ const businessSlice = createSlice({
       })
       .addCase(getBusinessById.fulfilled, (state, action) => {
         state.loading = false;
-        state.states = action.payload;
+        state.businessById = action.payload.data;
         state.message = action.payload.message;
         // toast.success(action.payload.message);
       })

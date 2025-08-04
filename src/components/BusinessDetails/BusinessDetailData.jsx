@@ -14,84 +14,10 @@ import {
   Flag,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getBusinessById } from "../../redux/features/businessSlice";
+import FullPageLoader from "../Loader/Loader";
 
-const businessData = {
-  id: 1,
-  name: "Royal Flow Plumbing Pty Ltd",
-  category: "Plumbers & Gas Fitters",
-  address: "Glenmore Park, NSW",
-  phone: "0499 986 698",
-  email: "info@royalflowplumbing.com.au",
-  website: "www.royalflowplumbing.com.au",
-  rating: 4.7,
-  reviews: 44,
-  description: "Professional, Honest, Courteous & Reliable Plumbing Services",
-  logo: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-  isOpen: true,
-  openingHours: "Open Today 24 hours",
-  serviceArea: "Mobile business servicing Glenmore Park",
-
-  highlights: [
-    {
-      title: "PROFESSIONAL & HONEST PLUMBING",
-      subtitle: "Professional & Honest Plumbing",
-    },
-    {
-      title: "COURTEOUS & RELIABLE PLUMBING",
-      subtitle: "Courteous & Reliable Plumbing",
-    },
-    {
-      title: "24/7 AVAILABILITY",
-      subtitle: "24/7 Availability",
-    },
-  ],
-
-  accreditations: [
-    "All Residential & Commercial Plumbing Services",
-    "Blocked Drains Cleared Quickly & Affordably",
-    "Professional, Honest & Reliable Licensed & Insured Plumbers",
-  ],
-
-  gallery: [
-    "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-  ],
-
-  videos: [
-    {
-      id: 1,
-      thumbnail:
-        "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      title: "Professional Plumbing Services",
-    },
-  ],
-
-  aboutUs: `At Royal Flow Plumbing Pty Ltd, we are a team of Qualified & Highly Skilled Plumbers.
-
-• Fair Pricing On Quality Plumbing Works
-• 24/7 Emergency Service Always Available  
-• Complete & Commercial Plumbing, Hot Water & Gas Fitting
-• Servicing All Of Sydney & Surrounding Areas
-
-We are a friendly and experienced team of fully local plumbers, serving all of Sydney for over 10 years.
-
-From general maintenance to renovations and construction, we aim to help you with your plumbing needs! Big job too small, give us a call today!
-
-About Royal Flow Plumbing Pty Ltd:
-
-We pride ourselves on our consistently high quality of work. We develop strong relationships with our clients through honesty and integrity. At Royal Flow Plumbing Pty Ltd, our work is always delivered on time, every time, with great care and at a fair price.`,
-
-  paymentMethods: ["EFT", "MasterCard", "Visa"],
-
-  services: [
-    "Emergency Plumbing",
-    "Hot Water Repairs",
-    "Blocked Drains",
-    "All General Plumbing",
-  ],
-};
 
 const reviewsData = [
   {
@@ -130,8 +56,20 @@ const reviewsData = [
 ];
 
 const BusinessDetailData = () => {
-  const { state } = useLocation();
-  const business = state?.business;
+  const location = useLocation();
+  const businessId = location.state?.businessId;
+  // const { state } = useLocation();
+  // const business = state?.business;
+  const dispatch = useDispatch();
+  const { businessById, loading } = useSelector((state) => state.business);
+
+  useEffect(() => {
+    if (businessId) {
+      dispatch(getBusinessById(businessId));
+    }
+  }, [businessId, dispatch]);
+
+  const business = businessById;
 
   console.log("Received business:", business);
 
@@ -155,168 +93,172 @@ const BusinessDetailData = () => {
   const [longitude, latitude] = coordinates;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-yellow-400 px-4 py-3">
-        <div className="container mx-auto max-w-7xl">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-black hover:text-gray-700"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm">
-              Search {business.category} in Location
-            </span>
-          </button>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-7 py-6 max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src={business.logoUrl}
-                  alt={business.name}
-                  className="w-16 h-16 rounded-lg object-cover"
-                />
-                <div>
-                  <h1 className="text-xl font-bold text-gray-800">
-                    {business.businessName}
-                  </h1>
-                  <p className="text-gray-600 text-sm">
-                    {business.category}
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-gray-700 mb-4">{business.description}</p>
-
-              <div className="flex items-center gap-2 mb-4">
-                <span className="font-bold text-lg">{business.rating}</span>
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${i < Math.floor(business.rating)
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-gray-300"
-                        }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-gray-600">({business.reviews})</span>
-              </div>
-
-              <div className="text-blue-600 text-sm mb-4 cursor-pointer">
-                Write a review
-              </div>
-
-              <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
-                <MapPin className="h-4 w-4" />
-                <span>{business.serviceAreas?.join(",")}</span>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
-                  <Phone className="h-4 w-4" />
-                  <span>{business.phone}</span>
-                </button>
-
-                <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
-                  <Mail className="h-4 w-4" />
-                  <span>Send Email</span>
-                </button>
-
-                <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
-                  <Globe className="h-4 w-4" />
-                  <span>Website</span>
-                </button>
-              </div>
-
-              <button className="w-full bg-yellow-400 text-black font-semibold py-3 rounded-md hover:bg-yellow-500">
-                Request Quote
-              </button>
-
-              <div className="mt-6 pt-6 border-t">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="h-4 w-4 text-green-600" />
-                  <span className="text-green-600 font-medium">
-                    {business?.hours?.is24x7 ? "Open 24x7" : "Closed"}
+    <div>
+      {loading ?
+        <div><FullPageLoader /></div> :
+        (
+          <div className="min-h-screen bg-gray-50">
+            <div className="bg-yellow-400 px-4 py-3">
+              <div className="container mx-auto max-w-7xl">
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-2 text-black hover:text-gray-700"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="text-sm">
+                    Search {business?.category} in Location
                   </span>
-
-                </div>
-                <button className="text-blue-600 text-sm">
-                  Additional Contacts
                 </button>
               </div>
             </div>
-          </div>
 
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border lg:h-[600px] h-96">
-              <iframe
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                src={`https://www.google.com/maps?q=${latitude && longitude ? `${latitude},${longitude}` : "28.6139,77.2090"}&z=15&output=embed`}
-                allowFullScreen
-                title="Business Location"
-                className="rounded-lg"
-              ></iframe>
-            </div>
-          </div>
-        </div>
+            <div className="container mx-auto px-7 py-6 max-w-7xl">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-1">
+                  <div className="bg-white rounded-lg shadow-sm border p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <img
+                        src={business?.logoUrl}
+                        alt={business?.name}
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                      <div>
+                        <h1 className="text-xl font-bold text-gray-800">
+                          {business?.businessName}
+                        </h1>
+                        <p className="text-gray-600 text-sm">
+                          {business?.category}
+                        </p>
+                      </div>
+                    </div>
 
-        <div className="mt-8 pt-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Clock className="h-4 w-4 text-green-600" />
-            <span className="text-green-600 font-semibold text-base">
-              Opening Hours
-            </span>
-          </div>
+                    <p className="text-gray-700 mb-4">{business?.description}</p>
 
-          {business?.hours && (
-            <ul className="text-sm text-gray-800 divide-y divide-gray-200 rounded-md border border-gray-200 overflow-hidden">
-              {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map(
-                (day) => {
-                  const open = business.hours?.[day]?.open || "00:00";
-                  const close = business.hours?.[day]?.close || "00:00";
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="font-bold text-lg">{business?.rating}</span>
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < Math.floor(business?.rating)
+                              ? "text-yellow-400 fill-yellow-400"
+                              : "text-gray-300"
+                              }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-gray-600">({business?.reviews})</span>
+                    </div>
 
-                  const isClosed = open === "00:00" && close === "00:00";
-                  const today = new Date().toLocaleDateString("en-US", {
-                    weekday: "long",
-                  }).toLowerCase();
-                  const isToday = today === day;
+                    <div className="text-blue-600 text-sm mb-4 cursor-pointer">
+                      Write a review
+                    </div>
 
-                  return (
-                    <li
-                      key={day}
-                      className={`flex justify-around px-4 py-2 ${isToday ? "bg-green-50 font-medium" : "bg-white"
-                        }`}
-                    >
-                      <span className="capitalize">{day}</span>
-                      <span>{isClosed ? "N/A" : `${open} - ${close}`}</span>
-                    </li>
-                  );
-                }
-              )}
-            </ul>
-          )}
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
+                      <MapPin className="h-4 w-4" />
+                      <span>{business?.serviceAreas?.join(",")}</span>
+                    </div>
 
-          {/* Optional Public Holiday Note */}
-          {business?.hours?.publicHolidayNotes && (
-            <p className="text-yellow-600 text-xs mt-3 mb-2 italic">
-              Public Holiday Info: {business.hours.publicHolidayNotes}
-            </p>
-          )}
-        </div>
+                    <div className="space-y-3 mb-6">
+                      <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
+                        <Phone className="h-4 w-4" />
+                        <span>{business?.phone}</span>
+                      </button>
+
+                      <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
+                        <Mail className="h-4 w-4" />
+                        <span>Send Email</span>
+                      </button>
+
+                      <button className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-md hover:bg-gray-50">
+                        <Globe className="h-4 w-4" />
+                        <span>Website</span>
+                      </button>
+                    </div>
+
+                    <button className="w-full bg-yellow-400 text-black font-semibold py-3 rounded-md hover:bg-yellow-500">
+                      Request Quote
+                    </button>
+
+                    <div className="mt-6 pt-6 border-t">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Clock className="h-4 w-4 text-green-600" />
+                        <span className="text-green-600 font-medium">
+                          {business?.hours?.is24x7 ? "Open 24x7" : "Closed"}
+                        </span>
+
+                      </div>
+                      <button className="text-blue-600 text-sm">
+                        Additional Contacts
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-2">
+                  <div className="bg-white rounded-lg shadow-sm border lg:h-[600px] h-96">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      frameBorder="0"
+                      src={`https://www.google.com/maps?q=${latitude && longitude ? `${latitude},${longitude}` : "28.6139,77.2090"}&z=15&output=embed`}
+                      allowFullScreen
+                      title="Business Location"
+                      className="rounded-lg"
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Clock className="h-4 w-4 text-green-600" />
+                  <span className="text-green-600 font-semibold text-base">
+                    Opening Hours
+                  </span>
+                </div>
+
+                {business?.hours && (
+                  <ul className="text-sm text-gray-800 divide-y divide-gray-200 rounded-md border border-gray-200 overflow-hidden">
+                    {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map(
+                      (day) => {
+                        const open = business?.hours?.[day]?.open || "00:00";
+                        const close = business?.hours?.[day]?.close || "00:00";
+
+                        const isClosed = open === "00:00" && close === "00:00";
+                        const today = new Date().toLocaleDateString("en-US", {
+                          weekday: "long",
+                        }).toLowerCase();
+                        const isToday = today === day;
+
+                        return (
+                          <li
+                            key={day}
+                            className={`flex justify-around px-4 py-2 ${isToday ? "bg-green-50 font-medium" : "bg-white"
+                              }`}
+                          >
+                            <span className="capitalize">{day}</span>
+                            <span>{isClosed ? "-" : `${open} - ${close}`}</span>
+                          </li>
+                        );
+                      }
+                    )}
+                  </ul>
+                )}
+
+                {/* Optional Public Holiday Note */}
+                {business?.hours?.publicHolidayNotes && (
+                  <p className="text-yellow-600 text-xs mt-3 mb-2 italic">
+                    Public Holiday Info: {business?.hours?.publicHolidayNotes}
+                  </p>
+                )}
+              </div>
 
 
 
 
-        {/* Accreditations */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+              {/* Accreditations */}
+              {/* <div className="bg-white rounded-lg shadow-sm border p-6 mb-8 mt-5">
           <h3 className="font-bold text-lg mb-4">Accreditations</h3>
           <div className="space-y-2">
             {businessData.accreditations.map((accreditation, index) => (
@@ -326,98 +268,265 @@ const BusinessDetailData = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
-        {/* Photo & Video Gallery */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8 mt-2">
-          <h3 className="font-bold text-lg mb-4">Photos & Videos</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-            {/* Video Thumbnail */}
-            {business.introVideo && (
-              <div className="relative cursor-pointer group">
-                <img
-                  src={business.introVideo.thumbnail || "/placeholder.svg"}
-                  alt={business.introVideo.title || "Video"}
-                  className="w-full h-20 object-cover rounded-lg"
-                />
-              </div>
-            )}
+              {/* Photo & Video Gallery */}
+              <div className="bg-white rounded-lg shadow-sm border p-6 mb-8 mt-2">
+                <h3 className="font-bold text-lg text-gray-800 mb-4">Photos & Videos</h3>
 
-
-            {/* Photo Thumbnails */}
-            {galleryImages.map((image, index) => (
-              <img
-                key={index}
-                src={image || "/placeholder.svg"}
-                alt={`Gallery ${index + 1}`}
-                className="w-full h-20 object-cover rounded-lg cursor-pointer hover:opacity-80"
-                onClick={() => setSelectedImage(index)}
-              />
-            ))}
-
-          </div>
-        </div>
-
-        {/* Tabs Navigation */}
-        <div className="bg-white rounded-lg shadow-sm border mb-8">
-          <div className="border-b">
-            <nav className="flex">
-              {["about", "services", "locations", "faqs"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 text-sm font-medium capitalize ${activeTab === tab
-                    ? "border-b-2 border-blue-500 text-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                    }`}
-                >
-                  {tab === "about" ? "About Us" : tab}
-                </button>
-              ))}
-            </nav>
-          </div>
-
-          <div className="p-6">
-            {activeTab === "about" && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2">
-                  <h3 className="font-bold text-lg mb-4">
-                    About {businessData.name}
-                  </h3>
-                  <div className="text-gray-700 whitespace-pre-line">
-                    {businessData.aboutUs}
+                {/* Large Video Section */}
+                {business?.introVideo && (
+                  <div className="mb-6">
+                    <video
+                      src={business.introVideo}
+                      controls
+                      className="w-full h-[300px] object-cover rounded-xl shadow-md"
+                    />
                   </div>
-                </div>
+                )}
 
-                <div>
-                  <h4 className="font-bold mb-4">Payment Methods</h4>
-                  <div className="flex gap-2 mb-6">
-                    {businessData.paymentMethods.map((method, index) => (
-                      <span
+                {/* Gallery Grid */}
+                {/* Gallery Grid */}
+                <div className="w-full">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    {galleryImages?.map((image, index) => (
+                      <div
                         key={index}
-                        className="px-3 py-1 bg-gray-100 rounded text-sm"
+                        className="relative w-full aspect-video rounded-xl overflow-hidden shadow-sm group cursor-pointer"
+                        onClick={() => setSelectedImage(index)}
                       >
-                        {method}
-                      </span>
-                    ))}
-                  </div>
-
-                  <h4 className="font-bold mb-4">Services</h4>
-                  <div className="space-y-2">
-                    {businessData.services.map((service, index) => (
-                      <div key={index} className="text-gray-700">
-                        {service}
+                        <img
+                          src={image || "/placeholder.svg"}
+                          alt={`Gallery ${index + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        {/* Optional hover overlay */}
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Reviews Section */}
-        {/* <div className="bg-white rounded-lg shadow-sm border p-6">
+              </div>
+
+
+              {/* Tabs Navigation */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-200 mb-10 overflow-hidden">
+                {/* Tabs Navigation */}
+                <div className="border-b bg-white">
+                  <nav className="flex flex-wrap justify-start lg:justify-center">
+                    {["about", "details", "services", "contact"].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`px-6 py-3 text-sm font-medium capitalize transition-all duration-200 ${activeTab === tab
+                          ? "border-b-2 border-blue-500 text-blue-600 bg-white"
+                          : "text-gray-600 hover:text-blue-600 hover:bg-gray-100"
+                          }`}
+                      >
+                        {tab === "about" ? "About Us" : tab}
+                      </button>
+                    ))}
+                  </nav>
+                </div>
+
+                {/* Tab Content */}
+                <div className="p-6 lg:p-8">
+                  {activeTab === "about" && (
+                    <div className="lg:col-span-2 space-y-6">
+                      {/* About Description */}
+                      <div>
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-2">About</h3>
+                        <p className="text-gray-700 whitespace-pre-line">
+                          {business?.description || "No description available."}
+                        </p>
+                      </div>
+
+                      {/* Details Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="border p-4 rounded-lg bg-gray-50">
+                          <strong className="block text-gray-700">Subcategory:</strong>
+                          <span className="text-gray-900">{business?.subCategory || "-"}</span>
+                        </div>
+                        <div className="border p-4 rounded-lg bg-gray-50">
+                          <strong className="block text-gray-700">Established Year:</strong>
+                          <span className="text-gray-900">{business?.establishedYear || "-"}</span>
+                        </div>
+                        <div className="border p-4 rounded-lg bg-gray-50">
+                          <strong className="block text-gray-700">ABN:</strong>
+                          <span className="text-gray-900">{business?.abn || "-"}</span>
+                        </div>
+                        <div className="border p-4 rounded-lg bg-gray-50">
+                          <strong className="block text-gray-700">Promotion:</strong>
+                          <span className="text-gray-900">{business?.promotions || "-"}</span>
+                        </div>
+                        <div className="border p-4 rounded-lg bg-gray-50 md:col-span-2">
+                          <strong className="block text-gray-700">Service Area:</strong>
+                          <span className="text-gray-900">
+                            {business?.serviceAreas?.length ? business.serviceAreas.join(", ") : "-"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Keywords */}
+                      <div>
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-3">Keywords</h3>
+                        {business?.keywords?.length ? (
+                          <div className="flex flex-wrap gap-2">
+                            {business.keywords.map((kw, index) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                              >
+                                {kw}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 text-sm">No keywords listed.</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "details" && (
+                    <div className="space-y-6">
+                      {/* Address */}
+                      {business?.address ? (
+                        <div className="bg-gray-50 border rounded-lg p-4">
+                          <h4 className="text-lg font-medium text-gray-700 mb-1">Address</h4>
+                          <p className="text-gray-700">
+                            {business.address.street}, {business.address.suburb},<br />
+                            {business.address.state}, {business.address.postcode}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-gray-500 text-sm">No address available.</p>
+                      )}
+
+                      {/* Social Links */}
+                      {business?.socialLinks && Object.keys(business.socialLinks).length > 0 && (
+                        <div className="bg-gray-50 border rounded-lg p-4">
+                          <h4 className="text-lg font-medium text-gray-700 mb-1">Social Links</h4>
+                          <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                            {Object.entries(business.socialLinks).map(
+                              ([key, value]) =>
+                                value && (
+                                  <li key={key}>
+                                    {key}:{" "}
+                                    <a
+                                      href={value}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 underline break-all"
+                                    >
+                                      {value}
+                                    </a>
+                                  </li>
+                                )
+                            )}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Certifications */}
+                      {business?.certifications?.length > 0 ? (
+                        <div className="bg-gray-50 border rounded-lg p-4">
+                          <h4 className="text-lg font-medium text-gray-700 mb-1">Certifications</h4>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {business.certifications.map((cert, index) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1 text-sm bg-yellow-100 text-yellow-800 rounded-full"
+                              >
+                                {cert}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-gray-500 text-sm">No certifications listed.</p>
+                      )}
+                    </div>
+                  )}
+
+
+                  {activeTab === "services" && (
+                    <div className="space-y-6">
+
+                      {/* Our Services */}
+                      {business?.services?.length ? (
+                        <div className="bg-gray-50 border rounded-lg p-4">
+                          <h4 className="text-lg font-medium text-gray-700 mb-2">Our Services</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {business.services.map((service, index) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm"
+                              >
+                                {service}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-gray-500 text-sm">No services listed.</p>
+                      )}
+
+                      {/* Payment Methods */}
+                      {business?.paymentMethods?.length ? (
+                        <div className="bg-gray-50 border rounded-lg p-4">
+                          <h4 className="text-lg font-medium text-gray-700 mb-2">Payment Methods</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {business.paymentMethods.map((method, index) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm"
+                              >
+                                {method}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-gray-500 text-sm">No payment methods listed.</p>
+                      )}
+                    </div>
+                  )}
+
+
+                  {activeTab === "contact" && (
+                    <div className="space-y-4">
+                      <h3 className="text-2xl font-semibold text-gray-800 mb-4">Contact</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="border p-4 rounded-md">
+                          <strong>Contact Person:</strong> {business?.contactPerson || "-"}
+                        </div>
+                        <div className="border p-4 rounded-md">
+                          <strong>Phone:</strong> {business?.phone || "-"}
+                        </div>
+                        <div className="border p-4 rounded-md">
+                          <strong>Alternate Phone:</strong> {business?.alternateContacts?.phone || "-"}
+                        </div>
+                        <div className="border p-4 rounded-md">
+                          <strong>Email:</strong> {business?.email || "-"}
+                        </div>
+                        <div className="border p-4 rounded-md">
+                          <strong>Alternate Email:</strong> {business?.alternateContacts?.email || "-"}
+                        </div>
+                        <div className="border p-4 rounded-md">
+                          <strong>Website:</strong> <a href={business?.website} target="_blank" className="text-blue-600 underline">{business?.website || "-"}</a>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+
+              </div>
+
+              {/* Reviews Section */}
+              {/* <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-bold text-lg">{businessData.name} Reviews</h3>
             <button className="bg-yellow-400 text-black px-4 py-2 rounded-md font-medium hover:bg-yellow-500">
@@ -488,7 +597,9 @@ const BusinessDetailData = () => {
             ))}
           </div>
         </div> */}
-      </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };

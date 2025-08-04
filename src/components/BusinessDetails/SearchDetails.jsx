@@ -70,7 +70,7 @@ const SearchDetails = () => {
                       key={business.id}
                       className="bg-white rounded-xl shadow-md border p-5 hover:shadow-lg transition-shadow duration-300"
                     >
-                      <Link to="/business-details-data" state={{ business }}>
+                      <Link to="/business-details-data" state={{ businessId: business._id }}>
                         <div className="flex gap-4">
                           {/* Business Logo */}
                           <div className="flex-shrink-0">
