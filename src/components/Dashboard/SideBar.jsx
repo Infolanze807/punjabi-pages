@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.jpeg';
 import {
     Menu,
@@ -10,11 +10,14 @@ import {
 import { Typography } from "@material-tailwind/react";
 import { logout } from "../../redux/features/authSlice";
 import { useDispatch } from "react-redux";
-import { IoLogOutOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoLogOutOutline, IoTrashOutline } from "react-icons/io5";
 
 const SideBar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dispatch = useDispatch();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef();
+    const navigate = useNavigate();
 
     const navItems = [
         {
@@ -34,6 +37,17 @@ const SideBar = () => {
         navigate('/');
     };
 
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <>
@@ -101,14 +115,49 @@ const SideBar = () => {
                         ))}
                     </div>
                 </nav>
-                <div className="p-4 px-5 border-t border-gray-100">
+                <div className="p-4 px-5 border-t border-gray-100 relative" ref={dropdownRef}>
                     <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group"
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                        className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-all duration-200"
                     >
-                        <IoLogOutOutline className="text-lg text-gray-400 group-hover:text-red-500 transition-colors duration-200" />
-                        <span className="font-medium text-sm">Sign Out</span>
+                        <div className="flex items-center gap-2">
+                            <IoSettingsOutline className="text-lg" />
+                            <span className="font-medium text-sm">Settings</span>
+                        </div>
+                        <svg
+                            className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : 'rotate-0'}`}
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
                     </button>
+
+                    {/* Dropdown */}
+                    {dropdownOpen && (
+                        <div className="absolute left-5 right-5 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-all rounded-t-lg"
+                            >
+                                <IoLogOutOutline className="text-base" />
+                                Sign Out
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setDropdownOpen(false);
+                                    setIsOpen(false); // close sidebar
+                                    navigate("/delete-account");
+                                }}
+                                className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-all rounded-b-lg"
+                            >
+                                <IoTrashOutline className="text-base" />
+                                Delete Account
+                            </button>
+                        </div>
+                    )}
 
                     <div className="mt-4 pt-4 border-t border-gray-100 pl-4">
                         <div className="flex items-center justify-between text-xs text-gray-400">
@@ -116,6 +165,7 @@ const SideBar = () => {
                         </div>
                     </div>
                 </div>
+
             </aside>
 
             {isOpen && (

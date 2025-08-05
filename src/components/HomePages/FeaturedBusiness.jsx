@@ -79,7 +79,8 @@ const FeaturedBusiness = () => {
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2 truncate">
-                      {business.category} • {business.address?.suburb}, {business.address?.state}
+                      {business.category} • {business?.address?.city || business?.address?.suburb}
+                      , {business.address?.state}
                     </p>
 
                     <div className="flex items-center gap-1 sm:gap-2">

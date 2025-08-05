@@ -396,7 +396,7 @@ const BusinessDetailData = () => {
                         <div className="bg-gray-50 border rounded-lg p-4">
                           <h4 className="text-lg font-medium text-gray-700 mb-1">Address</h4>
                           <p className="text-gray-700">
-                            {business.address.street}, {business.address.suburb},<br />
+                            {business.address.street}, {business?.address?.city || business?.address?.suburb},<br />
                             {business.address.state}, {business.address.postcode}
                           </p>
                         </div>

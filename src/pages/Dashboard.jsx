@@ -269,7 +269,8 @@ const Dashboard = () => {
                     <div>
                       <h3 className="text-md font-bold text-blue-700 mb-1 flex items-center gap-2">Address</h3>
                       <p className="text-gray-700 text-base">
-                        {selectedBusiness?.address?.street}, {selectedBusiness?.address?.suburb}, {selectedBusiness?.address?.state} {selectedBusiness?.address?.postcode}
+                        {selectedBusiness?.address?.street}, {selectedBusiness?.address?.city || selectedBusiness?.address?.suburb}
+, {selectedBusiness?.address?.state} {selectedBusiness?.address?.postcode}
                       </p>
                     </div>
                   </div>
@@ -459,7 +460,8 @@ const Dashboard = () => {
                     <div className="space-y-4 p-6">
                       <div className="flex items-center gap-3"><span className="text-indigo-500 text-lg">📞</span><p><strong>Alt. Phone:</strong> {selectedBusiness?.alternateContacts?.phone || "-"}</p></div>
                       <div className="flex items-center gap-3"><span className="text-indigo-500 text-lg">📧</span><p><strong>Alt. Email:</strong> <a href={`mailto:${selectedBusiness?.alternateContacts?.email}`} className="text-indigo-600 underline">{selectedBusiness?.alternateContacts?.email || "-"}</a></p></div>
-                      <div className="flex items-center gap-3"><span className="text-indigo-500 text-lg">📍</span><p><strong>Address:</strong> {selectedBusiness?.address ? `${selectedBusiness?.address?.street}, ${selectedBusiness?.address?.suburb}, ${selectedBusiness?.address?.state} ${selectedBusiness?.address?.postcode}` : "-"}</p></div>
+                      <div className="flex items-center gap-3"><span className="text-indigo-500 text-lg">📍</span><p><strong>Address:</strong> {selectedBusiness?.address ? `${selectedBusiness?.address?.street}, ${selectedBusiness?.address?.city || selectedBusiness?.address?.suburb}
+, ${selectedBusiness?.address?.state} ${selectedBusiness?.address?.postcode}` : "-"}</p></div>
                     </div>
                   </div>
                 </section>

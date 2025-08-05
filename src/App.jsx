@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AddProfile from "./components/Dashboard/AddProfile";
 import ForgotPassword from "./components/Auth/ForgotPassword";
 import ResetPassword from "./components/Auth/ResetPassword";
+import DeleteAccountPage from "./components/Dashboard/DeleteAccountPage";
 
 // ✅ Wrapper for handling scroll-to-top on route change
 function ScrollToTopWrapper() {
@@ -53,6 +54,7 @@ function ScrollToTopWrapper() {
       <Route element={<PrivateLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/addProfile" element={<AddProfile />} />
+        <Route path="/delete-account" element={<DeleteAccountPage />} />
       </Route>
     </Routes>
   );

@@ -288,7 +288,7 @@ const AddProfile = () => {
                 website: existingBusiness.website || "",
                 description: existingBusiness.description || "",
                 street: existingBusiness.address?.street || "",
-                city: existingBusiness.address?.suburb || "",
+                city: existingBusiness.address?.suburb || existingBusiness.address?.city || "",
                 stateName: existingBusiness.address?.state || "",
                 // country: "Australia", // or from data
                 postalCode: existingBusiness.address?.postcode || "",
@@ -422,7 +422,7 @@ const AddProfile = () => {
             },
             address: {
                 street: formData.street,
-                suburb: formData.city,
+                city: formData.city,
                 state: formData.stateName,
                 postcode: formData.postalCode,
             },
