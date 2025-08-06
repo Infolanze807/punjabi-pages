@@ -1,5 +1,8 @@
 import { CheckCircle, Star } from "lucide-react"
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+import { getPopularBusiness } from "../../redux/features/businessSlice";
 
 const businesses = [
   {
@@ -52,6 +55,16 @@ const businesses = [
 ]
 
 export function PopularBusinesses() {
+  const dispatch = useDispatch();
+
+  const { popularBusiness, loading } = useSelector((state) => state.business)
+
+  useEffect(() => {
+    dispatch(getPopularBusiness());
+  });
+  // console.log("popularBusiness", popularBusiness);
+
+
   return (
     <section className="py-8 sm:py-12 md:py-16 bg-[#e6f0f9]">
       <div className="container mx-auto px-4 md:px-10 lg:px-24 max-w-7xl">
@@ -63,15 +76,15 @@ export function PopularBusinesses() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {businesses.map((business) => (
-            <Link to={"/business-details-data"} key={business.id}>
+          {popularBusiness.map((business) => (
+            <Link to={"/business-details-data"} state={{ businessId: business._id }}>
               <div
                 className="rounded-lg border bg-white text-gray-800 shadow-sm cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl overflow-hidden"
               >
                 <div className="relative">
                   <img
-                    src={business.image || "/placeholder.svg"}
-                    alt={business.name}
+                    src={business.logoUrl || "/placeholder.svg"}
+                    alt={business.businessName}
                     className="w-full h-36 sm:h-40 md:h-48 object-cover"
                   />
                   <div className="absolute top-2 sm:top-3 left-2 sm:left-3 flex gap-1 sm:gap-2">
@@ -90,19 +103,19 @@ export function PopularBusinesses() {
 
                 <div className="p-3 sm:p-4">
                   <h3 className="mb-1 sm:mb-2 font-medium text-sm sm:text-base text-[--main-color] truncate">
-                    {business.name}
+                    {business.businessName}
                   </h3>
 
                   <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2 truncate">
-                    {business.category} • {business.location}
+                    {business.category} • {business?.address?.city || business?.address?.suburb}
                   </p>
 
                   <div className="flex items-center gap-1 sm:gap-2">
                     <div className="flex items-center">
                       <Star className="h-3 w-3 sm:h-4 sm:w-4 text-[--main-color] mr-1 fill-[--main-color]" />
-                      <span className="text-xs sm:text-sm font-medium">{business.rating}</span>
+                      <span className="text-xs sm:text-sm font-medium">4.9</span>
                     </div>
-                    <span className="text-xs sm:text-sm text-gray-500">({business.reviews} reviews)</span>
+                    <span className="text-xs sm:text-sm text-gray-500">(120+ reviews)</span>
                   </div>
                 </div>
               </div>

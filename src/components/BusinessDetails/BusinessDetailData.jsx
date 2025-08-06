@@ -413,7 +413,7 @@ const BusinessDetailData = () => {
                               ([key, value]) =>
                                 value && (
                                   <li key={key}>
-                                    {key}:{" "}
+                                    {key}:{""}
                                     <a
                                       href={value}
                                       target="_blank"

@@ -10,7 +10,7 @@ export const getBusinessCategory = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      let url = `/businesses/search?`;
+      let url = `/businesses/search/web?`;
 
       if (category) url += `category=${encodeURIComponent(category)}&`;
       if (subCategory) url += `subCategory=${encodeURIComponent(subCategory)}&`;
@@ -92,6 +92,20 @@ export const getBusinessById = createAsyncThunk(
   }
 );
 
+export const getPopularBusiness = createAsyncThunk(
+  "business/getPopularBusiness",
+  async () => {
+    try {
+      const response = await axiosConfig.get("businesses/popular");
+      return response.data;
+    } catch (error) {
+      throw (
+        error.response?.data?.error || error.message || "Something went wrong"
+      );
+    }
+  }
+);
+
 const businessSlice = createSlice({
   name: "business",
   initialState: {
@@ -101,6 +115,7 @@ const businessSlice = createSlice({
     states: [],
     featureBusiness: [],
     businessById: [],
+    popularBusiness: [],
     loading: false,
     error: null,
     message: null,
@@ -188,6 +203,20 @@ const businessSlice = createSlice({
         // toast.success(action.payload.message);
       })
       .addCase(getBusinessById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(state.error);
+      })
+      .addCase(getPopularBusiness.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getPopularBusiness.fulfilled, (state, action) => {
+        state.loading = false;
+        state.popularBusiness = action.payload.data;
+        state.message = action.payload.message;
+        // toast.success(action.payload.message);
+      })
+      .addCase(getPopularBusiness.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
         toast.error(state.error);

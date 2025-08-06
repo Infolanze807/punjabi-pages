@@ -22,7 +22,7 @@ export function HeroSection() {
   }, []);
 
 
-  console.log("cities", cities);
+  // console.log("cities", cities);
 
   const handleSearch = async () => {
     if (!searchTerm.trim() && !selectedCity.trim()) return;

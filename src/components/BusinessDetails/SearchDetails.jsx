@@ -194,61 +194,63 @@ const SearchDetails = () => {
                     <span className="text-xs text-gray-500 cursor-help">ⓘ</span>
                   </div>
 
-                  <div className="space-y-4">
-                    {businesses.map((business) => (
-                      <div
-                        key={business.id}
-                        className="border rounded-lg p-4 hover:shadow-sm transition-shadow"
-                      >
-                        {/* Top Section */}
-                        <div className="flex items-start gap-4 mb-3">
-                          <img
-                            src={business.logoUrl}
-                            alt={business.businessName}
-                            className="w-14 h-14 rounded-md object-cover border"
-                          />
-                          <div className="flex-1">
-                            <h4 className="text-base font-semibold text-gray-900">
-                              {business.contactPerson}
-                            </h4>
-                            <div className="flex items-center gap-1 flex-wrap text-sm text-gray-600 mt-1">
-                              {/* <span className="font-medium text-gray-800">
-                                {business.rating}
-                              </span>
-                              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                              <span className="text-xs text-gray-500">
-                                ({business.reviews})
-                              </span> */}
-                              <span className="text-xs text-gray-600 ml-2">
-                                • {business.category}
-                              </span>
+                  {businesses.filter((biz) => biz.isFeature === true).length > 0 ? (
+                    <div className="space-y-4">
+                      {businesses
+                        .filter((business) => business.isFeature === true)
+                        .map((business) => (
+                          <div
+                            key={business.id}
+                            className="border rounded-lg p-4 hover:shadow-sm transition-shadow"
+                          >
+                            {/* Top Section */}
+                            <div className="flex items-start gap-4 mb-3">
+                              <img
+                                src={business.logoUrl}
+                                alt={business.businessName}
+                                className="w-14 h-14 rounded-md object-cover border"
+                              />
+                              <div className="flex-1">
+                                <h4 className="text-base font-semibold text-gray-900">
+                                  {business.contactPerson}
+                                </h4>
+                                <div className="flex items-center gap-1 flex-wrap text-sm text-gray-600 mt-1">
+                                  <span className="text-xs text-gray-600 ml-2">
+                                    • {business.category}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Description */}
+                            <p className="text-sm text-gray-700 mb-4">{business.description}</p>
+
+                            {/* Action Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+                              <button className="flex-1 sm:flex-initial px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                                {business.phone}
+                              </button>
+                              {business.website && (
+                                <a
+                                  href={business.website}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex-1 sm:flex-initial px-4 py-2 bg-yellow-400 text-black rounded-md hover:bg-yellow-500 font-medium text-sm text-center"
+                                >
+                                  Visit Website
+                                </a>
+                              )}
                             </div>
                           </div>
-                        </div>
-
-                        {/* Description */}
-                        <p className="text-sm text-gray-700 mb-4">{business.description}</p>
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
-                          <button className="flex-1 sm:flex-initial px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
-                            {business.phone}
-                          </button>
-                          {business.website && (
-                            <a
-                              href={business.website}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-1 sm:flex-initial px-4 py-2 bg-yellow-400 text-black rounded-md hover:bg-yellow-500 font-medium text-sm text-center"
-                            >
-                              Visit Website
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-500 text-center py-8">
+                      No sponsored businesses at this time.
+                    </div>
+                  )}
                 </div>
+
 
                 {/* Related Articles */}
                 <div className="bg-white rounded-xl shadow-md border p-5">

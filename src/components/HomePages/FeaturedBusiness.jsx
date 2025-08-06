@@ -21,7 +21,7 @@ const FeaturedBusiness = () => {
     dispatch(getFeatureBusiness());
   }, [])
 
-  console.log("featureBusiness", featureBusiness);
+  // console.log("featureBusiness", featureBusiness);
 
 
   return (
@@ -97,6 +97,16 @@ const FeaturedBusiness = () => {
           ))}
           <div className="custom-swiper-pagination mt-5 flex justify-center"></div>
         </Swiper>
+        <div className="mt-10 flex justify-center">
+          <Link to="/featured-businesses">
+            <button className="inline-flex items-center gap-2 px-4 py-2 rounded-sm hover:rounded-full bg-[--main-color] text-white text-sm sm:text-base font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-75">
+              View All
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </Link>
+        </div>
       </div>
     </section>
   )

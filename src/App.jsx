@@ -21,6 +21,7 @@ import AddProfile from "./components/Dashboard/AddProfile";
 import ForgotPassword from "./components/Auth/ForgotPassword";
 import ResetPassword from "./components/Auth/ResetPassword";
 import DeleteAccountPage from "./components/Dashboard/DeleteAccountPage";
+import FeatureViewAllBusiness from "./components/BusinessDetails/FeatureViewAllBusiness";
 
 // ✅ Wrapper for handling scroll-to-top on route change
 function ScrollToTopWrapper() {
@@ -48,6 +49,7 @@ function ScrollToTopWrapper() {
         <Route path="/business-details-data" element={<BusinessDetailData />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/featured-businesses" element={<FeatureViewAllBusiness />} />
       </Route>
 
       {/* Private Routes */}
