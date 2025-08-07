@@ -112,12 +112,16 @@ function ResetPassword() {
                             size="md"
                             label="OTP"
                             name="otp"
+                            maxLength={6}
+                            inputMode="numeric"
                             value={formData.otp}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                                const onlyDigits = e.target.value.replace(/\D/g, ""); // remove non-digits
+                                setFormData((prev) => ({ ...prev, otp: onlyDigits }));
+                            }}
                             placeholder="Enter OTP"
                             crossOrigin={undefined}
                         />
-
                         <Input
                             size="md"
                             label="New Password"

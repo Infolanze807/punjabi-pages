@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import heroimage from "../../assets/architecture-ancient-monument-world-heritage-day-celebration.jpg";
 import { Button, CardBody, IconButton, Input, Option, Select, Typography } from '@material-tailwind/react';
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid"
@@ -10,6 +10,7 @@ import Registration03 from './Registration03';
 import Registration04 from './Registration04';
 import { useDispatch, useSelector } from 'react-redux';
 import { register, resendOtp, verifyEmail } from '../../redux/features/authSlice';
+import { ClockIcon } from 'lucide-react';
 
 const Registration = () => {
     const dispatch = useDispatch();
@@ -20,8 +21,9 @@ const Registration = () => {
     const [timer, setTimer] = useState(60);
     const [canResend, setCanResend] = useState(false);
 
-    const [otp, setOtp] = useState("");
+    const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [otpError, setOtpError] = useState("");
+    const inputRefs = useRef([]);
 
     const [passwordShown, setPasswordShown] = useState(false)
     const [formErrors, setFormErrors] = useState({});
@@ -41,6 +43,13 @@ const Registration = () => {
             setCanResend(true);
         }
     }, [timer]);
+    useEffect(() => {
+        if (step === "verify") {
+            setTimer(60);
+            setCanResend(false);
+        }
+    }, [step]);
+
 
 
     const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur)
@@ -92,14 +101,16 @@ const Registration = () => {
 
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
-        if (!otp.trim()) {
-            setOtpError("OTP is required");
+        const joinedOtp = otp.join("");
+        if (joinedOtp.length !== 6) {
+            setOtpError("Please enter a 6-digit OTP");
             return;
         }
 
+
         const verifyData = {
             email: registeredEmail,
-            otp
+            otp: joinedOtp
         }
         try {
             await dispatch(verifyEmail(verifyData)).unwrap();
@@ -110,6 +121,34 @@ const Registration = () => {
             console.error("Registration failed:", err);
         }
     }
+    const handleOtpChange = (index, value) => {
+        if (!/^\d?$/.test(value)) return;
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+        setOtpError("");
+
+        if (value && index < 5) {
+            inputRefs.current[index + 1]?.focus();
+        }
+    };
+
+    const handleOtpKeyDown = (e, index) => {
+        if (e.key === "Backspace") {
+            if (otp[index]) {
+                const newOtp = [...otp];
+                newOtp[index] = "";
+                setOtp(newOtp);
+            } else if (index > 0) {
+                inputRefs.current[index - 1]?.focus();
+            }
+        } else if (e.key === "ArrowLeft" && index > 0) {
+            inputRefs.current[index - 1]?.focus();
+        } else if (e.key === "ArrowRight" && index < 5) {
+            inputRefs.current[index + 1]?.focus();
+        }
+    };
+
 
     const handleResendOtp = async () => {
         if (!registeredEmail) {
@@ -264,25 +303,27 @@ const Registration = () => {
                                 </Typography>
                                 <CardBody className="flex flex-col gap-16 p-0">
                                     <form onSubmit={handleVerifyOtp} className="space-y-10">
-                                        <div className="relative mt-3">
-                                            <Input
-                                                size="lg"
-                                                label="OTP"
-                                                type="number"
-                                                value={otp}
-                                                onChange={(e) => {
-                                                    setOtp(e.target.value);
-                                                    setOtpError("");
-                                                }}
-                                                error={!!otpError}
-                                                className="focus:outline-none"
-                                            />
-                                            {otpError && (
-                                                <Typography variant="small" color="red" className="text-xs absolute -bottom-4 right-0">
-                                                    {otpError}
-                                                </Typography>
-                                            )}
+                                        <div className="flex justify-between gap-2">
+                                            {Array(6).fill("").map((_, index) => (
+                                                <input
+                                                    key={index}
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    maxLength={1}
+                                                    className="w-12 h-12 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[--second-color] text-lg font-medium"
+                                                    value={otp[index] || ""}
+                                                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                                                    onKeyDown={(e) => handleOtpKeyDown(e, index)}
+                                                    ref={(el) => (inputRefs.current[index] = el)}
+                                                />
+                                            ))}
                                         </div>
+                                        {otpError && (
+                                            <Typography variant="small" color="red" className="text-xs mt-2 text-right">
+                                                {otpError}
+                                            </Typography>
+                                        )}
+
 
                                         <Button
                                             type="submit"
@@ -300,11 +341,12 @@ const Registration = () => {
                                                 type="button"
                                                 onClick={handleResendOtp}
                                                 disabled={!canResend}
-                                                className={`font-medium transition ${canResend
+                                                className={`font-medium flex items-center gap-1 transition ${canResend
                                                     ? "text-[--second-color] hover:underline"
                                                     : "text-gray-400 cursor-not-allowed"
                                                     }`}
                                             >
+                                                {!canResend && <ClockIcon className="h-4 w-4" />}
                                                 {canResend ? "Resend OTP" : `Resend in ${timer}s`}
                                             </button>
                                         </Typography>

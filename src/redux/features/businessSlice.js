@@ -57,7 +57,7 @@ export const getFeatureBusiness = createAsyncThunk(
   "business/getFeatureBusiness",
   async () => {
     try {
-      const response = await axiosConfig.get("businesses/feature");
+      const response = await axiosConfig.get("businesses/feature/web");
       return response.data;
     } catch (error) {
       throw (

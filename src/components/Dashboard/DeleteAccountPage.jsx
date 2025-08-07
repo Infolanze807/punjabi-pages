@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { deleteAccount } from "../../redux/features/authSlice";
+import { deleteAccount, logout } from "../../redux/features/authSlice";
 
 const DeleteAccountPage = () => {
     const [password, setPassword] = useState("");
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -17,7 +18,8 @@ const DeleteAccountPage = () => {
             const resultAction = await dispatch(deleteAccount({ data: { password } }));
 
             if (deleteAccount.fulfilled.match(resultAction)) {
-                navigate("/"); // go to home or login
+                dispatch(logout());
+                navigate("/login"); // go to home or login
             }
         } catch (err) {
             toast.error("Something went wrong while deleting the account.");
@@ -42,14 +44,42 @@ const DeleteAccountPage = () => {
                 >
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input
-                            type="password"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
-                            placeholder="Enter your password"
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                                placeholder="Enter your password"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                tabIndex={-1}
+                            >
+                                {showPassword ? (
+                                    // Eye OFF (visible)
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                            d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.065.165-2.087.47-3.04m3.07-1.55A9.953 9.953 0 0112 3c5.523 0 10 4.477 10 10 0 1.194-.21 2.34-.59 3.4M9.88 9.88a3 3 0 104.24 4.24" />
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                            d="M3 3l18 18" />
+                                    </svg>
+                                ) : (
+                                    // Eye ON (hidden)
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.269 2.943 9.542 7-1.273 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                )}
+                            </button>
+                        </div>
                     </div>
                     <div className="flex items-center gap-4">
                         <button
