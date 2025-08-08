@@ -4,14 +4,15 @@ import { toast } from "react-toastify";
 
 export const addProfile = createAsyncThunk(
   "dashboard/addProfile",
-  async (profileData) => {
+  async (profileData, { rejectWithValue }) => {
     try {
       const response = await axiosConfig.post("businesses", profileData);
       return response.data;
     } catch (error) {
-      throw (
-        error.response?.data?.error || error.message || "Something went wrong"
-      );
+      if (error.response?.data) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({ message: error.message || "Something went wrong" });
     }
   }
 );
@@ -32,17 +33,23 @@ export const getMyBussiness = createAsyncThunk(
 
 export const updateMyBussiness = createAsyncThunk(
   "dashboard/updateMyBussiness",
-  async ({bussinessId,bussinessData}) => {
+  async ({ bussinessId, bussinessData }, { rejectWithValue }) => {
     try {
-      const response = await axiosConfig.patch(`businesses/${bussinessId}`,bussinessData);
+      const response = await axiosConfig.patch(
+        `businesses/${bussinessId}`,
+        bussinessData
+      );
       return response.data;
     } catch (error) {
-      throw (
-        error.response?.data?.error || error.message || "Something went wrong"
-      );
+      if (error.response?.data) {
+        // ✅ Send backend response to the reducer
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue({ message: error.message || "Something went wrong" });
     }
   }
 );
+
 
 const dashboardSlice = createSlice({
   name: "dashboard",
@@ -69,9 +76,20 @@ const dashboardSlice = createSlice({
       })
       .addCase(addProfile.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
-        toast.error(state.error);
+
+        if (action.payload?.errors) {
+          state.error = action.payload.errors;
+
+          // Show each validation error one by one
+          action.payload.errors.forEach(err => {
+            toast.error(err.message);
+          });
+        } else {
+          state.error = action.payload?.message || action.error?.message;
+          toast.error(state.error);
+        }
       })
+
       .addCase(getMyBussiness.pending, (state) => {
         state.loading = true;
       })
@@ -97,8 +115,18 @@ const dashboardSlice = createSlice({
       })
       .addCase(updateMyBussiness.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
-        toast.error(state.error);
+
+        if (action.payload?.errors) {
+          state.error = action.payload.errors;
+
+          // Show each validation error one by one
+          action.payload.errors.forEach(err => {
+            toast.error(err.message);
+          });
+        } else {
+          state.error = action.payload?.message || action.error?.message;
+          toast.error(state.error);
+        }
       });
   },
 });
