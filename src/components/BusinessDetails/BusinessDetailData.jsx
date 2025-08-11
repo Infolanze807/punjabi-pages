@@ -12,6 +12,15 @@ import {
   ThumbsUp,
   ThumbsDown,
   Flag,
+  User,
+  CreditCard,
+  Wrench,
+  Award,
+  Share2,
+  FileText,
+  Calendar,
+  Briefcase,
+  Tag,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -106,7 +115,7 @@ const BusinessDetailData = () => {
                 >
                   <ArrowLeft className="h-4 w-4" />
                   <span className="text-sm">
-                    Search {business?.category} in Location
+                    Search {business?.category} in Location {business?.address?.city || business?.address?.suburb}
                   </span>
                 </button>
               </div>
@@ -248,9 +257,9 @@ const BusinessDetailData = () => {
 
                 {/* Optional Public Holiday Note */}
                 {business?.hours?.publicHolidayNotes && (
-                  <p className="text-yellow-600 text-xs mt-3 mb-2 italic">
-                    Public Holiday Info: {business?.hours?.publicHolidayNotes}
-                  </p>
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-sm italic">
+                    📅 Public Holiday Info: {business?.hours?.publicHolidayNotes}
+                  </div>
                 )}
               </div>
 
@@ -306,7 +315,6 @@ const BusinessDetailData = () => {
                     ))}
                   </div>
                 </div>
-
               </div>
 
 
@@ -334,49 +342,77 @@ const BusinessDetailData = () => {
                 <div className="p-6 lg:p-8">
                   {activeTab === "about" && (
                     <div className="lg:col-span-2 space-y-6">
+
                       {/* About Description */}
-                      <div>
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-2">About</h3>
-                        <p className="text-gray-700 whitespace-pre-line">
+                      <div className="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition">
+                        <h3 className="text-2xl font-bold text-gray-800 mb-3">About</h3>
+                        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                           {business?.description || "No description available."}
                         </p>
                       </div>
 
                       {/* Details Grid */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="border p-4 rounded-lg bg-gray-50">
-                          <strong className="block text-gray-700">Subcategory:</strong>
-                          <span className="text-gray-900">{business?.subCategory || "-"}</span>
+                        {/* Subcategory */}
+                        <div className="flex items-start gap-3 p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition">
+                          <Briefcase className="w-5 h-5 text-blue-600 mt-1" />
+                          <div>
+                            <p className="text-sm text-gray-500">Subcategory</p>
+                            <p className="text-gray-900 font-medium">{business?.subCategory || "-"}</p>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-lg bg-gray-50">
-                          <strong className="block text-gray-700">Established Year:</strong>
-                          <span className="text-gray-900">{business?.establishedYear || "-"}</span>
+
+                        {/* Established Year */}
+                        <div className="flex items-start gap-3 p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition">
+                          <Calendar className="w-5 h-5 text-green-600 mt-1" />
+                          <div>
+                            <p className="text-sm text-gray-500">Established Year</p>
+                            <p className="text-gray-900 font-medium">{business?.establishedYear || "-"}</p>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-lg bg-gray-50">
-                          <strong className="block text-gray-700">ABN:</strong>
-                          <span className="text-gray-900">{business?.abn || "-"}</span>
+
+                        {/* ABN */}
+                        <div className="flex items-start gap-3 p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition">
+                          <FileText className="w-5 h-5 text-purple-600 mt-1" />
+                          <div>
+                            <p className="text-sm text-gray-500">ABN</p>
+                            <p className="text-gray-900 font-medium">{business?.abn || "-"}</p>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-lg bg-gray-50">
-                          <strong className="block text-gray-700">Promotion:</strong>
-                          <span className="text-gray-900">{business?.promotions || "-"}</span>
+
+                        {/* Promotion */}
+                        <div className="flex items-start gap-3 p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition">
+                          <Award className="w-5 h-5 text-yellow-600 mt-1" />
+                          <div>
+                            <p className="text-sm text-gray-500">Promotion</p>
+                            <p className="text-gray-900 font-medium">{business?.promotions || "-"}</p>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-lg bg-gray-50 md:col-span-2">
-                          <strong className="block text-gray-700">Service Area:</strong>
-                          <span className="text-gray-900">
-                            {business?.serviceAreas?.length ? business.serviceAreas.join(", ") : "-"}
-                          </span>
+
+                        {/* Service Area */}
+                        <div className="flex items-start gap-3 p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition md:col-span-2">
+                          <MapPin className="w-5 h-5 text-indigo-600 mt-1" />
+                          <div>
+                            <p className="text-sm text-gray-500">Service Area</p>
+                            <p className="text-gray-900 font-medium">
+                              {business?.serviceAreas?.length ? business.serviceAreas.join(", ") : "-"}
+                            </p>
+                          </div>
                         </div>
                       </div>
 
                       {/* Keywords */}
-                      <div>
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-3">Keywords</h3>
+                      <div className="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Tag className="w-5 h-5 text-blue-600" />
+                          <h3 className="text-lg font-semibold text-gray-800">Keywords</h3>
+                        </div>
                         {business?.keywords?.length ? (
                           <div className="flex flex-wrap gap-2">
                             {business.keywords.map((kw, index) => (
                               <span
                                 key={index}
-                                className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                                className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full shadow-sm"
                               >
                                 {kw}
                               </span>
@@ -386,39 +422,47 @@ const BusinessDetailData = () => {
                           <p className="text-gray-500 text-sm">No keywords listed.</p>
                         )}
                       </div>
+
                     </div>
                   )}
 
                   {activeTab === "details" && (
                     <div className="space-y-6">
+
                       {/* Address */}
-                      {business?.address ? (
-                        <div className="bg-gray-50 border rounded-lg p-4">
-                          <h4 className="text-lg font-medium text-gray-700 mb-1">Address</h4>
-                          <p className="text-gray-700">
+                      <div className="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition">
+                        <div className="flex items-center gap-2 mb-2">
+                          <MapPin className="w-5 h-5 text-red-600" />
+                          <h4 className="text-lg font-semibold text-gray-800">Address</h4>
+                        </div>
+                        {business?.address ? (
+                          <p className="text-gray-700 leading-relaxed">
                             {business.address.street}, {business?.address?.city || business?.address?.suburb},<br />
                             {business.address.state}, {business.address.postcode}
                           </p>
-                        </div>
-                      ) : (
-                        <p className="text-gray-500 text-sm">No address available.</p>
-                      )}
+                        ) : (
+                          <p className="text-gray-500 text-sm">No address available.</p>
+                        )}
+                      </div>
 
                       {/* Social Links */}
-                      {business?.socialLinks && Object.keys(business.socialLinks).length > 0 && (
-                        <div className="bg-gray-50 border rounded-lg p-4">
-                          <h4 className="text-lg font-medium text-gray-700 mb-1">Social Links</h4>
-                          <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                      <div className="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Share2 className="w-5 h-5 text-blue-600" />
+                          <h4 className="text-lg font-semibold text-gray-800">Social Links</h4>
+                        </div>
+                        {business?.socialLinks && Object.keys(business.socialLinks).length > 0 ? (
+                          <ul className="space-y-1 text-sm">
                             {Object.entries(business.socialLinks).map(
                               ([key, value]) =>
                                 value && (
-                                  <li key={key}>
-                                    {key}:{""}
+                                  <li key={key} className="flex items-center gap-2">
+                                    <span className="capitalize font-medium text-gray-700">{key}:</span>
                                     <a
                                       href={value}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="text-blue-600 underline break-all"
+                                      className="text-blue-600 hover:underline break-all"
                                     >
                                       {value}
                                     </a>
@@ -426,101 +470,169 @@ const BusinessDetailData = () => {
                                 )
                             )}
                           </ul>
-                        </div>
-                      )}
+                        ) : (
+                          <p className="text-gray-500 text-sm">No social links available.</p>
+                        )}
+                      </div>
 
                       {/* Certifications */}
-                      {business?.certifications?.length > 0 ? (
-                        <div className="bg-gray-50 border rounded-lg p-4">
-                          <h4 className="text-lg font-medium text-gray-700 mb-1">Certifications</h4>
+                      <div className="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Award className="w-5 h-5 text-yellow-600" />
+                          <h4 className="text-lg font-semibold text-gray-800">Certifications</h4>
+                        </div>
+                        {business?.certifications?.length > 0 ? (
                           <div className="flex flex-wrap gap-2 mt-2">
                             {business.certifications.map((cert, index) => (
                               <span
                                 key={index}
-                                className="px-3 py-1 text-sm bg-yellow-100 text-yellow-800 rounded-full"
+                                className="px-3 py-1 text-sm font-medium bg-yellow-100 text-yellow-800 rounded-full shadow-sm"
                               >
                                 {cert}
                               </span>
                             ))}
                           </div>
-                        </div>
-                      ) : (
-                        <p className="text-gray-500 text-sm">No certifications listed.</p>
-                      )}
+                        ) : (
+                          <p className="text-gray-500 text-sm">No certifications listed.</p>
+                        )}
+                      </div>
+
                     </div>
                   )}
-
 
                   {activeTab === "services" && (
                     <div className="space-y-6">
 
                       {/* Our Services */}
-                      {business?.services?.length ? (
-                        <div className="bg-gray-50 border rounded-lg p-4">
-                          <h4 className="text-lg font-medium text-gray-700 mb-2">Our Services</h4>
+                      <div className="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Wrench className="w-5 h-5 text-blue-600" />
+                          <h4 className="text-lg font-semibold text-gray-800">Our Services</h4>
+                        </div>
+                        {business?.services?.length ? (
                           <div className="flex flex-wrap gap-2">
                             {business.services.map((service, index) => (
                               <span
                                 key={index}
-                                className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm"
+                                className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium shadow-sm"
                               >
                                 {service}
                               </span>
                             ))}
                           </div>
-                        </div>
-                      ) : (
-                        <p className="text-gray-500 text-sm">No services listed.</p>
-                      )}
+                        ) : (
+                          <p className="text-gray-500 text-sm">No services listed.</p>
+                        )}
+                      </div>
 
                       {/* Payment Methods */}
-                      {business?.paymentMethods?.length ? (
-                        <div className="bg-gray-50 border rounded-lg p-4">
-                          <h4 className="text-lg font-medium text-gray-700 mb-2">Payment Methods</h4>
+                      <div className="bg-white border rounded-lg p-5 shadow-sm hover:shadow-md transition">
+                        <div className="flex items-center gap-2 mb-3">
+                          <CreditCard className="w-5 h-5 text-green-600" />
+                          <h4 className="text-lg font-semibold text-gray-800">Payment Methods</h4>
+                        </div>
+                        {business?.paymentMethods?.length ? (
                           <div className="flex flex-wrap gap-2">
                             {business.paymentMethods.map((method, index) => (
                               <span
                                 key={index}
-                                className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm"
+                                className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium shadow-sm"
                               >
                                 {method}
                               </span>
                             ))}
                           </div>
-                        </div>
-                      ) : (
-                        <p className="text-gray-500 text-sm">No payment methods listed.</p>
-                      )}
+                        ) : (
+                          <p className="text-gray-500 text-sm">No payment methods listed.</p>
+                        )}
+                      </div>
+
                     </div>
                   )}
 
-
                   {activeTab === "contact" && (
-                    <div className="space-y-4">
-                      <h3 className="text-2xl font-semibold text-gray-800 mb-4">Contact</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="border p-4 rounded-md">
-                          <strong>Contact Person:</strong> {business?.contactPerson || "-"}
+                    <div className="space-y-6">
+                      <h3 className="text-2xl font-bold text-gray-800 border-b pb-2">Contact Information</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        {/* Contact Person */}
+                        <div className="flex items-center gap-3 p-4 bg-white shadow-sm rounded-lg border hover:shadow-md transition">
+                          <User className="w-5 h-5 text-gray-500" />
+                          <div>
+                            <p className="text-sm text-gray-500">Contact Person</p>
+                            <p className="text-gray-800 font-medium">{business?.contactPerson || "-"}</p>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-md">
-                          <strong>Phone:</strong> {business?.phone || "-"}
+
+                        {/* Phone */}
+                        <div className="flex items-center gap-3 p-4 bg-white shadow-sm rounded-lg border hover:shadow-md transition">
+                          <Phone className="w-5 h-5 text-gray-500" />
+                          <div>
+                            <p className="text-sm text-gray-500">Phone</p>
+                            <p className="text-gray-800 font-medium">{business?.phone || "-"}</p>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-md">
-                          <strong>Alternate Phone:</strong> {business?.alternateContacts?.phone || "-"}
+
+                        {/* Alternate Phone */}
+                        <div className="flex items-center gap-3 p-4 bg-white shadow-sm rounded-lg border hover:shadow-md transition">
+                          <Phone className="w-5 h-5 text-gray-500" />
+                          <div>
+                            <p className="text-sm text-gray-500">Alternate Phone</p>
+                            <p className="text-gray-800 font-medium">{business?.alternateContacts?.phone || "-"}</p>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-md">
-                          <strong>Email:</strong> {business?.email || "-"}
+
+                        {/* Email */}
+                        <div className="flex items-center gap-3 p-4 bg-white shadow-sm rounded-lg border hover:shadow-md transition">
+                          <Mail className="w-5 h-5 text-gray-500" />
+                          <div>
+                            <p className="text-sm text-gray-500">Email</p>
+                            <a
+                              href={`mailto:${business?.email}`}
+                              className="text-blue-600 font-medium hover:underline"
+                            >
+                              {business?.email || "-"}
+                            </a>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-md">
-                          <strong>Alternate Email:</strong> {business?.alternateContacts?.email || "-"}
+
+                        {/* Alternate Email */}
+                        <div className="flex items-center gap-3 p-4 bg-white shadow-sm rounded-lg border hover:shadow-md transition">
+                          <Mail className="w-5 h-5 text-gray-500" />
+                          <div>
+                            <p className="text-sm text-gray-500">Alternate Email</p>
+                            <a
+                              href={`mailto:${business?.alternateContacts?.email}`}
+                              className="text-blue-600 font-medium hover:underline"
+                            >
+                              {business?.alternateContacts?.email || "-"}
+                            </a>
+                          </div>
                         </div>
-                        <div className="border p-4 rounded-md">
-                          <strong>Website:</strong> <a href={business?.website} target="_blank" className="text-blue-600 underline">{business?.website || "-"}</a>
+
+                        {/* Website */}
+                        <div className="flex items-center gap-3 p-4 bg-white shadow-sm rounded-lg border hover:shadow-md transition">
+                          <Globe className="w-5 h-5 text-gray-500" />
+                          <div>
+                            <p className="text-sm text-gray-500">Website</p>
+                            {business?.website ? (
+                              <a
+                                href={business.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 font-medium hover:underline"
+                              >
+                                {business.website}
+                              </a>
+                            ) : (
+                              <span className="text-gray-800 font-medium">-</span>
+                            )}
+                          </div>
                         </div>
+
                       </div>
                     </div>
                   )}
-
                 </div>
 
               </div>

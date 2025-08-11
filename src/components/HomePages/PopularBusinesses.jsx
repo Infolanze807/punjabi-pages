@@ -61,7 +61,7 @@ export function PopularBusinesses() {
 
   useEffect(() => {
     dispatch(getPopularBusiness());
-  });
+  },[dispatch]);
   // console.log("popularBusiness", popularBusiness);
 
 

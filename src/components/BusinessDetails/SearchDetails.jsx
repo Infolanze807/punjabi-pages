@@ -45,7 +45,7 @@ const SearchDetails = () => {
                 {/* Header */}
                 <div className="mb-6">
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-                    BEST local {selectedCategory} in location | Punjabi Pages®
+                    BEST local {selectedCategory} in location {businesses?.address?.city || businesses?.address?.suburb} | Punjabi Pages®
                   </h1>
 
 
@@ -253,7 +253,7 @@ const SearchDetails = () => {
 
 
                 {/* Related Articles */}
-                <div className="bg-white rounded-xl shadow-md border p-5">
+                {/* <div className="bg-white rounded-xl shadow-md border p-5">
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">Related Articles</h3>
 
                   <div className="space-y-4">
@@ -285,7 +285,7 @@ const SearchDetails = () => {
                       View all articles
                     </a>
                   </div>
-                </div>
+                </div> */}
 
               </div>
             </div>
